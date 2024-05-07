@@ -10,6 +10,7 @@ public class Person{
    public string? Statue { get; set; }
    public string? Address { get; set; }
    public string? BloodType { get; set; }
+   public int Id { get; set; }
 
    //defult constractor 
    public Person()
@@ -23,6 +24,19 @@ public class Person{
     Statue = "Unknown";
     Address = "Unknown";
     BloodType = "Unknown";
+   }
+
+   public Person(string firstname, string lastname, string phonenumber, int age, DateOnly dateofbirth, string gender, string statue, string address, string bloodtype)
+   {
+    Firstname = firstname;
+    Lastname = lastname;
+    PhoneNumber = phonenumber;
+    Age = age;
+    DateOfBirth = dateofbirth;
+    Gender = gender;
+    Statue = statue;
+    Address = address;
+    BloodType = bloodtype;
    }
 
 }
