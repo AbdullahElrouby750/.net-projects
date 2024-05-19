@@ -1,8 +1,14 @@
 ﻿namespace hospital_classes;
 
 public class Person{
-    public string? Firstname { get; set; }
-   public string? Lastname { get; set; }
+   private string? Firstname { get; set; }
+   private string? Lastname { get; set; }
+   protected string ? fullName 
+   {
+        get{
+        return Firstname + " " + Lastname;
+        } 
+   }
    public string? PhoneNumber { get; set; }
    public int Age { get; set; }
    public DateOnly DateOfBirth { get; set; }
@@ -11,7 +17,7 @@ public class Person{
    public string? Address { get; set; }
    public string? BloodType { get; set; }
    public int Id { get; set; }
-
+    
    //defult constractor 
    public Person()
    {
@@ -38,6 +44,4 @@ public class Person{
     Address = address;
     BloodType = bloodtype;
    }
-
 }
-
