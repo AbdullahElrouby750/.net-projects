@@ -16,7 +16,6 @@ public class Person{
    public string? Statue { get; set; }
    public string? Address { get; set; }
    public string? BloodType { get; set; }
-   public int Id { get; set; }
     
    //defult constractor 
    public Person()
