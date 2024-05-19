@@ -1,6 +1,9 @@
+
+
 namespace hospital_classes;
 
-public class Patient : Person {
+public class Patient : Person
+{
     public int Weight { get; set; }
     public int Height { get; set; }
     public string CurrentProblem { get; set; }
@@ -9,20 +12,25 @@ public class Patient : Person {
     public Dictionary<string, string> EmergencyContact { get; set; }
     public int PatientID { get; set; }
     public bool Operation { get; set; }
-    public Patient()
-     {
-         Weight = 0;
-         Height = 0;
-         CurrentProblem = null; 
-         MedicalHistory = null;
-         Disabilities = null;  
-         EmergencyContact = null; 
-         Operation = false; 
-     }
+    public static int NumberOfPatients { get; set; }
+    public float Bill { get; set; }
 
-    public Patient(string firstName, string lastName, string phoneNumber, int age, DateOnly dateOfBirth, string gender, string statue, string address, string bloodType
-        ,int weight, int height, string currentProblem, string disabilities, int patientid, bool operation )
-         : base(firstName, lastName, phoneNumber, age, dateOfBirth, gender, statue, address, bloodType)
+    public Patient()
+    {
+        Weight = 0;
+        Height = 0;
+        CurrentProblem = null;
+        MedicalHistory = new Dictionary<string, string>();
+        Disabilities = null;
+        EmergencyContact = new Dictionary<string, string>();
+        Operation = false;
+        NumberOfPatients = 0;
+        Bill = 0;
+    }
+
+    public Patient(string firstName, string lastName, string phoneNumber, int age, DateOnly dateOfBirth, string gender, string statue, string address, string bloodType,
+                    int weight, int height, string currentProblem, string disabilities, int patientid, bool operation, int numberOfPatients, float bill)
+                    : base(firstName, lastName, phoneNumber, age, dateOfBirth, gender, statue, address, bloodType)
     {
         Weight = weight;
         Height = height;
@@ -32,59 +40,69 @@ public class Patient : Person {
         EmergencyContact = new Dictionary<string, string>();
         PatientID = patientid;
         Operation = operation;
+        NumberOfPatients = numberOfPatients;
+        Bill = bill;
     }
+
     public void SetMedicalHistory(string disease, string info)
     {
         if (MedicalHistory == null)
         {
             MedicalHistory = new Dictionary<string, string>();
-            MedicalHistory[disease] = info;
         }
+        MedicalHistory[disease] = info;
     }
-public void PrintMedicalHistory()
-{
-    Console.WriteLine("MedicalHistory:");
-    if (MedicalHistory != null) 
+
+    public void PrintMedicalHistory()
     {
-        foreach (var entry in MedicalHistory)
+        Console.WriteLine("Medical History:");
+        if (MedicalHistory != null)
         {
-            Console.WriteLine($"{entry.Key}: {entry.Value}");
+            foreach (var entry in MedicalHistory)
+            {
+                Console.WriteLine($"{entry.Key}: {entry.Value}");
+            }
         }
     }
-}
-public void SetEmergencyContact(string fields, string info){
-    if (EmergencyContact == null){
-    EmergencyContact = new Dictionary<string, string>();
-    EmergencyContact[fields] = info;
-    }
-}
-public void PrintEmergencyContact()
-{
-    Console.WriteLine("EmergencyContact:");
-    if (EmergencyContact != null)
+
+    public void SetEmergencyContact(string fields, string info)
     {
-        foreach (var entry in EmergencyContact)
+        if (EmergencyContact == null)
         {
-            Console.WriteLine($"{entry.Key}: {entry.Value}");
+            EmergencyContact = new Dictionary<string, string>();
+        }
+        EmergencyContact[fields] = info;
+    }
+
+    public void PrintEmergencyContact()
+    {
+        Console.WriteLine("Emergency Contact:");
+        if (EmergencyContact != null)
+        {
+            foreach (var entry in EmergencyContact)
+            {
+                Console.WriteLine($"{entry.Key}: {entry.Value}");
+            }
         }
     }
-}
-public void PrintNurseReport()
+
+    public void PrintNurseReport()
     {
-        Console.WriteLine("NurseReport:");
+        Console.WriteLine("Nurse Report:");
     }
+
     public void PrintPharmaReport()
     {
-        Console.WriteLine("PharmacistReport:");
+        Console.WriteLine("Pharmacist Report:");
     }
+
     public void PrintRadiologistReport()
     {
-        Console.WriteLine("RadiologistReport:");
+        Console.WriteLine("Radiologist Report:");
     }
+
     public bool NeedOperation()
     {
         return Operation;
-    }
-
-
+    }
 }
