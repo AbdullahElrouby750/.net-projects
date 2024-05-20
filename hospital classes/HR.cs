@@ -273,17 +273,67 @@ public class HR : Employee, WritingReports
     public void WriteReport() // feutures !!! make this a work hours auto checker methods and the preformance method check the work quality of every employee
     {
         string report = string.Empty;
-        while (true)
+        object ThisEmployee = searchEmployee();
+
+
+        dynamic name = ThisEmployee.GetType().GetProperty("FullName")?.GetValue(ThisEmployee)!;
+        dynamic salary = ThisEmployee.GetType().GetProperty("Salary")?.GetValue(ThisEmployee)!;
+
+        dynamic loginTime = ThisEmployee.GetType().GetProperty("DailyloginTime")?.GetValue(ThisEmployee)!;
+        dynamic logoutTime = ThisEmployee.GetType().GetProperty("DailylogoutTime")?.GetValue(ThisEmployee)!;
+        dynamic workhours = ThisEmployee.GetType().GetProperty("WorkHours")?.GetValue(ThisEmployee)!;
+
+        TimeSpan elapsedTime = loginTime - logoutTime;
+
+        // login and logout time will be added in the future!!!
+        double deductionAndBounsPercentage = 0.05;
+
+        if (elapsedTime < workhours)
+        {
+            dynamic warning = ThisEmployee.GetType().GetProperty("Warnings")?.GetValue(ThisEmployee)!; // warning will be added in the future!!!
+            if (++warning < 3)
+            {
+                ThisEmployee.GetType().GetProperty("Warnings")?.SetValue(ThisEmployee, ++warning);
+                report += $"{name} logged in at {loginTime}\n{name} logged out at {logoutTime}\n{name} today work hours {workhours}\nanother worning sent.\n{name} has {++warning} warnings now";
+            }
+            else
+            {
+                ThisEmployee.GetType().GetProperty("Warnings")?.SetValue(ThisEmployee, 0);
+                ThisEmployee.GetType().GetProperty("Bouns")?.SetValue(ThisEmployee, salary * -deductionAndBounsPercentage);
+                report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n{name} has already passed the limited warning.\n Applying deduction by 5%{salary * deductionAndBounsPercentage}\n{name} has 0 warnings now";
+            }
+        }
+        else if (elapsedTime > workhours)
+        {
+            double bounsvalue = (elapsedTime - workhours) * deductionAndBounsPercentage * salary;
+            ThisEmployee.GetType().GetProperty("Bouns")?.SetValue(ThisEmployee, bounsvalue);
+            report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n Adding bouns by 5%{bounsvalue}.";
+        }
+        else
+        {
+            report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.";
+        }
+
+         var timeWritten = DateTime.Now;
+        report += $"\n\n HR : {this.FullName}\nDate : {timeWritten}";
+        ThisEmployee.GetType().GetProperty("HRreport")?.SetValue(ThisEmployee,report);
+    }
+
+    //*********************************************************************search employee****************************************************************
+
+    public static object searchEmployee()
+    {
+         while (true)
         {
             string id = "";
+            var hr = new HR();
             Console.Write("Search by employye's full name or ID:");
             string search = Console.ReadLine();
             if (!search.Any(char.IsDigit))
             {
-                if (searchByName(search) != null)
+                if (hr.searchByName(search) != null)
                 {
-                    var ThisEmployee = searchByName(search);
-                    id = ThisEmployee.GetType().GetProperty("HospitalID")?.GetValue(ThisEmployee).ToString();
+                    return hr.searchByName(search);
                 }
                 else
                 {
@@ -301,9 +351,9 @@ public class HR : Employee, WritingReports
             }
             else if (search.Any(char.IsDigit))
             {
-                if (searchByID(search) != null)
+                if (hr.searchByID(search) != null)
                 {
-                    id = search;
+                    return hr.searchByID(id);
                 }
                 else
                 {
@@ -319,65 +369,35 @@ public class HR : Employee, WritingReports
                     continue;
                 }
             }
-            var thisEmployee = searchByID(id);
-
-            dynamic name = thisEmployee.GetType().GetProperty("FullName")?.GetValue(thisEmployee);
-            dynamic salary = thisEmployee.GetType().GetProperty("Salary")?.GetValue(thisEmployee);
-
-            dynamic loginTime = thisEmployee.GetType().GetProperty("DailyloginTime")?.GetValue(thisEmployee);
-            dynamic logoutTime = thisEmployee.GetType().GetProperty("DailylogoutTime")?.GetValue(thisEmployee);
-            dynamic workhours = thisEmployee.GetType().GetProperty("WorkHours")?.GetValue(thisEmployee);
-
-            TimeSpan elapsedTime = loginTime - logoutTime;
-
-            // login and logout time will be added in the future!!!
-            double deductionAndBounsPercentage = 0.05;
-
-            if (elapsedTime < workhours)
-            {
-                dynamic warning = thisEmployee.GetType().GetProperty("Warnings")?.GetValue(thisEmployee); // warning will be added in the future!!!
-                if (++warning < 3)
-                {
-                    thisEmployee.GetType().GetProperty("Warnings")?.SetValue(thisEmployee, ++warning);
-                    report += $"{name} logged in at {loginTime}\n{name} logged out at {logoutTime}\n{name} today work hours {workhours}\nanother worning sent.\n{name} has {++warning} warnings now";
-                }
-                else
-                {
-                    thisEmployee.GetType().GetProperty("Warnings")?.SetValue(thisEmployee, 0);
-                    thisEmployee.GetType().GetProperty("Bouns")?.SetValue(thisEmployee, salary * -deductionAndBounsPercentage);
-                    report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n{name} has already passed the limited warning.\n Applying deduction by 5%{salary * deductionAndBounsPercentage}\n{name} has 0 warnings now";
-                }
-            }
-            else if (elapsedTime > workhours)
-            {
-                double bounsvalue = (elapsedTime - workhours) * deductionAndBounsPercentage * salary;
-                thisEmployee.GetType().GetProperty("Bouns")?.SetValue(thisEmployee, bounsvalue);
-                report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n Adding bouns by 5%{bounsvalue}.";
-            }
             else
             {
-                report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.";
+                Console.WriteLine("Employee not found! Make sure you entered the id or full name right. Or, that this employee does exist.");
+
+                    Console.WriteLine("enter 0 to Exit...");
+                    string exit = Console.ReadLine();
+                    if (exit == "0")
+                    {
+                        break;
+                    }
+
+                    continue;
             }
-
-            var timeWritten = DateTime.Now;
-            report += $"\n\n HR : {this.FullName}\nDate : {timeWritten}";
-            thisEmployee.GetType().GetProperty("HRreport")?.SetValue(thisEmployee,report);
-            break;
         }
+        return null;
     }
-
-    //*********************************************************************search employee****************************************************************
-
-    public static object searchByID(string id)
+    
+    private object searchByID(string id)
     {
         foreach (var joptitle in Employees)
         {
             if (Employees[joptitle.ToString()].ContainsKey(id))
+            {
                 return Employees[joptitle.ToString()][id];
+            }
         }
         return null;
     }
-    public static object searchByName(string name)
+    private object searchByName(string name)
     {
         foreach (var joptitle in Employees)
         {
@@ -387,11 +407,75 @@ public class HR : Employee, WritingReports
                 {
                     object result = Employees[joptitle.ToString()][id.ToString()];
 
-                    return result.GetType().GetProperty("FullName")?.GetValue(result) != null ? result.GetType().GetProperty("FullName")?.GetValue(result) : null;
-                    //object is unknown so propertis are not accessable
+                    return result.GetType().GetProperty("FullName")?.GetValue(result) == name ? result : null;
                 }
             }
         }
         return null;
     }
+    //*********************************************************************promotion****************************************************************
+    public void pormotion()
+    {
+        var ThisEmployee = searchEmployee();
+
+        dynamic startDate = ThisEmployee.GetType().GetProperty("StartingDate")?.GetValue(ThisEmployee)!;
+        TimeSpan yearsSpent = DateTime.Now.Year - startDate.Year;
+
+        double rasieValue = yearsSpent.Days/365 * 0.2 ;
+
+        ThisEmployee.GetType().GetProperty("Salary")?.SetValue(ThisEmployee, rasieValue);
+    }
+
+
+
+    //*********************************************************************other interface methods****************************************************************
+
+    //*********************************************************************print hr report****************************************************************
+    public void PrintHRreport()
+    {
+        Console.WriteLine(HRreport);
+    }
+    
+    //*********************************************************************print salary****************************************************************
+    public void Printsalary()
+    {
+        Console.WriteLine(Salary);
+    }
+
+    //*********************************************************************login****************************************************************
+    public void login()
+    {
+        DailyloginTime = DateTime.Now;
+    }
+
+
+    //*********************************************************************logout****************************************************************
+    public void logout()
+    {
+        TimeSpan hoursWorkedToday = DateTime.Now - DailyloginTime;
+        if (hoursWorkedToday < WorkHours)
+        {
+            Console.WriteLine($"Warning! your logging out {WorkHours - hoursWorkedToday} hours earlier");
+            Console.WriteLine("Are you sure you want to log out? y/n");
+            while (true)
+            {
+                string answer = Console.ReadLine();
+                if (answer == "y")
+                {
+                    DailylogoutTime = DateTime.Now;
+                    break;
+                }
+                else if (answer == "n")
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("please enter y or n");
+                }
+            }
+        }
+    }
+
+
 }
