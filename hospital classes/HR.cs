@@ -19,7 +19,7 @@ public class HR : Employee, WritingReports
     }
 
     public HR(Dictionary<string, dynamic> data)
-       : base(data["FirstName"], data["LastName"], data["PhoneNumber"], data["Age"], data["DateOfBirth"], data["Gender"], data["Statue"], data["Address"], data["BloodType"], data["Salary"], data["WorkHours"], data["HospitalID"], data["BankAccount"], data["AccountNumber"], experience: data["Experience"], previousExperience: data["PreviousExperience"])
+       : base(data)
     {
         Employees = new Dictionary<string, Dictionary<string, object>>();
         NumberofHR++;
