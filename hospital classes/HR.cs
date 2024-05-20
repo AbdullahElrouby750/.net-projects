@@ -2,9 +2,9 @@ using System.Diagnostics;
 
 namespace hospital_classes;
 
-public class HR : Employee , WritingReports
+public class HR : Employee, WritingReports
 {
-    static public Dictionary<string, Dictionary<string ,object>> Employees { get; set; } // will be used by the accountatnt to access the employees
+    static public Dictionary<string, Dictionary<string, object>> Employees { get; set; } // will be used by the accountatnt to access the employees
     private string[] jopTitles;
     public static int NumberofHR;
 
@@ -13,15 +13,15 @@ public class HR : Employee , WritingReports
 
     public HR()
     {
-        Employees = new Dictionary<string, Dictionary<string ,object>>();
+        Employees = new Dictionary<string, Dictionary<string, object>>();
         NumberofHR++;
         jopTitles = ["Nurse", "Pharmacist", "Radiologist", "Receptionist", "Doctor", "HR", "Accountant"];
     }
 
     public HR(Dictionary<string, dynamic> data)
-       : base(data["FirstName"], data["LastName"], data["PhoneNumber"], data["Age"],data["DateOfBirth"], data["Gender"], data["Statue"], data["Address"], data["BloodType"], data["Salary"], data["WorkHours"], data["HospitalID"], data["BankAccount"], data["AccountNumber"], experience:data["Experience"], previousExperience:data["PreviousExperience"])
+       : base(data["FirstName"], data["LastName"], data["PhoneNumber"], data["Age"], data["DateOfBirth"], data["Gender"], data["Statue"], data["Address"], data["BloodType"], data["Salary"], data["WorkHours"], data["HospitalID"], data["BankAccount"], data["AccountNumber"], experience: data["Experience"], previousExperience: data["PreviousExperience"])
     {
-        Employees = new Dictionary<string, Dictionary<string ,object>>();
+        Employees = new Dictionary<string, Dictionary<string, object>>();
         NumberofHR++;
         jopTitles = ["Nurse", "Pharmacist", "Radiologist", "Receptionist", "Doctor", "HR", "Accountant"];
     }
@@ -41,12 +41,12 @@ public class HR : Employee , WritingReports
         while (true)
         {
             jopIndex = int.Parse(Console.ReadLine());
-            
+
             if (jopIndex > 0 && jopIndex < jopTitles.Length)
             {
                 break;
             }
-            
+
             Console.WriteLine("Choice out of range, please select a valid choice");
             Hire();
         }
@@ -57,37 +57,37 @@ public class HR : Employee , WritingReports
             case 1:
                 var nurse = new Nurse(data);
                 Employees[jopTitles[0]][nurse.HospitalID] = nurse;
-            break;
+                break;
 
             case 2:
                 var pharmacist = new Pharmacist(data);
                 Employees[jopTitles[1]][pharmacist.HospitalID] = pharmacist;
-            break;
+                break;
 
             case 3:
                 var radiologist = new Radiologist(data);
                 Employees[jopTitles[2]][radiologist.HospitalID] = radiologist;
-            break;
+                break;
 
             case 4:
                 var receptionist = new Receptionist(data);
                 Employees[jopTitles[3]][receptionist.HospitalID] = receptionist;
-            break;
+                break;
 
             case 5:
                 var doctor = new Doctor(data);
-                Employees[jopTitles[4]][doctor.HospitalID] =doctor;
-            break;
+                Employees[jopTitles[4]][doctor.HospitalID] = doctor;
+                break;
 
             case 6:
                 var hr = new HR(data);
                 Employees[jopTitles[5]][hr.HospitalID] = hr;
-            break;
+                break;
 
             case 7:
                 var accountant = new Accountant(data);
-                Employees[jopTitles[6]][accountant.HospitalID] =accountant;
-            break; 
+                Employees[jopTitles[6]][accountant.HospitalID] = accountant;
+                break;
 
         }
     }
@@ -161,7 +161,7 @@ public class HR : Employee , WritingReports
         Console.WriteLine();
 
         Console.Write("Previous Experience :- ");
-        while(true)
+        while (true)
         {
             Console.Write("Enter the name of the company : ");
             string companyName = Console.ReadLine();
@@ -175,7 +175,7 @@ public class HR : Employee , WritingReports
         }
         Console.WriteLine();
 
-        Data["HospitalID"] = generateID(Data["FirstName"],Data["LastName"]);
+        Data["HospitalID"] = generateID(Data["FirstName"], Data["LastName"]);
         Console.Write($"EmployeeID : {Data["HospitalID"]}");
         Console.WriteLine();
 
@@ -196,7 +196,7 @@ public class HR : Employee , WritingReports
 
     private string generateID(string firstName, string lastName)
     {
-        string emp_ID ="";
+        string emp_ID = "";
         emp_ID += firstName[0..2];
         emp_ID += lastName[0..2];
         for (int i = 0; i < 4; i++)
@@ -204,7 +204,7 @@ public class HR : Employee , WritingReports
             Random r = new Random();
             emp_ID += r.Next(0, 9);
         }
-        if(Employees.ContainsKey(emp_ID))// make sure the id is unique
+        if (Employees.ContainsKey(emp_ID))// make sure the id is unique
         {
             return emp_ID;
         }
@@ -212,7 +212,7 @@ public class HR : Employee , WritingReports
         {
             return generateID(firstName, lastName);
         }
-            
+
     }
 
     //*********************************************************************Firing proccesses****************************************************************
@@ -270,67 +270,40 @@ public class HR : Employee , WritingReports
     }
 
     //*********************************************************************preformance reports****************************************************************
-    public Dictionary<string, string> preformanceReport() // feutures !!! make this a work hours auto checker methods and the preformance method check the work quality of every employee
+    public void WriteReport() // feutures !!! make this a work hours auto checker methods and the preformance method check the work quality of every employee
     {
-        Dictionary<string, string> report = new Dictionary<string, string>();
+        string report = string.Empty;
         while (true)
         {
-            string id ;
+            string id = "";
             Console.Write("Search by employye's full name or ID:");
             string search = Console.ReadLine();
             if (!search.Any(char.IsDigit))
             {
-                if (searchByName(search)!= null)
+                if (searchByName(search) != null)
                 {
-                    var thisEmployee = searchByName(search);
-                    id = thisEmployee.GetType().GetProperty("HospitalID")?.GetValue(thisEmployee).ToString();
+                    var ThisEmployee = searchByName(search);
+                    id = ThisEmployee.GetType().GetProperty("HospitalID")?.GetValue(ThisEmployee).ToString();
+                }
+                else
+                {
+                    Console.WriteLine("Employee not found! Make sure you entered the name right or that this employee does exist.");
+
+                    Console.WriteLine("enter 0 to Exit...");
+                    string exit = Console.ReadLine();
+                    if (exit == "0")
+                    {
+                        break;
+                    }
+
+                    continue;
                 }
             }
-            else if(search.Any(char.IsDigit))
+            else if (search.Any(char.IsDigit))
             {
                 if (searchByID(search) != null)
                 {
                     id = search;
-                    var thisEmployee = searchByID(id);
-
-                    dynamic name =  thisEmployee.GetType().GetProperty("FullName")?.GetValue(thisEmployee);
-                    dynamic salary = thisEmployee.GetType().GetProperty("Salary")?.GetValue(thisEmployee);
-
-                    dynamic loginTime = thisEmployee.GetType().GetProperty("DailyloginTime")?.GetValue(thisEmployee); 
-                    dynamic logoutTime = thisEmployee.GetType().GetProperty("DailylogoutTime")?.GetValue(thisEmployee);
-                    dynamic workhours = thisEmployee.GetType().GetProperty("WorkHours")?.GetValue(thisEmployee);
-
-                    TimeSpan elapsedTime = loginTime - logoutTime;
-
-                    // login and logout time will be added in the future!!!
-                    double deductionAndBounsPercentage = 0.05;
-
-                    if(elapsedTime < workhours)
-                    {
-                        dynamic warning = thisEmployee.GetType().GetProperty("Warnings")?.GetValue(thisEmployee); // warning will be added in the future!!!
-                        if(++warning < 3)
-                        {
-                            thisEmployee.GetType().GetProperty("Warnings")?.SetValue(thisEmployee, ++warning);
-                            report[id] = $"{name} logged in at {loginTime}\n{name} logged out at {logoutTime}\n{name} today work hours {workhours}\nanother worning sent.\n{name} has {++warning} warnings now";
-                        }
-                        else
-                        {
-                            thisEmployee.GetType().GetProperty("Warnings")?.SetValue(thisEmployee, 0);
-                            thisEmployee.GetType().GetProperty("Bouns")?.SetValue(thisEmployee, salary * -deductionAndBounsPercentage);
-                            report[id] = $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n{name} has already passed the limited warning.\n Applying deduction by 5%{salary * deductionAndBounsPercentage}\n{name} has 0 warnings now";
-                        }
-                    }
-                    else if(elapsedTime > workhours)
-                    {
-                        double bounsvalue = (elapsedTime - workhours) * deductionAndBounsPercentage * salary;
-                        thisEmployee.GetType().GetProperty("Bouns")?.SetValue(thisEmployee,bounsvalue);
-                        report[id] = $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n Adding bouns by 5%{bounsvalue}.";
-                    }
-                    else
-                    {
-                        report[id] = $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.";
-                    }
-                    break;
                 }
                 else
                 {
@@ -346,10 +319,51 @@ public class HR : Employee , WritingReports
                     continue;
                 }
             }
-            
-        }
+            var thisEmployee = searchByID(id);
 
-        return report;
+            dynamic name = thisEmployee.GetType().GetProperty("FullName")?.GetValue(thisEmployee);
+            dynamic salary = thisEmployee.GetType().GetProperty("Salary")?.GetValue(thisEmployee);
+
+            dynamic loginTime = thisEmployee.GetType().GetProperty("DailyloginTime")?.GetValue(thisEmployee);
+            dynamic logoutTime = thisEmployee.GetType().GetProperty("DailylogoutTime")?.GetValue(thisEmployee);
+            dynamic workhours = thisEmployee.GetType().GetProperty("WorkHours")?.GetValue(thisEmployee);
+
+            TimeSpan elapsedTime = loginTime - logoutTime;
+
+            // login and logout time will be added in the future!!!
+            double deductionAndBounsPercentage = 0.05;
+
+            if (elapsedTime < workhours)
+            {
+                dynamic warning = thisEmployee.GetType().GetProperty("Warnings")?.GetValue(thisEmployee); // warning will be added in the future!!!
+                if (++warning < 3)
+                {
+                    thisEmployee.GetType().GetProperty("Warnings")?.SetValue(thisEmployee, ++warning);
+                    report += $"{name} logged in at {loginTime}\n{name} logged out at {logoutTime}\n{name} today work hours {workhours}\nanother worning sent.\n{name} has {++warning} warnings now";
+                }
+                else
+                {
+                    thisEmployee.GetType().GetProperty("Warnings")?.SetValue(thisEmployee, 0);
+                    thisEmployee.GetType().GetProperty("Bouns")?.SetValue(thisEmployee, salary * -deductionAndBounsPercentage);
+                    report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n{name} has already passed the limited warning.\n Applying deduction by 5%{salary * deductionAndBounsPercentage}\n{name} has 0 warnings now";
+                }
+            }
+            else if (elapsedTime > workhours)
+            {
+                double bounsvalue = (elapsedTime - workhours) * deductionAndBounsPercentage * salary;
+                thisEmployee.GetType().GetProperty("Bouns")?.SetValue(thisEmployee, bounsvalue);
+                report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n Adding bouns by 5%{bounsvalue}.";
+            }
+            else
+            {
+                report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.";
+            }
+
+            var timeWritten = DateTime.Now;
+            report += $"\n\n HR : {this.FullName}\nDate : {timeWritten}";
+            thisEmployee.GetType().GetProperty("HRreport")?.SetValue(thisEmployee,report);
+            break;
+        }
     }
 
     //*********************************************************************search employee****************************************************************
@@ -358,8 +372,8 @@ public class HR : Employee , WritingReports
     {
         foreach (var joptitle in Employees)
         {
-            if(Employees[joptitle.ToString()].ContainsKey(id))
-            return Employees[joptitle.ToString()][id];
+            if (Employees[joptitle.ToString()].ContainsKey(id))
+                return Employees[joptitle.ToString()][id];
         }
         return null;
     }
@@ -369,15 +383,15 @@ public class HR : Employee , WritingReports
         {
             foreach (var id in Employees[joptitle.ToString()])
             {
-                if(Employees[joptitle.ToString()][id.ToString()] != null)
+                if (Employees[joptitle.ToString()][id.ToString()] != null)
                 {
                     object result = Employees[joptitle.ToString()][id.ToString()];
-                    
+
                     return result.GetType().GetProperty("FullName")?.GetValue(result) != null ? result.GetType().GetProperty("FullName")?.GetValue(result) : null;
                     //object is unknown so propertis are not accessable
                 }
-            }           
+            }
         }
         return null;
-    } 
+    }
 }
