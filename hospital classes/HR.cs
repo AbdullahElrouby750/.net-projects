@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace hospital_classes;
 
 public class HR : Employee, WritingReports
@@ -14,7 +12,6 @@ public class HR : Employee, WritingReports
     public HR()
     {
         Employees = new Dictionary<string, Dictionary<string, object>>();
-        NumberofHR++;
         jopTitles = ["Nurse", "Pharmacist", "Radiologist", "Receptionist", "Doctor", "HR", "Accountant"];
     }
 
@@ -25,7 +22,6 @@ public class HR : Employee, WritingReports
         NumberofHR++;
         jopTitles = ["Nurse", "Pharmacist", "Radiologist", "Receptionist", "Doctor", "HR", "Accountant"];
     }
-
 
     //*********************************************************************Hiring proccesses****************************************************************
     public void Hire()
@@ -114,16 +110,16 @@ public class HR : Employee, WritingReports
         DateTime FullDate = DateTime.Parse(Console.ReadLine());
         Data["DateOfBirth"] = FullDate.Date;
 
-        Console.WriteLine("Gender : ");
+        Console.Write("Gender : ");
         Data["Gender"] = Console.ReadLine();
 
-        Console.WriteLine("Statue : ");
+        Console.Write("Statue : ");
         Data["Statue"] = Console.ReadLine();
 
-        Console.WriteLine("Address : ");
+        Console.Write("Address : ");
         Data["Address"] = Console.ReadLine();
 
-        Console.WriteLine("Blood Type : ");
+        Console.Write("Blood Type : ");
         Data["BloodType"] = Console.ReadLine();
 
 
@@ -439,20 +435,31 @@ public class HR : Employee, WritingReports
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
-        Console.WriteLine(Salary);
+        if (SalaryReceived == true)
+        {
+            double salaryAfterBouns = Salary + Bouns;
+            Console.WriteLine($"Salary received successfully: {salaryAfterBouns:c} ");
+            Console.WriteLine($"Your main salary: {Salary}");
+            Console.WriteLine($"Your bouns: {Bouns}");
+            SalaryReceived = false;
+        }
+        else
+        {
+            Console.WriteLine($"salary not sent yet :(");
+        }
     }
 
     //*********************************************************************login****************************************************************
     public void login()
     {
-        DailyloginTime = DateTime.Now;
+        DailyLoginTime = DateTime.Now;
     }
 
 
     //*********************************************************************logout****************************************************************
     public void logout()
     {
-        TimeSpan hoursWorkedToday = DateTime.Now - DailyloginTime;
+        TimeSpan? hoursWorkedToday = DateTime.Now - DailyLoginTime;
         if (hoursWorkedToday < WorkHours)
         {
             Console.WriteLine($"Warning! your logging out {WorkHours - hoursWorkedToday} hours earlier");
@@ -462,7 +469,7 @@ public class HR : Employee, WritingReports
                 string answer = Console.ReadLine();
                 if (answer == "y")
                 {
-                    DailylogoutTime = DateTime.Now;
+                    DailyLogoutTime = DateTime.Now;
                     break;
                 }
                 else if (answer == "n")
