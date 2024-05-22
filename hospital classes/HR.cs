@@ -2,7 +2,7 @@ namespace hospital_classes;
 
 public class HR : Employee, WritingReports
 {
-    static public Dictionary<string, Dictionary<string, object>> Employees { get; set; } // will be used by the accountatnt to access the employees
+    static public Dictionary<string, Dictionary<string, object>> Employees = new Dictionary<string, Dictionary<string, object>>(); // will be used by the accountatnt to access the employees
     private string[] jopTitles;
     public static int NumberofHR;
 
@@ -11,14 +11,12 @@ public class HR : Employee, WritingReports
 
     public HR()
     {
-        Employees = new Dictionary<string, Dictionary<string, object>>();
         jopTitles = ["Nurse", "Pharmacist", "Radiologist", "Receptionist", "Doctor", "HR", "Accountant"];
     }
 
     public HR(Dictionary<string, dynamic> data)
        : base(data)
     {
-        Employees = new Dictionary<string, Dictionary<string, object>>();
         NumberofHR++;
         jopTitles = ["Nurse", "Pharmacist", "Radiologist", "Receptionist", "Doctor", "HR", "Accountant"];
     }
@@ -52,6 +50,7 @@ public class HR : Employee, WritingReports
         {
             case 1:
                 var nurse = new Nurse(data);
+                Patient[nurse.id] = nurse;
                 Employees[jopTitles[0]][nurse.HospitalID] = nurse;
                 break;
 
