@@ -1,5 +1,3 @@
-
-
 namespace hospital_classes;
 
 public class Patient : Person
@@ -13,7 +11,11 @@ public class Patient : Person
     public int PatientID { get; set; }
     public bool Operation { get; set; }
     public static int NumberOfPatients { get; set; }
-    public float Bill { get; set; }
+    private float Bill { get; set; }
+    public string DoctorReport { get; set; }
+    public string PharmacistReport { get; set; }
+    public string NurseReport { get; set; }
+    public string RadiologistReport { get; set; }
 
     public Patient()
     {
@@ -24,24 +26,30 @@ public class Patient : Person
         Disabilities = null;
         EmergencyContact = new Dictionary<string, string>();
         Operation = false;
-        NumberOfPatients = 0;
         Bill = 0;
+        DoctorReport = "";
+        PharmacistReport = "";
+        NurseReport = "";
+        RadiologistReport = "";
+        PatientID = NumberOfPatients;
+        NumberOfPatients++;
+
+
+
     }
 
-    public Patient(string firstName, string lastName, string phoneNumber, int age, DateOnly dateOfBirth, string gender, string statue, string address, string bloodType,
-                    int weight, int height, string currentProblem, string disabilities, int patientid, bool operation, int numberOfPatients, float bill)
-                    : base(firstName, lastName, phoneNumber, age, dateOfBirth, gender, statue, address, bloodType)
+    public Patient(Dictionary<string, dynamic> patientInfo)
+        : base(patientInfo["firstName"], patientInfo["lastName"], patientInfo["phoneNumber"], patientInfo["age"], patientInfo["dateOfBirth"], patientInfo["gender"], patientInfo["status"], patientInfo["address"], patientInfo["bloodType"])
     {
-        Weight = weight;
-        Height = height;
-        CurrentProblem = currentProblem;
-        MedicalHistory = new Dictionary<string, string>();
-        Disabilities = disabilities;
-        EmergencyContact = new Dictionary<string, string>();
-        PatientID = patientid;
-        Operation = operation;
-        NumberOfPatients = numberOfPatients;
-        Bill = bill;
+        Weight = patientInfo["weight"];
+        Height = patientInfo["height"];
+        CurrentProblem = patientInfo["currentProblem"];
+        Operation = false;
+        Bill = 0;
+        PatientID = NumberOfPatients;
+        NumberOfPatients++;
+
+
     }
 
     public void SetMedicalHistory(string disease, string info)
@@ -86,23 +94,21 @@ public class Patient : Person
         }
     }
 
-    public void PrintNurseReport()
+    public void PrintReports()
     {
-        Console.WriteLine("Nurse Report:");
-    }
-
-    public void PrintPharmaReport()
-    {
-        Console.WriteLine("Pharmacist Report:");
-    }
-
-    public void PrintRadiologistReport()
-    {
-        Console.WriteLine("Radiologist Report:");
+        Console.WriteLine($"Doctorreport: {DoctorReport}");
+        Console.WriteLine($"Pharmacistreport: {PharmacistReport}");
+        Console.WriteLine($"Nursereport: {NurseReport}");
+        Console.WriteLine($"Radiologistreport: {RadiologistReport}");
     }
 
     public bool NeedOperation()
     {
         return Operation;
+    }
+
+    public void PrintBill()
+    {
+        Console.WriteLine($"Bill: {Bill}");
     }
 }
