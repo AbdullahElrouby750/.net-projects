@@ -1,18 +1,16 @@
 namespace hospital_classes;
 
-public class Receptionist : Employee , WritingReports
+public class Receptionist : Employee, WritingReports
 {
-    static public Dictionary<int,Patient> patientData =new Dictionary<int, Patient>();
+    static public Dictionary<int, Patient> patientData = new Dictionary<int, Patient>();
     public static int NumberofReceptionist;
 
-       public Receptionist ()
+    public Receptionist()
     {
         NumberofReceptionist++;
-       
-       
     }
 
-    public Receptionist (Dictionary<string, dynamic> data)
+    public Receptionist(Dictionary<string, dynamic> data)
        : base(data)
     {
         NumberofReceptionist++;
@@ -50,7 +48,7 @@ public class Receptionist : Employee , WritingReports
 
         Console.Write("Blood Type : ");
         Data["BloodType"] = Console.ReadLine();
-     
+
         Console.Write("Weight : ");
         Data["Weight"] = double.Parse(Console.ReadLine());
 
@@ -63,71 +61,79 @@ public class Receptionist : Employee , WritingReports
         Console.Write("Disabilities  : ");
         Data["Disabilities"] = Console.ReadLine();
 
-          return Data;
+        return Data;
     }
 
     public void hipatient()
     {
-        var data = GetNewpatientData ();
+        var data = GetNewpatientData();
         var patient = new Patient(data);
-        
-        while (true){
+
+        while (true)
+        {
             string disease;
-            string info ;
+            string info;
             Console.WriteLine("Enter disease name :  ");
-            disease =  Console.ReadLine();
-           
-           Console.WriteLine("Enter disease info :  ");
-           info= Console.ReadLine();
+            disease = Console.ReadLine();
 
-           Console.WriteLine("Do you want to continue ? (yes or no) ");
-            string answer= Console.ReadLine();
-            if (answer== "yes"){
+            Console.WriteLine("Enter disease info :  ");
+            info = Console.ReadLine();
+
+            Console.WriteLine("Do you want to continue ? (yes or no) ");
+            string answer = Console.ReadLine();
+            if (answer == "yes")
+            {
                 continue;
             }
-          else if (answer== "no"){
-            break;
-          } 
-          else{
-            break ;
-          }
+            else if (answer == "no")
+            {
+                break;
+            }
+            else
+            {
+                break;
+            }
         }
-        
-         while (true){
+
+        while (true)
+        {
             string contact;
-            string info ;
+            string info;
             Console.WriteLine("Enter contact name :  ");
-            contact =  Console.ReadLine();
-           
-           Console.WriteLine("Enter contact info : ");
-           info= Console.ReadLine();
+            contact = Console.ReadLine();
 
-           Console.WriteLine("Do you want to continue ? (yes or no)");
-            string answer= Console.ReadLine();
-            if (answer== "yes"){
+            Console.WriteLine("Enter contact info : ");
+            info = Console.ReadLine();
+
+            Console.WriteLine("Do you want to continue ? (yes or no)");
+            string answer = Console.ReadLine();
+            if (answer == "yes")
+            {
                 continue;
             }
-          else if (answer== "no"){
-            break;
-          } 
-          else{
-            break ;
-          }
+            else if (answer == "no")
+            {
+                break;
+            }
+            else
+            {
+                break;
+            }
         }
-        patientData[patient.PatientID]=patient;
+        patientData[patient.PatientID] = patient;
 
     }
-     public void WriteReport() {}
+    public void WriteReport() { }
 
-        public void PrintHRreport()
-        {
-             Console.WriteLine(HRreport);
-          
-        }
+    public void PrintHRreport()
+    {
+        Console.WriteLine(HRreport);
 
-        public void Printsalary()
-        {
-             if (SalaryReceived == true)
+    }
+
+    public void Printsalary()
+    {
+        if (SalaryReceived == true)
         {
             double salaryAfterBouns = Salary + Bouns;
             Console.WriteLine($"Salary received successfully: {salaryAfterBouns:c} ");
@@ -138,18 +144,18 @@ public class Receptionist : Employee , WritingReports
         else
         {
             Console.WriteLine($"salary not sent yet :(");
-        }     
         }
+    }
 
-        public void login()
-        {
-            DailyLoginTime = DateTime.Now;
-          
-        }
+    public void login()
+    {
+        DailyLoginTime = DateTime.Now;
 
-        public void logout()
-        {
-              
+    }
+
+    public void logout()
+    {
+
         TimeSpan? hoursWorkedToday = DateTime.Now - DailyLoginTime;
         if (hoursWorkedToday < WorkHours)
         {
@@ -173,6 +179,6 @@ public class Receptionist : Employee , WritingReports
                 }
             }
         }
-    }  
-
     }
+
+}

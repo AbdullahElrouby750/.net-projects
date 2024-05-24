@@ -29,7 +29,7 @@ public class Doctor : Employee , WritingReports
         }
         else
         {
-            Console.WriteLine($"Patient with ID {patientID} not found in doctor's data.");
+            Console.WriteLine($"Patient with ID {patientID} not found in the data.");
             return null;
         }
     }

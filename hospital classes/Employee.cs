@@ -13,7 +13,7 @@ public class Employee : Person
     protected string HRreport { get; set; }
     public int Experience { get; set; }
     public Dictionary<string, string> PreviousExperience { get; set; }
-    protected string HospitalID { get; set; }
+    public string HospitalID { get; set; }
     protected string hospitalAccount { get; set; }
     protected bool SalaryReceived { get; set; }
     protected string BankAccount { get; set; }
@@ -43,7 +43,7 @@ public class Employee : Person
         DailyLogoutTime = null;
     }
     public Employee(Dictionary<string, dynamic> total, double raisesAndBouns = 0.0, bool salaryReceived = false)
-     : base (firstname: total["firstname"], lastname: total["lastname"], phonenumber: total["phonenumber"], age: total["age"], dateofbirth: total["dateofbirth"], gender: total["gender"], statue: total["statue"], address: total["address"], bloodtype: total["bloodtype"])
+     : base (firstname: total["FirstName"], lastname: total["lastname"], phonenumber: total["phonenumber"], age: total["age"], dateofbirth: total["dateofbirth"], gender: total["gender"], statue: total["statue"], address: total["address"], bloodtype: total["bloodtype"])
     {
         Bouns = total["Bouns"];
         SalaryReceived=false;

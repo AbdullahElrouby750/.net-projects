@@ -50,8 +50,7 @@ public class HR : Employee, WritingReports
         {
             case 1:
                 var nurse = new Nurse(data);
-                Patient[nurse.id] = nurse;
-                Employees[jopTitles[0]][nurse.HospitalID] = nurse;
+                Employees[jopTitles[0]][nurse.HospitalID] = nurse; // nurse khhggh nurse
                 break;
 
             case 2:
@@ -200,7 +199,7 @@ public class HR : Employee, WritingReports
             Random r = new Random();
             emp_ID += r.Next(0, 9);
         }
-        if (Employees.ContainsKey(emp_ID))// make sure the id is unique
+        if (!Employees.ContainsKey(emp_ID))// make sure the id is unique
         {
             return emp_ID;
         }
@@ -254,13 +253,13 @@ public class HR : Employee, WritingReports
     public int numberOfEmployyes()
     {
         Console.WriteLine($"Number of total employees:\t {NumberOfEmployees}");
-        Console.WriteLine($"Number of total receptionists:\t {Receptionist.NumberOfRecipients}");
+        Console.WriteLine($"Number of total receptionists:\t {Receptionist.NumberofReceptionist}");
         Console.WriteLine($"Number of total HRs:\t {NumberofHR}");
         Console.WriteLine($"Number of total accountants:\t {Accountant.NumberOfAccountant}");
-        Console.WriteLine($"Number of total doctors:\t {Doctor.NumberOfDocter}");
+        Console.WriteLine($"Number of total doctors:\t {Doctor.numberOfDoctors}");
         Console.WriteLine($"Number of total Pharmacists:\t {Pharmacist.NumberOfPharmacist}");
-        Console.WriteLine($"Number of total nurses:\t {Nurse.NumberOfNurse}");
-        Console.WriteLine($"Number of total radiologists:\t {Radiologist.NumberOfRadiologist}");
+        Console.WriteLine($"Number of total nurses:\t {Nurse.NumberOfNurses}");
+        Console.WriteLine($"Number of total radiologists:\t {Radiologist.numberOfRadiologist}");
 
         return NumberOfEmployees;
     }
