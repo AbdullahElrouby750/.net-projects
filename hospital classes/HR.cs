@@ -44,7 +44,7 @@ public class HR : Employee, WritingReports
             Console.WriteLine("Choice out of range, please select a valid choice");
             Hire();
         }
-        Dictionary<string, dynamic> data = GetNewEmployeesData();
+        Dictionary<string, dynamic> data = GetNewEmployeesData(jopTitles[jopIndex]);
 
         switch (jopIndex)
         {
@@ -87,7 +87,7 @@ public class HR : Employee, WritingReports
         }
     }
 
-    private Dictionary<string, dynamic> GetNewEmployeesData()
+    private Dictionary<string, dynamic> GetNewEmployeesData(string department)
     {
         Dictionary<string, dynamic> Data = new Dictionary<string, dynamic>();
 
@@ -170,7 +170,7 @@ public class HR : Employee, WritingReports
         }
         Console.WriteLine();
 
-        Data["HospitalID"] = generateID(Data["FirstName"], Data["LastName"]);
+        Data["HospitalID"] = generateID(Data["FirstName"], Data["LastName"], department);
         Console.Write($"EmployeeID : {Data["HospitalID"]}");
         Console.WriteLine();
 
@@ -189,11 +189,12 @@ public class HR : Employee, WritingReports
         return Data;
     }
 
-    private string generateID(string firstName, string lastName)
+    private string generateID(string firstName, string lastName, string department)
+     // first two letters in department + first letter from first name and last name + four random digits
     {
-        string emp_ID = "";
-        emp_ID += firstName[0..2];
-        emp_ID += lastName[0..2];
+        string emp_ID = department[0..2];
+        emp_ID += firstName[0];
+        emp_ID += lastName[0];
         for (int i = 0; i < 4; i++)
         {
             Random r = new Random();
@@ -205,7 +206,7 @@ public class HR : Employee, WritingReports
         }
         else
         {
-            return generateID(firstName, lastName);
+            return generateID(firstName, lastName, department);
         }
 
     }
@@ -310,7 +311,7 @@ public class HR : Employee, WritingReports
         }
 
          var timeWritten = DateTime.Now;
-        report += $"\n\n HR : {this.FullName}\nDate : {timeWritten}";
+        report += $"\n\n HR : {FullName}\nDate : {timeWritten}";
         ThisEmployee.GetType().GetProperty("HRreport")?.SetValue(ThisEmployee,report);
     }
 
