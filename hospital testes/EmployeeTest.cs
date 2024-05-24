@@ -7,6 +7,6 @@ public class EmployeeTest
     [TestMethod]
     public void TestMethod1()
     {
-
+        var employee = new Employee();
     }
 }
