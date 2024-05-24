@@ -2,7 +2,7 @@ namespace hospital_classes;
 
 public class Receptionist : Employee , WritingReports
 {
-    static public Dictionary<int,object> patientData =new Dictionary<int, object>();
+    static public Dictionary<int,Patient> patientData =new Dictionary<int, Patient>();
     public static int NumberofReceptionist;
 
        public Receptionist ()
