@@ -3,7 +3,7 @@
 public class Person{
    private string? Firstname { get; set; }
    private string? Lastname { get; set; }
-   protected string ? fullName 
+   public string ? FullName 
    {
         get{
         return Firstname + " " + Lastname;
