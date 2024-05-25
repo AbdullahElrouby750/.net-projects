@@ -2,3 +2,4 @@
 
 
 var emp = new Employee();
+var emp = new Doctor();
