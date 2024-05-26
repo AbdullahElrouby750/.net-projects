@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace hospital_classes;
 
 public class HR : Employee, WritingReports
@@ -86,7 +88,7 @@ public class HR : Employee, WritingReports
         }
     }
 
-    private Dictionary<string, dynamic> GetNewEmployeesData(string department)
+    public Dictionary<string, dynamic> GetNewEmployeesData(string department)
     {
         Dictionary<string, dynamic> Data = new Dictionary<string, dynamic>();
 
@@ -155,6 +157,7 @@ public class HR : Employee, WritingReports
         Console.WriteLine();
 
         Console.Write("Previous Experience :- ");
+        Dictionary<string, string> PE = new Dictionary<string, string>();
         while (true)
         {
             Console.Write("Enter the name of the company : ");
@@ -165,7 +168,8 @@ public class HR : Employee, WritingReports
             }
             Console.Write("Enter the job title : ");
             string jobTitle = Console.ReadLine();
-            Data["PreviousExperience"].Add(companyName, jobTitle);
+            PE[companyName] = jobTitle;
+            Data["PreviousExperience"] = PE;
         }
         Console.WriteLine();
 
@@ -189,7 +193,7 @@ public class HR : Employee, WritingReports
     }
 
     private string generateID(string firstName, string lastName, string department)
-     // first two letters in department + first letter from first name and last name + four random digits
+    // first two letters in department + first letter from first name and last name + four random digits
     {
         string emp_ID = department[0..2];
         emp_ID += firstName[0];
@@ -250,14 +254,14 @@ public class HR : Employee, WritingReports
     }
 
     //*********************************************************************Counting employee****************************************************************
-    public int numberOfEmployyes()
+    public static int numberOfEmployyes()
     {
         Console.WriteLine($"Number of total employees:\t {NumberOfEmployees}");
         Console.WriteLine($"Number of total receptionists:\t {Receptionist.NumberofReceptionist}");
         Console.WriteLine($"Number of total HRs:\t {NumberofHR}");
         Console.WriteLine($"Number of total accountants:\t {Accountant.NumberOfAccountant}");
         Console.WriteLine($"Number of total doctors:\t {Doctor.numberOfDoctors}");
-        Console.WriteLine($"Number of total Pharmacists:\t {Pharmacist.NumberOfPharmacist}");
+        Console.WriteLine($"Number of total Pharmacists:\t {Pharmacist.NumberOfPharmacists}");
         Console.WriteLine($"Number of total nurses:\t {Nurse.NumberOfNurses}");
         Console.WriteLine($"Number of total radiologists:\t {Radiologist.numberOfRadiologist}");
 
@@ -274,11 +278,22 @@ public class HR : Employee, WritingReports
         dynamic name = ThisEmployee.GetType().GetProperty("FullName")?.GetValue(ThisEmployee)!;
         dynamic salary = ThisEmployee.GetType().GetProperty("Salary")?.GetValue(ThisEmployee)!;
 
-        dynamic loginTime = ThisEmployee.GetType().GetProperty("DailyloginTime")?.GetValue(ThisEmployee)!;
-        dynamic logoutTime = ThisEmployee.GetType().GetProperty("DailylogoutTime")?.GetValue(ThisEmployee)!;
+        dynamic loginTime = ThisEmployee.GetType().GetProperty("DailyLoginTime")?.GetValue(ThisEmployee)!;
+        dynamic logoutTime = ThisEmployee.GetType().GetProperty("DailyLogoutTime")?.GetValue(ThisEmployee)!;
         dynamic workhours = ThisEmployee.GetType().GetProperty("WorkHours")?.GetValue(ThisEmployee)!;
 
-        TimeSpan elapsedTime = loginTime - logoutTime;
+        TimeSpan elapsedTime = new TimeSpan(0, 0, 0);
+        try
+        {
+            elapsedTime = loginTime - logoutTime;
+
+        }
+        catch (Exception)
+        {
+            Console.WriteLine($"{name} has not log-out yet");
+            return;
+
+        }
 
         // login and logout time will be added in the future!!!
         double deductionAndBounsPercentage = 0.05;
@@ -309,16 +324,16 @@ public class HR : Employee, WritingReports
             report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.";
         }
 
-         var timeWritten = DateTime.Now;
+        var timeWritten = DateTime.Now;
         report += $"\n\n HR : {FullName}\nDate : {timeWritten}";
-        ThisEmployee.GetType().GetProperty("HRreport")?.SetValue(ThisEmployee,report);
+        ThisEmployee.GetType().GetProperty("HRreport")?.SetValue(ThisEmployee, report);
     }
 
     //*********************************************************************search employee****************************************************************
 
     public static object searchEmployee()
     {
-         while (true)
+        while (true)
         {
             string id = "";
             var hr = new HR();
@@ -326,68 +341,66 @@ public class HR : Employee, WritingReports
             string search = Console.ReadLine();
             if (!search.Any(char.IsDigit))
             {
-                if (hr.searchByName(search) != null)
-                {
-                    return hr.searchByName(search);
-                }
-                else
-                {
-                    Console.WriteLine("Employee not found! Make sure you entered the name right or that this employee does exist.");
 
-                    Console.WriteLine("enter 0 to Exit...");
-                    string exit = Console.ReadLine();
-                    if (exit == "0")
-                    {
-                        break;
-                    }
-
-                    continue;
+                var emp = hr.searchByName(search);
+                if (emp != null)
+                {
+                    return emp;
                 }
+
+                Console.WriteLine("Employee not found! Make sure you entered the name right or that this employee does exist.");
+
+                Console.Write("enter 0 to Exit 1 to continue : ");
+                string exit = Console.ReadLine();
+                if (exit == "0")
+                {
+                    break;
+                }
+
+
             }
             else if (search.Any(char.IsDigit))
             {
-                if (hr.searchByID(search) != null)
-                {
-                    return hr.searchByID(id);
-                }
-                else
-                {
-                    Console.WriteLine("Employee not found! Make sure you entered the id right or that this employee does exist.");
 
-                    Console.WriteLine("enter 0 to Exit...");
-                    string exit = Console.ReadLine();
-                    if (exit == "0")
-                    {
-                        break;
-                    }
-
-                    continue;
+                var emp = hr.searchByID(search);
+                if (emp != null)
+                {
+                    return emp;
                 }
+
+                Console.WriteLine("Employee not found! Make sure you entered the id right or that this employee does exist.");
+
+                Console.Write("enter 0 to Exit 1 to continue : ");
+                string exit = Console.ReadLine();
+                if (exit == "0")
+                {
+                    break;
+                }
+
             }
             else
             {
                 Console.WriteLine("Employee not found! Make sure you entered the id or full name right. Or, that this employee does exist.");
 
-                    Console.WriteLine("enter 0 to Exit...");
-                    string exit = Console.ReadLine();
-                    if (exit == "0")
-                    {
-                        break;
-                    }
-
-                    continue;
+                Console.Write("enter 0 to Exit 1 to continue : ");
+                string exit = Console.ReadLine();
+                if (exit == "0")
+                {
+                    break;
+                }
             }
         }
         return null;
     }
-    
+
     private object searchByID(string id)
     {
         foreach (var joptitle in Employees)
         {
-            if (Employees[joptitle.ToString()].ContainsKey(id))
+            if (Employees[joptitle.Key.ToString()].ContainsKey(id))
             {
-                return Employees[joptitle.ToString()][id];
+                object result = Employees[joptitle.Key.ToString()][id];
+                return result;
             }
         }
         return null;
@@ -396,13 +409,16 @@ public class HR : Employee, WritingReports
     {
         foreach (var joptitle in Employees)
         {
-            foreach (var id in Employees[joptitle.ToString()])
+            foreach (var id in Employees[joptitle.Key.ToString()])
             {
-                if (Employees[joptitle.ToString()][id.ToString()] != null)
+                if (Employees[joptitle.Key.ToString()][id.Key.ToString()] != null)
                 {
-                    object result = Employees[joptitle.ToString()][id.ToString()];
+                    object result = Employees[joptitle.Key.ToString()][id.Key.ToString()];
 
-                    return result.GetType().GetProperty("FullName")?.GetValue(result) == name ? result : null;
+                    if (result.GetType().GetProperty("FullName")?.GetValue(result) == name)
+                    {
+                        return result;
+                    }
                 }
             }
         }
@@ -416,7 +432,7 @@ public class HR : Employee, WritingReports
         dynamic startDate = ThisEmployee.GetType().GetProperty("StartingDate")?.GetValue(ThisEmployee)!;
         TimeSpan yearsSpent = DateTime.Now.Year - startDate.Year;
 
-        double rasieValue = yearsSpent.Days/365 * 0.2 ;
+        double rasieValue = yearsSpent.Days / 365 * 0.2;
 
         ThisEmployee.GetType().GetProperty("Salary")?.SetValue(ThisEmployee, rasieValue);
     }
@@ -430,7 +446,7 @@ public class HR : Employee, WritingReports
     {
         Console.WriteLine(HRreport);
     }
-    
+
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
@@ -483,5 +499,37 @@ public class HR : Employee, WritingReports
         }
     }
 
+    public static void creatRouby()
+    {
+
+        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        var hr = new HR();
+        data["FirstName"] = "Abdullah";
+        data["LastName"] = "Rouby";
+        data["PhoneNumber"] = "01220200683";
+        data["Age"] = 20;
+        data["DateOfBirth"] = new DateOnly(2003, 9, 1);
+        data["Gender"] = "Male";
+        data["Statue"] = "Single";
+        data["Address"] = "Egypt. Behira. Wadi-Elnatrun";
+        data["BloodType"] = "A+";
+        data["Salary"] = 10000;
+        data["WorkHours"] = new TimeSpan(8, 0, 0);
+        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["Experience"] = 1;
+        Dictionary<string, string> PE = new Dictionary<string, string>();
+        PE["the hospital"] = "HR";
+        data["PreviousExperience"] = PE;
+        data["HospitalID"] = "HRAR1706";
+        data["BankAccount"] = "CIB";
+        data["AccountNumber"] = "1234-2345-3456-4567";
+        data["Specialization"] = string.Empty;
+
+        var rouby = new HR(data);
+        Dictionary<string, object> r = new Dictionary<string, object>();
+        r.Add(rouby.HospitalID, rouby);
+        Employees.Add("HR", r);
+        // Employees["HR"][rouby.HospitalID] = rouby;
+    }
 
 }

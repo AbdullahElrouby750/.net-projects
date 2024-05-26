@@ -40,11 +40,12 @@ namespace hospital_classes;
         }
 
         public Patient(Dictionary<string, dynamic> patientInfo)
-            : base(patientInfo["firstName"], patientInfo["lastName"], patientInfo["phoneNumber"], patientInfo["age"], patientInfo["dateOfBirth"], patientInfo["gender"], patientInfo["status"], patientInfo["address"], patientInfo["bloodType"])
+            : base(patientInfo["FirstName"], patientInfo["LastName"], patientInfo["PhoneNumber"], patientInfo["Age"], patientInfo["DateOfBirth"], patientInfo["Gender"], patientInfo["Statue"], patientInfo["Address"], patientInfo["BloodType"])
         {
-            Weight = patientInfo["weight"];
-            Height = patientInfo["height"];
-            CurrentProblem = patientInfo["currentProblem"];
+            Weight = patientInfo["Weight"];
+            Height = patientInfo["Height"];
+            CurrentProblem = patientInfo["CurrentProblem"];
+            Disabilities = patientInfo["Disabilities"];
             Operation = false;
             Bill = 0;
             MedicalXray = false;

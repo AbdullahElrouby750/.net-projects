@@ -3,14 +3,14 @@ namespace hospital_classes;
 public class Employee : Person
 {
     
-    protected double Salary { get; set; }
+    public double Salary { get; set; }
     protected double Bouns { get; set; }
     public List<Dictionary<DateOnly, int>> DailyWorkHours { get; set; }
     public TimeSpan WorkHours { get; set; }
-    protected DateTime ?DailyLoginTime { get; set; }
-    protected DateTime ?DailyLogoutTime { get; set; }
-    protected readonly DateOnly StartingDate; 
-    protected string HRreport { get; set; }
+    public DateTime ?DailyLoginTime { get; set; }
+    public DateTime ?DailyLogoutTime { get; set; }
+    public readonly DateOnly StartingDate; 
+    public string HRreport { get; set; }
     public int Experience { get; set; }
     public Dictionary<string, string> PreviousExperience { get; set; }
     public string HospitalID { get; set; }
@@ -43,17 +43,16 @@ public class Employee : Person
         DailyLogoutTime = null;
     }
     public Employee(Dictionary<string, dynamic> total, double raisesAndBouns = 0.0, bool salaryReceived = false)
-     : base (firstname: total["FirstName"], lastname: total["lastname"], phonenumber: total["phonenumber"], age: total["age"], dateofbirth: total["dateofbirth"], gender: total["gender"], statue: total["statue"], address: total["address"], bloodtype: total["bloodtype"])
+     : base (firstname: total["FirstName"], lastname: total["LastName"], phonenumber: total["PhoneNumber"], age: total["Age"], dateofbirth: total["DateOfBirth"], gender: total["Gender"], statue: total["Statue"], address: total["Address"], bloodtype: total["BloodType"])
     {
-        Bouns = total["Bouns"];
         SalaryReceived=false;
-        Salary = total["salary"];
+        Salary = total["Salary"];
         Experience = total["Experience"];
         HospitalID = total["HospitalID"];
         BankAccount = total["BankAccount"];
         AccountNumber = total["AccountNumber"];
-        StartingDate = total["StartingDate"];
-        PreviousExperience = total["PreviousExperience "];
-        DailyWorkHours = total["DailyWorkHours"];
+        StartingDate = total["StartDate"];
+        PreviousExperience = total["PreviousExperience"];
+        WorkHours = total["WorkHours"];
     }
 }

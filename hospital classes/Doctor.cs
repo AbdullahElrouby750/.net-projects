@@ -9,7 +9,7 @@ public class Doctor : Employee , WritingReports
     public Doctor(Dictionary<string, dynamic> data)
         : base(data)
     {
-        specialization = data["specialization"];
+        specialization = data["Specialization"];
         numberOfDoctors++;
     }
 

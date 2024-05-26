@@ -11,7 +11,7 @@ public class Radiologist : Employee, WritingReports
     : base(data)
     {
 
-        specialization = specialization;
+        specialization = data["Specialization"];
         numberOfRadiologist++;
 
     }
