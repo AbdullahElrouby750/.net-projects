@@ -52,27 +52,37 @@ public class HR : Employee, WritingReports
         {
             case 1:
                 var nurse = new Nurse(data);
-                Employees[jopTitles[0]][nurse.HospitalID] = nurse; // nurse khhggh nurse
+                Dictionary<string, object> nur = new Dictionary<string, object>();
+                nur[nurse.HospitalID] = nurse;
+                Employees[jopTitles[0]]= nur; // nurse khhggh nurse
                 break;
 
             case 2:
                 var pharmacist = new Pharmacist(data);
-                Employees[jopTitles[1]][pharmacist.HospitalID] = pharmacist;
+                Dictionary<string, object> pha = new Dictionary<string, object>();
+                pha[pharmacist.HospitalID] = pharmacist;
+                Employees[jopTitles[1]] = pha;
                 break;
 
             case 3:
                 var radiologist = new Radiologist(data);
-                Employees[jopTitles[2]][radiologist.HospitalID] = radiologist;
+                Dictionary<string, object> rad = new Dictionary<string, object>();
+                rad[radiologist.HospitalID] = radiologist;
+                Employees[jopTitles[2]] = rad;
                 break;
 
             case 4:
                 var receptionist = new Receptionist(data);
-                Employees[jopTitles[3]][receptionist.HospitalID] = receptionist;
+                Dictionary<string, object> rec = new Dictionary<string, object>();
+                rec[receptionist.HospitalID] = receptionist;
+                Employees[jopTitles[3]] = rec;
                 break;
 
             case 5:
                 var doctor = new Doctor(data);
-                Employees[jopTitles[4]][doctor.HospitalID] = doctor;
+                Dictionary<string, object> doc = new Dictionary<string, object>();
+                doc[doctor.HospitalID] = doctor;
+                Employees[jopTitles[4]] = doc;
                 break;
 
             case 6:
@@ -82,7 +92,9 @@ public class HR : Employee, WritingReports
 
             case 7:
                 var accountant = new Accountant(data);
-                Employees[jopTitles[6]][accountant.HospitalID] = accountant;
+                Dictionary<string, object> acc = new Dictionary<string, object>();
+                acc[accountant.HospitalID] = accountant;
+                Employees[jopTitles[6]] = acc;
                 break;
 
         }
@@ -527,8 +539,8 @@ public class HR : Employee, WritingReports
 
         var rouby = new HR(data);
         Dictionary<string, object> r = new Dictionary<string, object>();
-        r.Add(rouby.HospitalID, rouby);
-        Employees.Add("HR", r);
+        r[rouby.HospitalID] = rouby;
+        Employees["HR"] = r;
         // Employees["HR"][rouby.HospitalID] = rouby;
     }
 
