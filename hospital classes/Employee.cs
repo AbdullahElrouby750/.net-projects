@@ -20,6 +20,7 @@ public class Employee : Person
     protected string AccountNumber { get; set; }
     static protected int NumberOfEmployees { get; set; }
     protected int Warnings { get; set; }
+    public string Department { get; set; }
     static protected int NumberOfEmployee { get; set; }
 
     //default constructor
@@ -41,6 +42,7 @@ public class Employee : Person
         NumberOfEmployee = 0;
         DailyLoginTime =null;
         DailyLogoutTime = null;
+        Department = "";
     }
     public Employee(Dictionary<string, dynamic> total, double raisesAndBouns = 0.0, bool salaryReceived = false)
      : base (firstname: total["FirstName"], lastname: total["LastName"], phonenumber: total["PhoneNumber"], age: total["Age"], dateofbirth: total["DateOfBirth"], gender: total["Gender"], statue: total["Statue"], address: total["Address"], bloodtype: total["BloodType"])
@@ -54,5 +56,6 @@ public class Employee : Person
         StartingDate = total["StartDate"];
         PreviousExperience = total["PreviousExperience"];
         WorkHours = total["WorkHours"];
+        Department = total["Department"];
     }
 }

@@ -54,7 +54,7 @@ public class HR : Employee, WritingReports
                 var nurse = new Nurse(data);
                 Dictionary<string, object> nur = new Dictionary<string, object>();
                 nur[nurse.HospitalID] = nurse;
-                Employees[jopTitles[0]]= nur; // nurse khhggh nurse
+                Employees[jopTitles[0]] = nur; // nurse khhggh nurse
                 break;
 
             case 2:
@@ -201,13 +201,15 @@ public class HR : Employee, WritingReports
         Data["Specialization"] = Console.ReadLine();
         Console.WriteLine();
 
+        Data["Department"] = department;
+
         return Data;
     }
 
     private string generateID(string firstName, string lastName, string department)
     // first two letters in department + first letter from first name and last name + four random digits
     {
-        string emp_ID = department[0..2];
+        string emp_ID = department[0..2].ToUpper();
         emp_ID += firstName[0];
         emp_ID += lastName[0];
         for (int i = 0; i < 4; i++)
@@ -228,41 +230,56 @@ public class HR : Employee, WritingReports
 
     //*********************************************************************Firing proccesses****************************************************************
 
-    public bool Fire(string emp_ID, string name)
+    public void Fire()
     {
-        if (Employees.ContainsKey(emp_ID))
-        {
-            Employees.Remove(emp_ID);
-            Console.WriteLine($"!!!WARNING!!! Your about to delete {name} from the system.\n Are you sure you wanto to continue?");
-            Console.WriteLine("1 - Yes");
-            Console.WriteLine("2 - No");
 
-            bool answer;
-            while (true)
+        do
+        {
+            Console.Write($"\n\nEnter employee's ID : ");
+            string id = Console.ReadLine();
+
+            if (Employees.ContainsKey(id))
             {
-                int choice = int.Parse(Console.ReadLine());
-                if (choice == 1)
+
+                object ThisEmployee = searchByID(id);
+                string name = ThisEmployee.GetType().GetProperty("FullName")?.GetValue(ThisEmployee)!.ToString();
+                string department = ThisEmployee.GetType().GetProperty("Department")?.GetValue(ThisEmployee)!.ToString();
+
+                Console.WriteLine($"!!!WARNING!!! Your about to delete {name} from the system.\n Are you sure you wanto to continue?");
+                Console.WriteLine("1 - Yes");
+                Console.WriteLine("2 - No");
+
+                while (true)
                 {
-                    answer = true;
-                    break;
+                    int choice = int.Parse(Console.ReadLine());
+                    if (choice == 1)
+                    {
+                        Employees[department].Remove(id);
+                        break;
+                    }
+                    else if (choice == 2)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Please enter a valid choice");
+                    }
                 }
-                else if (choice == 2)
+                break;
+
+            }
+            else
+            {
+                Console.WriteLine("Employee not found");
+                Console.WriteLine("do you want to continue? (yes/no): ");
+
+                if (Console.ReadLine().ToLower() == "no")
                 {
-                    answer = false;
                     break;
-                }
-                else
-                {
-                    Console.WriteLine("Please enter a valid choice");
                 }
             }
-
-            return answer;
-        }
-        else
-        {
-            return false;
-        }
+        } while (true);
     }
 
     //*********************************************************************Counting employee****************************************************************
@@ -343,6 +360,11 @@ public class HR : Employee, WritingReports
 
     //*********************************************************************search employee****************************************************************
 
+    public static object searchEmployee(string id) // for the login proccess
+    {
+        var hr = new HR();
+        return hr.searchByID(id);
+    }
     public static object searchEmployee()
     {
         while (true)
