@@ -5,6 +5,7 @@ namespace hospital_classes;
 public class HR : Employee, WritingReports
 {
     static public Dictionary<string, Dictionary<string, object>> Employees = new Dictionary<string, Dictionary<string, object>>(); // will be used by the accountatnt to access the employees
+    static private Dictionary<string, string> IDsBeckups = new Dictionary<string, string>(); // if someone forgot thier id
     private string[] jopTitles;
     public static int NumberofHR;
 
@@ -55,6 +56,7 @@ public class HR : Employee, WritingReports
                 Dictionary<string, object> nur = new Dictionary<string, object>();
                 nur[nurse.HospitalID] = nurse;
                 Employees[jopTitles[0]] = nur; // nurse khhggh nurse
+                IDsBeckups[nurse.HospitalID] = nurse.FullName;
                 break;
 
             case 2:
@@ -62,6 +64,7 @@ public class HR : Employee, WritingReports
                 Dictionary<string, object> pha = new Dictionary<string, object>();
                 pha[pharmacist.HospitalID] = pharmacist;
                 Employees[jopTitles[1]] = pha;
+                IDsBeckups[pharmacist.HospitalID] = pharmacist.FullName;
                 break;
 
             case 3:
@@ -69,6 +72,7 @@ public class HR : Employee, WritingReports
                 Dictionary<string, object> rad = new Dictionary<string, object>();
                 rad[radiologist.HospitalID] = radiologist;
                 Employees[jopTitles[2]] = rad;
+                IDsBeckups[radiologist.HospitalID] = radiologist.FullName;
                 break;
 
             case 4:
@@ -76,6 +80,7 @@ public class HR : Employee, WritingReports
                 Dictionary<string, object> rec = new Dictionary<string, object>();
                 rec[receptionist.HospitalID] = receptionist;
                 Employees[jopTitles[3]] = rec;
+                IDsBeckups[receptionist.HospitalID] = receptionist.FullName;
                 break;
 
             case 5:
@@ -83,11 +88,13 @@ public class HR : Employee, WritingReports
                 Dictionary<string, object> doc = new Dictionary<string, object>();
                 doc[doctor.HospitalID] = doctor;
                 Employees[jopTitles[4]] = doc;
+                IDsBeckups[doctor.HospitalID] = doctor.FullName;
                 break;
 
             case 6:
                 var hr = new HR(data);
                 Employees[jopTitles[5]][hr.HospitalID] = hr;
+                IDsBeckups[hr.HospitalID] = hr.FullName;
                 break;
 
             case 7:
@@ -95,6 +102,7 @@ public class HR : Employee, WritingReports
                 Dictionary<string, object> acc = new Dictionary<string, object>();
                 acc[accountant.HospitalID] = accountant;
                 Employees[jopTitles[6]] = acc;
+                IDsBeckups[accountant.HospitalID] = accountant.FullName;
                 break;
 
         }
@@ -119,8 +127,8 @@ public class HR : Employee, WritingReports
         Data["Age"] = int.Parse(Console.ReadLine());
 
         Console.Write("Date of Birth in yyyy-mm-dd : ");
-        DateTime FullDate = DateTime.Parse(Console.ReadLine());
-        Data["DateOfBirth"] = FullDate.Date;
+        DateOnly FullDate = DateOnly.Parse(Console.ReadLine());
+        Data["DateOfBirth"] = FullDate;
 
         Console.Write("Gender : ");
         Data["Gender"] = Console.ReadLine();
@@ -162,7 +170,7 @@ public class HR : Employee, WritingReports
         Console.WriteLine();
 
         Console.Write("Start Date : ");
-        Data["StartDate"] = DateOnly.FromDateTime(DateTime.Now);
+        Data["StartDate"] = DateOnly.Parse(Console.ReadLine());
 
         Console.Write("Experience : ");
         Data["Experience"] = int.Parse(Console.ReadLine());
@@ -172,7 +180,7 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         while (true)
         {
-            Console.Write("Enter the name of the company : ");
+            Console.Write("\nEnter the name of the company (press enter if none) : ");
             string companyName = Console.ReadLine();
             if (companyName == "")
             {
@@ -314,7 +322,7 @@ public class HR : Employee, WritingReports
         TimeSpan elapsedTime = new TimeSpan(0, 0, 0);
         try
         {
-            elapsedTime = loginTime - logoutTime;
+            elapsedTime = logoutTime - loginTime;
 
         }
         catch (Exception)
@@ -325,25 +333,38 @@ public class HR : Employee, WritingReports
         }
 
         // login and logout time will be added in the future!!!
-        double deductionAndBounsPercentage = 0.05;
+        double deductionAndBounsPercentage;
 
         if (elapsedTime < workhours)
         {
-            dynamic warning = ThisEmployee.GetType().GetProperty("Warnings")?.GetValue(ThisEmployee)!; // warning will be added in the future!!!
-            if (++warning < 3)
+            deductionAndBounsPercentage = 0.01;
+
+            int warning;
+            try
             {
-                ThisEmployee.GetType().GetProperty("Warnings")?.SetValue(ThisEmployee, ++warning);
-                report += $"{name} logged in at {loginTime}\n{name} logged out at {logoutTime}\n{name} today work hours {workhours}\nanother worning sent.\n{name} has {++warning} warnings now";
+                warning = int.Parse(ThisEmployee.GetType().GetProperty("Warnings")?.GetValue(ThisEmployee)!.ToString()!);
+            }
+            catch (Exception)
+            {
+                warning = 0;
+            }
+
+            if (warning < 3)
+            {
+                warning++;
+                ThisEmployee.GetType().GetProperty("Warnings")?.SetValue(ThisEmployee, warning);
+                report += $"{name} logged in at {loginTime}\n{name} logged out at {logoutTime}\n{name} today work hours {elapsedTime}\nanother worning sent.\n{name} has {warning} warnings now";
             }
             else
             {
                 ThisEmployee.GetType().GetProperty("Warnings")?.SetValue(ThisEmployee, 0);
-                ThisEmployee.GetType().GetProperty("Bouns")?.SetValue(ThisEmployee, salary * -deductionAndBounsPercentage);
-                report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n{name} has already passed the limited warning.\n Applying deduction by 5%{salary * deductionAndBounsPercentage}\n{name} has 0 warnings now";
+                ThisEmployee.GetType().GetProperty("Bouns")?.SetValue(ThisEmployee, salary * -deductionAndBounsPercentage); //deduction after 3 warnengs only
+                report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n{name} has already passed the limited warning.\n Applying deduction by 5% = {salary * deductionAndBounsPercentage}\n{name} has 0 warnings now";
             }
         }
         else if (elapsedTime > workhours)
         {
+            deductionAndBounsPercentage = 0.05;
             double bounsvalue = (elapsedTime - workhours) * deductionAndBounsPercentage * salary;
             ThisEmployee.GetType().GetProperty("Bouns")?.SetValue(ThisEmployee, bounsvalue);
             report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n Adding bouns by 5%{bounsvalue}.";
@@ -354,7 +375,7 @@ public class HR : Employee, WritingReports
         }
 
         var timeWritten = DateTime.Now;
-        report += $"\n\n HR : {FullName}\nDate : {timeWritten}";
+        report += $"\n\nHR : {FullName}\nDate : {timeWritten}";
         ThisEmployee.GetType().GetProperty("HRreport")?.SetValue(ThisEmployee, report);
     }
 
@@ -363,7 +384,7 @@ public class HR : Employee, WritingReports
     public static object searchEmployee(string id) // for the login proccess
     {
         var hr = new HR();
-        return hr.searchByID(id);
+        return hr.searchByID(id.ToUpper());
     }
     public static object searchEmployee()
     {
@@ -372,7 +393,7 @@ public class HR : Employee, WritingReports
             string id = "";
             var hr = new HR();
             Console.Write("Search by employye's full name or ID:");
-            string search = Console.ReadLine();
+            string search = Console.ReadLine().ToUpper();
             if (!search.Any(char.IsDigit))
             {
 
@@ -448,11 +469,12 @@ public class HR : Employee, WritingReports
                 if (Employees[joptitle.Key.ToString()][id.Key.ToString()] != null)
                 {
                     object result = Employees[joptitle.Key.ToString()][id.Key.ToString()];
-
-                    if (result.GetType().GetProperty("FullName")?.GetValue(result) == name)
+                    string emp_name = result.GetType().GetProperty("FullName")?.GetValue(result)!.ToString()!.ToUpper()!;
+                    if (emp_name == name)
                     {
                         return result;
                     }
+                    Console.WriteLine("Not found");
                 }
             }
         }
@@ -478,7 +500,15 @@ public class HR : Employee, WritingReports
     //*********************************************************************print hr report****************************************************************
     public void PrintHRreport()
     {
-        Console.WriteLine(HRreport);
+        if (!string.IsNullOrWhiteSpace(HRreport))
+        {
+            Console.WriteLine(HRreport);
+            HRreport = string.Empty;
+        }
+        else
+        {
+            Console.WriteLine("No repors yet for this month");
+        }
     }
 
     //*********************************************************************print salary****************************************************************
@@ -502,6 +532,7 @@ public class HR : Employee, WritingReports
     public void login()
     {
         DailyLoginTime = DateTime.Now;
+        Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
     }
 
 
@@ -515,10 +546,12 @@ public class HR : Employee, WritingReports
             Console.WriteLine("Are you sure you want to log out? y/n");
             while (true)
             {
-                string answer = Console.ReadLine();
+                string answer = Console.ReadLine().ToLower();
                 if (answer == "y")
                 {
                     DailyLogoutTime = DateTime.Now;
+                    Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
+
                     break;
                 }
                 else if (answer == "n")
@@ -532,6 +565,7 @@ public class HR : Employee, WritingReports
             }
         }
     }
+    //*********************************************************************others****************************************************************
 
     public static void creatRouby()
     {
@@ -539,7 +573,7 @@ public class HR : Employee, WritingReports
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
         var hr = new HR();
         data["FirstName"] = "Abdullah";
-        data["LastName"] = "Rouby";
+        data["LastName"] = "Elrouby";
         data["PhoneNumber"] = "01220200683";
         data["Age"] = 20;
         data["DateOfBirth"] = new DateOnly(2003, 9, 1);
@@ -554,16 +588,30 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "HR";
         data["PreviousExperience"] = PE;
-        data["HospitalID"] = "HRAR1706";
+        data["HospitalID"] = "HRAE1706";
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
+        data["Department"] = "HR";
 
         var rouby = new HR(data);
         Dictionary<string, object> r = new Dictionary<string, object>();
         r[rouby.HospitalID] = rouby;
         Employees["HR"] = r;
+        IDsBeckups[rouby.HospitalID] = rouby.FullName;
         // Employees["HR"][rouby.HospitalID] = rouby;
     }
+
+    public void PrintIDS()
+    {
+
+        var id = IDsBeckups.OrderBy(x => x.Value).ToList();
+        Console.WriteLine("Name\t\t\t :\t ID");
+        foreach (var item in id)
+        {
+            Console.WriteLine($"{item.Value}\t :\t {item.Key}");
+        }
+    }
+
 
 }

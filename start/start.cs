@@ -4,7 +4,7 @@ internal partial class Start
 {
     private static void Main(string[] args)
     {
-        // HR.creatRouby();
+        HR.creatRouby();
 
         Console.WriteLine("Welcome");
 
@@ -27,7 +27,7 @@ internal partial class Start
     private static void fisrtLogin()
     {
         var hr = new HR();
-        Console.WriteLine("\n\nHI boss! We just need to take a few information before starting\n\n");
+        Console.WriteLine("\nHI boss! We just need to take a few information before starting\n");
 
         var data = hr.GetNewEmployeesData("Manger");
         data["HospitalID"] = "MAAS0101";
@@ -46,23 +46,19 @@ internal partial class Start
             fisrtLogin();
         }
 
-        Console.WriteLine("Hi there. Plz, enter your ID : ");
+        bool stop = false;
+        Console.Write("Hi there. Plz, enter your ID : ");
         while (true)
         {
-            string id = Console.ReadLine();
+            string id = Console.ReadLine().ToUpper();
             switch (id[0..2])
             {
                 case "MA":
                     break;
                 case "HR":
-                    if (HRWorkSpace(id))
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        continue;
-                    }
+                    stop = HRWorkSpace(id);
+                    break;
+
                 case "AC":
                     break;
                 case "RE":
@@ -80,7 +76,12 @@ internal partial class Start
                     Console.Write("Please enter a valid ID : ");
                     continue;
             }
+            if (stop)
+            {
+                break;
+            }
         }
+        Console.WriteLine("\nThank you for using our system");
     }
 
     private static bool continueOrStop()
@@ -100,6 +101,17 @@ internal partial class Start
             else
             {
                 Console.WriteLine("Please enter a valid choice");
+            }
+        }
+    }
+    private static bool pressEnterToContinue()
+    {
+        Console.WriteLine("\n\nPress enter to continue");
+        while (true)
+        {
+            if (Console.ReadKey(true).Key == ConsoleKey.Enter)
+            {
+                return true;
             }
         }
     }
