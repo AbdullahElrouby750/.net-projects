@@ -24,7 +24,7 @@ public class Radiologist : Employee, WritingReports
         numberOfRadiologist++;
     }
 
-    public Patient SearchPatientRecord(int patientID)
+    public Patient SearchpatientData(int patientID)
     {
 
         if (Receptionist.patientData.ContainsKey(patientID))
@@ -41,50 +41,52 @@ public class Radiologist : Employee, WritingReports
 
     public void WriteReport()
     {
-        Console.Write($"Enter Patient ID : ");
-        int patientID = int.Parse(Console.ReadLine());
-
-        Patient patient = SearchPatientRecord(patientID);
-        if (patient != null)
+        while (true)
         {
 
-            string report = Console.ReadLine();
+            Console.Write($"Enter Patient ID : ");
+            int patientID = int.Parse(Console.ReadLine());
 
-            patient.RadiologistReport = $"Patient Name: {patient.FullName}\n";
-            patient.RadiologistReport += $"PatientID: {patient.PatientID}\n";
-            patient.RadiologistReport += $"Radiologist Report: {patient.RadiologistReport}\n";
-
-
-
-            Console.WriteLine("Does the patient require needx-rays? (yes/no):");
-            string x_raysInput = Console.ReadLine().ToLower();
-
-            if (x_raysInput == "yes")
+            if (patientID == 0)
             {
-                patient.MedicalXray = true;
-            }
-            else
-            {
-                patient.MedicalXray= false;
+                return;
             }
 
+            if (SearchpatientData(patientID) is Patient patient)
+            {
+                Console.WriteLine($"Enter Radiologist Report : ");
+                string report = Console.ReadLine();
 
+                patient.RadiologistReport = $"Patient Name: {patient.FullName}\n";
+                patient.RadiologistReport += $"PatientID: {patient.PatientID}\n";
+                patient.RadiologistReport += $"Radiologist Report: {report}\n";
 
-            Console.WriteLine(report);
+                patient.RadiologistReport += $"Radiologist: {FullName}\n";
+                patient.RadiologistReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
+
+                return;
+            }
+            Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
         }
     }
 
 
     public void PrintHRreport()
     {
-        Console.WriteLine(HRreport);
+        if (!string.IsNullOrWhiteSpace(HRreport))
+        {
+            Console.WriteLine(HRreport);
+            HRreport = string.Empty;
+        }
+        else
+        {
+            Console.WriteLine("No repors yet for this month");
+        }
     }
     public void Printsalary()
     {
         if (SalaryReceived == true)
         {
-            int Salary = 0;
-            int Bouns = 0;
             double salaryAfterBouns = Salary + Bouns;
             Console.WriteLine($"Salary received successfully: {salaryAfterBouns:c} ");
             Console.WriteLine($"Your main salary: {Salary}");
@@ -99,7 +101,7 @@ public class Radiologist : Employee, WritingReports
     public void login()
     {
         DailyLoginTime = DateTime.Now;
-
+        Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
     }
     public void logout()
     {

@@ -4,13 +4,23 @@ internal partial class Start
 {
     private static void Main(string[] args)
     {
-        HR.creatRouby();
+
+        fakeDataBase();
 
         Console.WriteLine("Welcome");
 
-        login();
-
-
+        while (true)
+        {
+            login();
+            // if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+            // {
+            //     break;
+            // }
+            // else
+            // {
+            //     continue;
+            // }
+        }
 
 
 
@@ -35,8 +45,7 @@ internal partial class Start
 
         HR.Employees["Manger"][Alaa.HospitalID] = Alaa;
 
-        HR.creatRouby();
-        // an hr rouby will be added automatically when first login
+        fakeDataBase();
     }
 
     private static void login()
@@ -47,9 +56,9 @@ internal partial class Start
         }
 
         bool stop = false;
-        Console.Write("Hi there. Plz, enter your ID : ");
         while (true)
         {
+        Console.Write("Hi there. Plz, enter your ID : ");
             string id = Console.ReadLine().ToUpper();
             switch (id[0..2])
             {
@@ -58,18 +67,22 @@ internal partial class Start
                 case "HR":
                     stop = HRWorkSpace(id);
                     break;
-
                 case "AC":
+                    stop = AccountantWorkSpace(id);
                     break;
                 case "RE":
+                    stop = ReceptionistWorkSpace(id);
                     break;
                 case "DO":
+                    stop = DoctorsAndRadiologistWorkSpace(id);
                     break;
                 case "PH":
                     break;
                 case "NU":
+                    stop = NurseWorkspace(id);
                     break;
                 case "RA":
+                    stop = DoctorsAndRadiologistWorkSpace(id);
                     break;
                 default:
                     Console.WriteLine("Access denied!");
@@ -114,5 +127,20 @@ internal partial class Start
                 return true;
             }
         }
+    }
+
+    private static void fakeDataBase()
+    {
+        if (!HR.Employees.ContainsKey("Manager"))
+        {
+            HR.CrearManger();
+        }
+        HR.creatHR();
+        HR.CreatAccountant();
+        HR.CreatReceptionist();
+        HR.CreatDoctor();
+        HR.CreatNurse();
+        HR.CreatRadiologist();
+        HR.CreatPharmacist();
     }
 }

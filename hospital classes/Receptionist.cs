@@ -22,10 +22,10 @@ public class Receptionist : Employee, WritingReports
 
         //Date from patient class
         Console.Write("\n\nFirst Name : ");
-        Data["FirstName"] = Console.ReadLine();
+        Data["FirstName"] = Console.ReadLine().ToUpper();
 
         Console.Write("Last Name : ");
-        Data["LastName"] = Console.ReadLine();
+        Data["LastName"] = Console.ReadLine().ToUpper();
 
         Console.Write("Phone Number : ");
         Data["PhoneNumber"] = Console.ReadLine();
@@ -34,10 +34,10 @@ public class Receptionist : Employee, WritingReports
         Data["Age"] = int.Parse(Console.ReadLine());
 
         Console.Write("Date of Birth in yyyy-mm-dd : ");
-        DateTime FullDate = DateTime.Parse(Console.ReadLine());
-        Data["DateOfBirth"] = FullDate.Date;
+        DateOnly FullDate = DateOnly.Parse(Console.ReadLine());
+        Data["DateOfBirth"] = FullDate;
 
-        Console.WriteLine("Gender : ");
+        Console.Write("Gender : ");
         Data["Gender"] = Console.ReadLine();
 
         Console.Write("Statue : ");
@@ -47,18 +47,18 @@ public class Receptionist : Employee, WritingReports
         Data["Address"] = Console.ReadLine();
 
         Console.Write("Blood Type : ");
-        Data["BloodType"] = Console.ReadLine();
+        Data["BloodType"] = Console.ReadLine().ToUpper();
 
-        Console.Write("Weight : ");
+        Console.Write("Weight in KG : ");
         Data["Weight"] = double.Parse(Console.ReadLine());
 
-        Console.Write("Height  : ");
+        Console.Write("Height in CM : ");
         Data["Height"] = double.Parse(Console.ReadLine());
 
-        Console.Write("CurrentProblem   : ");
+        Console.Write("CurrentProblem : ");
         Data["CurrentProblem"] = Console.ReadLine();
 
-        Console.Write("Disabilities  : ");
+        Console.Write("Disabilities : ");
         Data["Disabilities"] = Console.ReadLine();
 
         return Data;
@@ -73,12 +73,15 @@ public class Receptionist : Employee, WritingReports
         {
             string disease;
             string info;
-            Console.WriteLine("Enter disease name :  ");
+            Dictionary<string, string> medicalHistory = new Dictionary<string, string>();
+
+            Console.WriteLine("Enter disease name : ");
             disease = Console.ReadLine();
 
-            Console.WriteLine("Enter disease info :  ");
+            Console.WriteLine("Enter disease info : ");
             info = Console.ReadLine();
 
+            medicalHistory[disease] = info;
             Console.WriteLine("Do you want to continue ? (yes or no) ");
             string answer = Console.ReadLine();
             if (answer == "yes")
@@ -87,10 +90,12 @@ public class Receptionist : Employee, WritingReports
             }
             else if (answer == "no")
             {
+                patient.MedicalHistory = medicalHistory;
                 break;
             }
             else
             {
+                patient.MedicalHistory = medicalHistory;
                 break;
             }
         }
@@ -99,12 +104,15 @@ public class Receptionist : Employee, WritingReports
         {
             string contact;
             string info;
-            Console.WriteLine("Enter contact name :  ");
+            Dictionary<string, string> emergencyContact = new Dictionary<string, string>();
+
+            Console.WriteLine("Enter contact name : ");
             contact = Console.ReadLine();
 
             Console.WriteLine("Enter contact info : ");
             info = Console.ReadLine();
 
+            emergencyContact[contact] = info;
             Console.WriteLine("Do you want to continue ? (yes or no)");
             string answer = Console.ReadLine();
             if (answer == "yes")
@@ -113,22 +121,52 @@ public class Receptionist : Employee, WritingReports
             }
             else if (answer == "no")
             {
+                patient.EmergencyContact = emergencyContact;
                 break;
             }
             else
             {
+                patient.EmergencyContact = emergencyContact;
                 break;
             }
         }
         patientData[patient.PatientID] = patient;
+        Console.WriteLine("Patient was added successfully");
+        Console.WriteLine($"Patient ID: {patient.PatientID}");
 
+    }
+
+    public static void PrintPatientReports()
+    {
+        int patientID;
+        while (true)
+        {
+            Console.Write("Enter Patient ID : ");
+            patientID = int.Parse(Console.ReadLine());
+            if (patientData.ContainsKey(patientID))
+            {
+                patientData[patientID].PrintReports();
+                break;
+            }
+            else
+            {
+                Console.WriteLine($"Patient with ID {patientID} not found in the data.\nEnter a valid Patient ID");
+            }
+        }
     }
     public void WriteReport() { }
 
     public void PrintHRreport()
     {
-        Console.WriteLine(HRreport);
-
+        if (!string.IsNullOrWhiteSpace(HRreport))
+        {
+            Console.WriteLine(HRreport);
+            HRreport = string.Empty;
+        }
+        else
+        {
+            Console.WriteLine("No repors yet for this month");
+        }
     }
 
     public void Printsalary()
@@ -150,7 +188,7 @@ public class Receptionist : Employee, WritingReports
     public void login()
     {
         DailyLoginTime = DateTime.Now;
-
+        Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
     }
 
     public void logout()

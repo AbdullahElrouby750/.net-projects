@@ -1,6 +1,6 @@
 using hospital_classes;
 
-public class Doctor : Employee , WritingReports
+public class Doctor : Employee, WritingReports
 {
     public static int numberOfDoctors = 0;
     public string specialization;
@@ -21,7 +21,7 @@ public class Doctor : Employee , WritingReports
 
 
 
-    public Patient SearchpatientData(int patientID)
+    private Patient SearchpatientData(int patientID)
     {
         if (Receptionist.patientData.ContainsKey(patientID))
         {
@@ -40,35 +40,39 @@ public class Doctor : Employee , WritingReports
 
     public void WriteReport()
     {
-
-        Console.Write($"Enter Patient ID : ");
-        int patientID = Convert.ToInt32(Console.ReadLine());
-
-        Patient patient = SearchpatientData(patientID);
-        if (patient != null)
+        while (true)
         {
 
-            string report = Console.ReadLine();
+            Console.Write($"Enter Patient ID : ");
+            int patientID = int.Parse(Console.ReadLine());
 
-            patient.DoctorReport = $"Patient Name: {patient.FullName}\n";
-            patient.DoctorReport += $"PatientID: {patient.PatientID}\n";
-            patient.DoctorReport += $"Doctor Report: {patient.DoctorReport}\n";
-            patient.DoctorReport += $"Medical History: {patient.PrintMedicalHistory()}\n";
-
-            Console.WriteLine("Does the patient require Operation? (yes/no):");
-            string OperationInput = Console.ReadLine().ToLower();
-
-            if (OperationInput == "yes")
+            if (patientID == 0)
             {
-                patient.Operation = true;
+                return;
             }
-            else
-            {
-                patient.Operation = false;
-            }
-            patient.DoctorReport += $"Doctor: {FullName}\n";
-            patient.DoctorReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
 
+            if (SearchpatientData(patientID) is Patient patient)
+            {
+                Console.WriteLine($"Does the patient need operation? : yes : no");
+                string OperationInput = Console.ReadLine().ToLower();
+                if (OperationInput == "yes")
+                {
+                    patient.Operation = true;
+                }
+
+                Console.WriteLine($"Enter Doctor Report : ");
+                string report = Console.ReadLine();
+
+                patient.DoctorReport = $"Patient Name: {patient.FullName}\n";
+                patient.DoctorReport += $"PatientID: {patient.PatientID}\n";
+                patient.DoctorReport += $"Doctor Report: {report}\n";
+
+                patient.DoctorReport += $"Doctor: {FullName}\n";
+                patient.DoctorReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
+
+                return;
+            }
+            Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
         }
     }
 
@@ -76,15 +80,36 @@ public class Doctor : Employee , WritingReports
 
     public void PrintHRreport()
     {
-        Console.WriteLine(HRreport);
-
+        if (!string.IsNullOrWhiteSpace(HRreport))
+        {
+            Console.WriteLine(HRreport);
+            HRreport = string.Empty;
+        }
+        else
+        {
+            Console.WriteLine("No repors yet for this month");
+        }
     }
-    public void Printsalary() { }
+    public void Printsalary()
+    {
+        if (SalaryReceived == true)
+        {
+            double salaryAfterBouns = Salary + Bouns;
+            Console.WriteLine($"Salary received successfully: {salaryAfterBouns:c} ");
+            Console.WriteLine($"Your main salary: {Salary}");
+            Console.WriteLine($"Your bouns: {Bouns}");
+            SalaryReceived = false;
+        }
+        else
+        {
+            Console.WriteLine($"salary not sent yet :(");
+        }
+    }
 
     public void login()
     {
         DailyLoginTime = DateTime.Now;
-
+        Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
     }
 
 
@@ -115,5 +140,5 @@ public class Doctor : Employee , WritingReports
             }
         }
     }
-    
+
 }

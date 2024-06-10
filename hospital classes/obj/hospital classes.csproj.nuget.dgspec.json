@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\codez\\uni projects\\hospital system\\hospital classes\\hospital classes.csproj": {}
+    "D:\\codez\\uni projects\\hospital system\\hospital classes\\hospital classes.csproj": {}
   },
   "projects": {
-    "d:\\codez\\uni projects\\hospital system\\hospital classes\\hospital classes.csproj": {
+    "D:\\codez\\uni projects\\hospital system\\hospital classes\\hospital classes.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\codez\\uni projects\\hospital system\\hospital classes\\hospital classes.csproj",
+        "projectUniqueName": "D:\\codez\\uni projects\\hospital system\\hospital classes\\hospital classes.csproj",
         "projectName": "hospital classes",
-        "projectPath": "d:\\codez\\uni projects\\hospital system\\hospital classes\\hospital classes.csproj",
+        "projectPath": "D:\\codez\\uni projects\\hospital system\\hospital classes\\hospital classes.csproj",
         "packagesPath": "C:\\Users\\TurboTech\\.nuget\\packages\\",
-        "outputPath": "d:\\codez\\uni projects\\hospital system\\hospital classes\\obj\\",
+        "outputPath": "D:\\codez\\uni projects\\hospital system\\hospital classes\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

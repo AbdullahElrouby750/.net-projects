@@ -47,7 +47,15 @@ public class Accountant : Employee , WritingReports
     //*********************************************************************print hr report****************************************************************
     public void PrintHRreport()
     {
-        Console.WriteLine(HRreport);
+       if (!string.IsNullOrWhiteSpace(HRreport))
+        {
+            Console.WriteLine(HRreport);
+            HRreport = string.Empty;
+        }
+        else
+        {
+            Console.WriteLine("No repors yet for this month");
+        }
     }
 
     public void WriteReport(){}

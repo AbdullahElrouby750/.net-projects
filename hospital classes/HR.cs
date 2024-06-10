@@ -115,10 +115,10 @@ public class HR : Employee, WritingReports
 
         //Date from person class
         Console.Write("\n\nFirst Name : ");
-        Data["FirstName"] = Console.ReadLine();
+        Data["FirstName"] = Console.ReadLine().ToUpper();
 
         Console.Write("Last Name : ");
-        Data["LastName"] = Console.ReadLine();
+        Data["LastName"] = Console.ReadLine().ToUpper();
 
         Console.Write("Phone Number : ");
         Data["PhoneNumber"] = Console.ReadLine();
@@ -198,7 +198,7 @@ public class HR : Employee, WritingReports
         Console.WriteLine();
 
         Console.Write("Bank : ");
-        Data["BankAccount"] = Console.ReadLine();
+        Data["BankAccount"] = Console.ReadLine().ToUpper();
         Console.WriteLine();
 
         Console.Write("Account Number : ");
@@ -206,7 +206,8 @@ public class HR : Employee, WritingReports
         Console.WriteLine();
 
         Console.Write("For doctors & Radiologist -> specialization : ");
-        Data["Specialization"] = Console.ReadLine();
+
+
         Console.WriteLine();
 
         Data["Department"] = department;
@@ -244,9 +245,8 @@ public class HR : Employee, WritingReports
         do
         {
             Console.Write($"\n\nEnter employee's ID : ");
-            string id = Console.ReadLine();
-
-            if (Employees.ContainsKey(id))
+            string id = Console.ReadLine().ToUpper();
+            try
             {
 
                 object ThisEmployee = searchByID(id);
@@ -275,10 +275,10 @@ public class HR : Employee, WritingReports
                     }
                 }
                 break;
-
             }
-            else
+            catch (Exception e)
             {
+                Console.WriteLine($"Exception {e.Message}");
                 Console.WriteLine("Employee not found");
                 Console.WriteLine("do you want to continue? (yes/no): ");
 
@@ -309,7 +309,25 @@ public class HR : Employee, WritingReports
     public void WriteReport() // feutures !!! make this a work hours auto checker methods and the preformance method check the work quality of every employee
     {
         string report = string.Empty;
-        object ThisEmployee = searchEmployee();
+        object ThisEmployee;
+        while (true)
+        {
+            try
+            {
+                ThisEmployee = searchEmployee();
+                break;
+            }
+            catch (Exception e)
+            {   
+                Console.WriteLine($"Exception {e.Message}");
+                Console.WriteLine("Employee not found");
+                Console.WriteLine("do you want to continue? (yes/no): ");
+                if (Console.ReadLine().ToLower() == "no")
+                {
+                    return;
+                }
+            }
+        }
 
 
         dynamic name = ThisEmployee.GetType().GetProperty("FullName")?.GetValue(ThisEmployee)!;
@@ -567,11 +585,28 @@ public class HR : Employee, WritingReports
     }
     //*********************************************************************others****************************************************************
 
-    public static void creatRouby()
+
+    public void PrintIDS()
+    {
+
+        var id = IDsBeckups.OrderBy(x => x.Value).ToList();
+        Console.WriteLine("\nName\t\t\t :\t ID");
+        foreach (var item in id)
+        {
+            if (item.Value.Length > 15)
+            {
+                Console.WriteLine($"{item.Value}\t :\t {item.Key}");
+            }
+            else
+            {
+                Console.WriteLine($"{item.Value}\t\t :\t {item.Key}");
+            }
+        }
+    }
+    public static void creatHR() // rouby
     {
 
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
-        var hr = new HR();
         data["FirstName"] = "Abdullah";
         data["LastName"] = "Elrouby";
         data["PhoneNumber"] = "01220200683";
@@ -601,17 +636,223 @@ public class HR : Employee, WritingReports
         IDsBeckups[rouby.HospitalID] = rouby.FullName;
         // Employees["HR"][rouby.HospitalID] = rouby;
     }
-
-    public void PrintIDS()
+    public static void CrearManger() // alaa
     {
+        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["FirstName"] = "Alaa";
+        data["LastName"] = "Saleh";
+        data["PhoneNumber"] = "01220200683";
+        data["Age"] = 20;
+        data["DateOfBirth"] = new DateOnly(2003, 9, 1);
+        data["Gender"] = "Fe-Male";
+        data["Statue"] = "Single";
+        data["Address"] = "Egypt. Kafr-Elshikh";
+        data["BloodType"] = "A+";
+        data["Salary"] = 20000;
+        data["WorkHours"] = new TimeSpan(8, 0, 0);
+        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["Experience"] = 1;
+        Dictionary<string, string> PE = new Dictionary<string, string>();
+        PE["the hospital"] = "Manger";
+        data["PreviousExperience"] = PE;
+        data["HospitalID"] = "MAAS1234";
+        data["BankAccount"] = "CIB";
+        data["AccountNumber"] = "1234-2345-3456-4567";
+        data["Specialization"] = string.Empty;
+        data["Department"] = "Manager";
 
-        var id = IDsBeckups.OrderBy(x => x.Value).ToList();
-        Console.WriteLine("Name\t\t\t :\t ID");
-        foreach (var item in id)
-        {
-            Console.WriteLine($"{item.Value}\t :\t {item.Key}");
-        }
+        var alaa = new Manger(data);
+        Dictionary<string, object> s = new Dictionary<string, object>();
+        s[alaa.HospitalID] = alaa;
+        Employees["Manager"] = s;
+        IDsBeckups[alaa.HospitalID] = alaa.FullName;
     }
 
+    public static void CreatReceptionist() // heba
+    {
+        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["FirstName"] = "Heba-Allah";
+        data["LastName"] = "Mohamed";
+        data["PhoneNumber"] = "01220200683";
+        data["Age"] = 23;
+        data["DateOfBirth"] = new DateOnly(2003, 9, 1);
+        data["Gender"] = "Fe-Male";
+        data["Statue"] = "Single";
+        data["Address"] = "Egypt. Behira. Edko";
+        data["BloodType"] = "A+";
+        data["Salary"] = 60000;
+        data["WorkHours"] = new TimeSpan(8, 0, 0);
+        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["Experience"] = 1;
+        Dictionary<string, string> PE = new Dictionary<string, string>();
+        PE["the hospital"] = "Receptionist";
+        data["PreviousExperience"] = PE;
+        data["HospitalID"] = "REHM1234";
+        data["BankAccount"] = "CIB";
+        data["AccountNumber"] = "1234-2345-3456-4567";
+        data["Specialization"] = string.Empty;
+        data["Department"] = "Receptionist";
 
+        var heba = new Receptionist(data);
+        Dictionary<string, object> h = new Dictionary<string, object>();
+        h[heba.HospitalID] = heba;
+        Employees["Receptionist"] = h;
+        IDsBeckups[heba.HospitalID] = heba.FullName;
+    }
+
+    public static void CreatAccountant() // bakr
+    {
+        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["FirstName"] = "Mahmoud";
+        data["LastName"] = "Bakr";
+        data["PhoneNumber"] = "01220200683";
+        data["Age"] = 20;
+        data["DateOfBirth"] = new DateOnly(2003, 9, 1);
+        data["Gender"] = "Male";
+        data["Statue"] = "Single";
+        data["Address"] = "Egypt. Alexandria. Borj Al-arab";
+        data["BloodType"] = "A+";
+        data["Salary"] = 90000;
+        data["WorkHours"] = new TimeSpan(8, 0, 0);
+        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["Experience"] = 1;
+        Dictionary<string, string> PE = new Dictionary<string, string>();
+        PE["the hospital"] = "Accountant";
+        data["PreviousExperience"] = PE;
+        data["HospitalID"] = "ACMB1234";
+        data["BankAccount"] = "CIB";
+        data["AccountNumber"] = "1234-2345-3456-4567";
+        data["Specialization"] = string.Empty;
+        data["Department"] = "Accountant";
+
+        var mahmoud = new Accountant(data);
+        Dictionary<string, object> m = new Dictionary<string, object>();
+        m[mahmoud.HospitalID] = mahmoud;
+        Employees["Accountant"] = m;
+        IDsBeckups[mahmoud.HospitalID] = mahmoud.FullName;
+    }
+    public static void CreatDoctor() // menna
+    {
+        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["FirstName"] = "Menna-Allah";
+        data["LastName"] = "Ragab";
+        data["PhoneNumber"] = "01220200683";
+        data["Age"] = 20;
+        data["DateOfBirth"] = new DateOnly(2003, 9, 1);
+        data["Gender"] = "Fe-Male";
+        data["Statue"] = "Single";
+        data["Address"] = "Egypt. Behira. Al-noubaria";
+        data["BloodType"] = "A+";
+        data["Salary"] = 15000;
+        data["WorkHours"] = new TimeSpan(8, 0, 0);
+        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["Experience"] = 1;
+        Dictionary<string, string> PE = new Dictionary<string, string>();
+        PE["the hospital"] = "Doctor";
+        data["PreviousExperience"] = PE;
+        data["HospitalID"] = "DOMR1234";
+        data["BankAccount"] = "CIB";
+        data["AccountNumber"] = "1234-2345-3456-4567";
+        data["Specialization"] = string.Empty;
+        data["Department"] = "Doctor";
+
+        var menna = new Doctor(data);
+        Dictionary<string, object> m = new Dictionary<string, object>();
+        m[menna.HospitalID] = menna;
+        Employees["Doctor"] = m;
+        IDsBeckups[menna.HospitalID] = menna.FullName;
+    }
+    public static void CreatPharmacist() // faten
+    {
+        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["FirstName"] = "Faten";
+        data["LastName"] = "Mohamed";
+        data["PhoneNumber"] = "01220200683";
+        data["Age"] = 20;
+        data["DateOfBirth"] = new DateOnly(2003, 9, 1);
+        data["Gender"] = "Fe-Male";
+        data["Statue"] = "Single";
+        data["Address"] = "Egypt. Behira. Kom-Hamada";
+        data["BloodType"] = "A+";
+        data["Salary"] = 11000;
+        data["WorkHours"] = new TimeSpan(8, 0, 0);
+        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["Experience"] = 1;
+        Dictionary<string, string> PE = new Dictionary<string, string>();
+        PE["the hospital"] = "Pharmacist";
+        data["PreviousExperience"] = PE;
+        data["HospitalID"] = "PHFM1234";
+        data["BankAccount"] = "CIB";
+        data["AccountNumber"] = "1234-2345-3456-4567";
+        data["Specialization"] = string.Empty;
+        data["Department"] = "Pharmacist";
+
+        var faten = new Pharmacist(data);
+        Dictionary<string, object> f = new Dictionary<string, object>();
+        f[faten.HospitalID] = faten;
+        Employees["Pharmacist"] = f;
+        IDsBeckups[faten.HospitalID] = faten.FullName;
+    }
+    public static void CreatNurse() // radwa
+    {
+        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["FirstName"] = "Radwa";
+        data["LastName"] = "Mohsen";
+        data["PhoneNumber"] = "01220200683";
+        data["Age"] = 20;
+        data["DateOfBirth"] = new DateOnly(2003, 9, 1);
+        data["Gender"] = "Fe-Male";
+        data["Statue"] = "Single";
+        data["Address"] = "Egypt. Behira. Damanhor";
+        data["BloodType"] = "A+";
+        data["Salary"] = 12500;
+        data["WorkHours"] = new TimeSpan(8, 0, 0);
+        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["Experience"] = 1;
+        Dictionary<string, string> PE = new Dictionary<string, string>();
+        PE["the hospital"] = "Nurse";
+        data["PreviousExperience"] = PE;
+        data["HospitalID"] = "NURM1234";
+        data["BankAccount"] = "CIB";
+        data["AccountNumber"] = "1234-2345-3456-4567";
+        data["Specialization"] = string.Empty;
+        data["Department"] = "Nurse";
+
+        var radwa = new Nurse(data);
+        Dictionary<string, object> r = new Dictionary<string, object>();
+        r[radwa.HospitalID] = radwa;
+        Employees["Nurse"] = r;
+        IDsBeckups[radwa.HospitalID] = radwa.FullName;
+    }
+    public static void CreatRadiologist() // sara
+    {
+        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["FirstName"] = "Sara";
+        data["LastName"] = "Khamees";
+        data["PhoneNumber"] = "01220200683";
+        data["Age"] = 20;
+        data["DateOfBirth"] = new DateOnly(2003, 9, 1);
+        data["Gender"] = "Fe-Male";
+        data["Statue"] = "Single";
+        data["Address"] = "Egypt. Behira. Damanhor";
+        data["BloodType"] = "A+";
+        data["Salary"] = 14000;
+        data["WorkHours"] = new TimeSpan(8, 0, 0);
+        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["Experience"] = 1;
+        Dictionary<string, string> PE = new Dictionary<string, string>();
+        PE["the hospital"] = "Radiologist";
+        data["PreviousExperience"] = PE;
+        data["HospitalID"] = "RASK1234";
+        data["BankAccount"] = "CIB";
+        data["AccountNumber"] = "1234-2345-3456-4567";
+        data["Specialization"] = string.Empty;
+        data["Department"] = "Radiologist";
+
+        var sara = new Radiologist(data);
+        Dictionary<string, object> s = new Dictionary<string, object>();
+        s[sara.HospitalID] = sara;
+        Employees["Radiologist"] = s;
+        IDsBeckups[sara.HospitalID] = sara.FullName;
+    }
 }
