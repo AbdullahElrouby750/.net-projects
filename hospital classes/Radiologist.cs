@@ -24,21 +24,6 @@ public class Radiologist : Employee, WritingReports
         numberOfRadiologist++;
     }
 
-    public Patient SearchpatientData(int patientID)
-    {
-
-        if (Receptionist.patientData.ContainsKey(patientID))
-        {
-            return Receptionist.patientData[patientID];
-        }
-        else
-        {
-            Console.WriteLine($"Patient with ID {patientID} not found.");
-            return null;
-        }
-    }
-
-
     public void WriteReport()
     {
         while (true)
@@ -52,7 +37,7 @@ public class Radiologist : Employee, WritingReports
                 return;
             }
 
-            if (SearchpatientData(patientID) is Patient patient)
+            if (Receptionist.SearchpatientData(patientID) is Patient patient)
             {
                 Console.WriteLine($"Enter Radiologist Report : ");
                 string report = Console.ReadLine();

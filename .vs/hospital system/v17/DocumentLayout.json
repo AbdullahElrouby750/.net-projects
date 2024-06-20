@@ -1,10 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\codez\\uni projects\\hospital system\\",
+  "WorkspaceRootPath": "D:\\codez\\uni projects\\hospital system my work\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\codez\\uni projects\\hospital system\\hospital classes\\Employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:hospital classes\\Employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|d:\\codez\\uni projects\\hospital system my work\\hospital classes\\pharmacist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|solutionrelative:hospital classes\\pharmacist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,19 +14,23 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Employee.cs",
-              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system\\hospital classes\\Employee.cs",
-              "RelativeDocumentMoniker": "hospital classes\\Employee.cs",
-              "ToolTip": "D:\\codez\\uni projects\\hospital system\\hospital classes\\Employee.cs",
-              "RelativeToolTip": "hospital classes\\Employee.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Title": "Pharmacist.cs",
+              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Pharmacist.cs",
+              "RelativeDocumentMoniker": "hospital classes\\Pharmacist.cs",
+              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Pharmacist.cs",
+              "RelativeToolTip": "hospital classes\\Pharmacist.cs",
+              "ViewState": "AQIAAIIAAAAAAAAAAAAwwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-20T20:44:16.046Z",
+              "WhenOpened": "2024-06-20T19:39:02.862Z",
               "EditorCaption": ""
             }
           ]

@@ -18,26 +18,6 @@ public class Doctor : Employee, WritingReports
         this.specialization = "Unknown";
         numberOfDoctors++;
     }
-
-
-
-    private Patient SearchpatientData(int patientID)
-    {
-        if (Receptionist.patientData.ContainsKey(patientID))
-        {
-            return Receptionist.patientData[patientID];
-        }
-        else
-        {
-            Console.WriteLine($"Patient with ID {patientID} not found in the data.");
-            return null;
-        }
-    }
-
-
-
-
-
     public void WriteReport()
     {
         while (true)
@@ -51,7 +31,7 @@ public class Doctor : Employee, WritingReports
                 return;
             }
 
-            if (SearchpatientData(patientID) is Patient patient)
+            if (Receptionist.SearchpatientData(patientID) is Patient patient)
             {
                 Console.WriteLine($"Does the patient need operation? : yes : no");
                 string OperationInput = Console.ReadLine().ToLower();
@@ -75,9 +55,6 @@ public class Doctor : Employee, WritingReports
             Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
         }
     }
-
-
-
     public void PrintHRreport()
     {
         if (!string.IsNullOrWhiteSpace(HRreport))

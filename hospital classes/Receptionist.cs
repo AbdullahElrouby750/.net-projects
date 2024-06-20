@@ -136,6 +136,19 @@ public class Receptionist : Employee, WritingReports
 
     }
 
+    public static Patient SearchpatientData(int patientID)
+    {
+        if (patientData.ContainsKey(patientID))
+        {
+            return patientData[patientID];
+        }
+        else
+        {
+            Console.WriteLine($"Patient with ID {patientID} not found in the data.");
+            return null;
+        }
+    }
+
     public static void PrintPatientReports()
     {
         int patientID;
