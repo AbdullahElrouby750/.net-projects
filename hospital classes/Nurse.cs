@@ -49,7 +49,7 @@ public class Nurse : Employee, WritingReports
                 return;
             }
 
-            if (SearchpatientData(patientID) is Patient p)
+            if (Receptionist.SearchpatientData(patientID) is Patient p)
             {
                 name = p.FullName!;
                 break;
@@ -113,7 +113,7 @@ public class Nurse : Employee, WritingReports
                 return false;
             }
 
-            if (SearchpatientData(patientID) is Patient p)
+            if (Receptionist.SearchpatientData(patientID) is Patient p)
             {
                 return p.AllVisitsDone;
             }
@@ -185,19 +185,6 @@ public class Nurse : Employee, WritingReports
         }
     }
 
-    private Patient SearchpatientData(int patientID)
-    {
-        if (Receptionist.patientData.ContainsKey(patientID))
-        {
-            return Receptionist.patientData[patientID];
-        }
-        else
-        {
-            Console.WriteLine($"Patient with ID {patientID} not found in the data.");
-            return null;
-        }
-    }
-
     public void WriteReport()
     {
         while (true)
@@ -211,7 +198,7 @@ public class Nurse : Employee, WritingReports
                 return;
             }
 
-            if (SearchpatientData(patientID) is Patient patient)
+            if (Receptionist.SearchpatientData(patientID) is Patient patient)
             {
                 Console.WriteLine($"Enter Nurse Report : ");
                 string report = Console.ReadLine();
