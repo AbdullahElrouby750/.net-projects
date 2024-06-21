@@ -1,15 +1,11 @@
 ﻿namespace hospital_classes;
 
 public class Person{
-   private string? Firstname { get; set; }
-   private string? Lastname { get; set; }
-   public string ? FullName 
-   {
-        get{
-        return Firstname + " " + Lastname;
-        } 
-   }
-   public string? PhoneNumber { get; set; }
+   //private string? Firstname { get; set; }
+   //private string? Lastname { get; set; }
+   public string ? FullName { get; set; }
+
+    public string? PhoneNumber { get; set; }
    public int Age { get; set; }
    public DateOnly DateOfBirth { get; set; }
    public string? Gender { get; set; }
@@ -20,8 +16,9 @@ public class Person{
    //defult constractor 
    public Person()
    {
-    Firstname = "First name";
-    Lastname = "Last name";
+        //Firstname = "First name";
+        //Lastname = "Last name";
+    FullName = "";
     PhoneNumber = "xxxxxxxxxxx";
     Age = 0;
     DateOfBirth = DateOnly.FromDateTime(DateTime.Today);
@@ -31,10 +28,11 @@ public class Person{
     BloodType = "Unknown";
    }
 
-   public Person(string firstname, string lastname, string phonenumber, int age, DateOnly dateofbirth, string gender, string statue, string address, string bloodtype)
+   public Person(string fullname, string phonenumber, int age, DateOnly dateofbirth, string gender, string statue, string address, string bloodtype)
    {
-    Firstname = firstname;
-    Lastname = lastname;
+    //Firstname = firstname;
+    //Lastname = lastname;
+    FullName = fullname;
     PhoneNumber = phonenumber;
     Age = age;
     DateOfBirth = dateofbirth;

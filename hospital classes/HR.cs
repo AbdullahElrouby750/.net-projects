@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using OfficeOpenXml;
 
 namespace hospital_classes;
 
@@ -6,8 +7,10 @@ public class HR : Employee, WritingReports
 {
     static public Dictionary<string, Dictionary<string, object>> Employees = new Dictionary<string, Dictionary<string, object>>(); // will be used by the accountatnt to access the employees
     static private Dictionary<string, string> IDsBeckups = new Dictionary<string, string>(); // if someone forgot thier id
+    private Dictionary<string,int> WorkSheetIndex = new Dictionary<string, int>();
     private string[] jopTitles;
     public static int NumberofHR;
+
 
 
     //*********************************************************************ctors****************************************************************
@@ -49,76 +52,22 @@ public class HR : Employee, WritingReports
         }
         Dictionary<string, dynamic> data = GetNewEmployeesData(jopTitles[jopIndex]);
 
-        switch (jopIndex)
-        {
-            case 1:
-                var nurse = new Nurse(data);
-                Dictionary<string, object> nur = new Dictionary<string, object>();
-                nur[nurse.HospitalID] = nurse;
-                Employees[jopTitles[0]] = nur; // nurse khhggh nurse
-                IDsBeckups[nurse.HospitalID] = nurse.FullName;
-                break;
-
-            case 2:
-                var pharmacist = new Pharmacist(data);
-                Dictionary<string, object> pha = new Dictionary<string, object>();
-                pha[pharmacist.HospitalID] = pharmacist;
-                Employees[jopTitles[1]] = pha;
-                IDsBeckups[pharmacist.HospitalID] = pharmacist.FullName;
-                break;
-
-            case 3:
-                var radiologist = new Radiologist(data);
-                Dictionary<string, object> rad = new Dictionary<string, object>();
-                rad[radiologist.HospitalID] = radiologist;
-                Employees[jopTitles[2]] = rad;
-                IDsBeckups[radiologist.HospitalID] = radiologist.FullName;
-                break;
-
-            case 4:
-                var receptionist = new Receptionist(data);
-                Dictionary<string, object> rec = new Dictionary<string, object>();
-                rec[receptionist.HospitalID] = receptionist;
-                Employees[jopTitles[3]] = rec;
-                IDsBeckups[receptionist.HospitalID] = receptionist.FullName;
-                break;
-
-            case 5:
-                var doctor = new Doctor(data);
-                Dictionary<string, object> doc = new Dictionary<string, object>();
-                doc[doctor.HospitalID] = doctor;
-                Employees[jopTitles[4]] = doc;
-                IDsBeckups[doctor.HospitalID] = doctor.FullName;
-                break;
-
-            case 6:
-                var hr = new HR(data);
-                Employees[jopTitles[5]][hr.HospitalID] = hr;
-                IDsBeckups[hr.HospitalID] = hr.FullName;
-                break;
-
-            case 7:
-                var accountant = new Accountant(data);
-                Dictionary<string, object> acc = new Dictionary<string, object>();
-                acc[accountant.HospitalID] = accountant;
-                Employees[jopTitles[6]] = acc;
-                IDsBeckups[accountant.HospitalID] = accountant.FullName;
-                break;
-
-        }
+        StoreData(data, jopTitles[jopIndex]);
     }
-
     public Dictionary<string, dynamic> GetNewEmployeesData(string department)
     {
         Dictionary<string, dynamic> Data = new Dictionary<string, dynamic>();
 
+        Data["HospitalID"] = "";//so the id will be in the first col
 
         //Date from person class
         Console.Write("\n\nFirst Name : ");
-        Data["FirstName"] = Console.ReadLine().ToUpper();
+        string FirstName = Console.ReadLine().ToUpper();
 
         Console.Write("Last Name : ");
-        Data["LastName"] = Console.ReadLine().ToUpper();
+        string LastName = Console.ReadLine().ToUpper();
+
+        Data["FullName"] = FirstName + " " + LastName;
 
         Console.Write("Phone Number : ");
         Data["PhoneNumber"] = Console.ReadLine();
@@ -237,6 +186,51 @@ public class HR : Employee, WritingReports
 
     }
 
+    //*********************************************************************Store data****************************************************************
+
+    public void StoreData(Dictionary<string, dynamic> data, string department)
+    {
+     string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+
+        using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet sheet;
+            int col = 1;
+            bool firstTime = true;
+            if (!WorkSheetIndex.ContainsKey(department))
+            {
+                sheet = EmployeeData.Workbook.Worksheets.Add(department);
+                WorkSheetIndex[department] = WorkSheetIndex.Count;
+
+                foreach (var key in data)
+                {
+                    sheet.Cells[1, col].Value = key.Key;
+                    col++;
+                }
+            }
+            else
+            {
+                firstTime = false;
+                sheet = EmployeeData.Workbook.Worksheets[WorkSheetIndex[department]];
+            }
+
+            int row = sheet.Dimension.Rows + 1;
+            foreach (var value in data)
+            {
+                sheet.Cells[row, col].Value = value;
+                col++;
+            }
+            if (firstTime)
+            {
+                EmployeeData.SaveAs(excelFilePath);
+            }
+            else
+            {
+                EmployeeData.Save();
+            }
+        }
+    }
+
     //*********************************************************************Firing proccesses****************************************************************
 
     public void Fire()
@@ -249,9 +243,9 @@ public class HR : Employee, WritingReports
             try
             {
 
-                object ThisEmployee = searchByID(id);
-                string name = ThisEmployee.GetType().GetProperty("FullName")?.GetValue(ThisEmployee)!.ToString();
-                string department = ThisEmployee.GetType().GetProperty("Department")?.GetValue(ThisEmployee)!.ToString();
+                Dictionary<string, dynamic> ThisEmployee = searchDataByID(id);
+                string name = ThisEmployee["FullName"];
+                string department = ThisEmployee["Department"];
 
                 Console.WriteLine($"!!!WARNING!!! Your about to delete {name} from the system.\n Are you sure you wanto to continue?");
                 Console.WriteLine("1 - Yes");
@@ -262,7 +256,7 @@ public class HR : Employee, WritingReports
                     int choice = int.Parse(Console.ReadLine());
                     if (choice == 1)
                     {
-                        Employees[department].Remove(id);
+                        deleteData(id, department);
                         break;
                     }
                     else if (choice == 2)
@@ -290,6 +284,37 @@ public class HR : Employee, WritingReports
         } while (true);
     }
 
+    private bool deleteData(string id, string department)
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet sheet = package.Workbook.Worksheets[WorkSheetIndex[department]];
+
+            int rowConut = sheet.Dimension.Rows;
+            int colCount = sheet.Dimension.Columns;
+            for (int row = 2; row <= rowConut; row++)
+            {
+                string target = sheet.Cells[row, 1].Value.ToString();
+                if (target.ToUpper() == id.ToUpper())
+                {
+                    int targetRow = row;
+                    Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+                    try
+                    {
+                        sheet.DeleteRow(targetRow);
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+            }
+            return false;
+        }
+    }
     //*********************************************************************Counting employee****************************************************************
     public static int numberOfEmployyes()
     {
@@ -399,12 +424,12 @@ public class HR : Employee, WritingReports
 
     //*********************************************************************search employee****************************************************************
 
-    public static object searchEmployee(string id) // for the login proccess
+    public static Dictionary<string, dynamic> searchEmployee(string id) // for the login proccess
     {
         var hr = new HR();
-        return hr.searchByID(id.ToUpper());
+        return hr.searchDataByID(id.ToUpper());
     }
-    public static object searchEmployee()
+    public static Dictionary<string,dynamic> searchEmployee()
     {
         while (true)
         {
@@ -415,7 +440,7 @@ public class HR : Employee, WritingReports
             if (!search.Any(char.IsDigit))
             {
 
-                var emp = hr.searchByName(search);
+                var emp = hr.searchDataByName(search);
                 if (emp != null)
                 {
                     return emp;
@@ -435,7 +460,7 @@ public class HR : Employee, WritingReports
             else if (search.Any(char.IsDigit))
             {
 
-                var emp = hr.searchByID(search);
+                var emp = hr.searchDataByID(search);
                 if (emp != null)
                 {
                     return emp;
@@ -465,38 +490,156 @@ public class HR : Employee, WritingReports
         }
         return null;
     }
+    private Dictionary<string, dynamic> searchDataByID(string id)
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
 
-    private object searchByID(string id)
-    {
-        foreach (var joptitle in Employees)
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
-            if (Employees[joptitle.Key.ToString()].ContainsKey(id))
+
+            ExcelWorksheet sheet = null;
+
+            bool rightID = true;
+
+            while (rightID)
             {
-                object result = Employees[joptitle.Key.ToString()][id];
-                return result;
-            }
-        }
-        return null;
-    }
-    private object searchByName(string name)
-    {
-        foreach (var joptitle in Employees)
-        {
-            foreach (var id in Employees[joptitle.Key.ToString()])
-            {
-                if (Employees[joptitle.Key.ToString()][id.Key.ToString()] != null)
+
+
+                switch (id[0..2].ToLower())
                 {
-                    object result = Employees[joptitle.Key.ToString()][id.Key.ToString()];
-                    string emp_name = result.GetType().GetProperty("FullName")?.GetValue(result)!.ToString()!.ToUpper()!;
-                    if (emp_name == name)
+                    case "nu":
+                        sheet = package.Workbook.Worksheets["Nurse"];
+                        rightID = false;
+                        break;
+                    case "ph":
+                        sheet = package.Workbook.Worksheets["Pharmacist"];
+                        rightID = false;
+                        break;
+                    case "ra":
+                        sheet = package.Workbook.Worksheets["Radiologist"];
+                        rightID = false;
+                        break;
+                    case "re":
+                        sheet = package.Workbook.Worksheets["Receptionist"];
+                        rightID = false;
+                        break;
+                    case "do":
+                        sheet = package.Workbook.Worksheets["Doctor"];
+                        rightID = false;
+                        break;
+                    case "hr":
+                        sheet = package.Workbook.Worksheets["HR"];
+                        rightID = false;
+                        break;
+                    case "ac":
+                        sheet = package.Workbook.Worksheets["Accountant"];
+                        rightID = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid Id!");
+                        Console.Write("Enter a vadil one or type 'no' to stop : ");
+                        id = Console.ReadLine();
+                        if (id.ToLower() == "no")
+                        {
+                            return null;
+                        }
+                        continue;
+                }
+            }
+            int rowCount = sheet.Dimension.Rows;
+            int colCount = sheet.Dimension.Columns;
+            for (int row = 2; row <= rowCount; row++)
+            {
+                string target = sheet.Cells[row, 1].Value.ToString();
+                if (target.ToUpper() == id.ToUpper())
+                {
+                    int targetRow = row;
+                    Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+                    for (int col = 1; col <= colCount; col++)
                     {
-                        return result;
+                        string field = sheet.Cells[1, col].Value.ToString();
+                        dynamic val = sheet.Cells[targetRow, col].Value;
+                        data[field] = val;
                     }
-                    Console.WriteLine("Not found");
+                    return data;
+                }
+            }
+            return null;
+        }
+    }
+
+    private Dictionary<string, dynamic> searchDataByName(string name)
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+
+            ExcelWorksheet sheet = null;
+
+            List<Dictionary<string, dynamic>> similarNames = new List<Dictionary<string, dynamic>>();
+
+            foreach (var item in WorkSheetIndex)
+            {
+                sheet = package.Workbook.Worksheets[item.Value];
+
+                int rowCount = sheet.Dimension.Rows;
+                int colCount = sheet.Dimension.Columns;
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    string target = sheet.Cells[row, 2].Value.ToString();
+                    if (target.ToUpper() == name.ToUpper())
+                    {
+                        int targetRow = row;
+                        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+                        for (int col = 1; col <= colCount; col++)
+                        {
+                            string field = sheet.Cells[1, col].Value.ToString();
+                            dynamic val = sheet.Cells[targetRow, col].Value;
+                            data[field] = val;
+                        }
+                        similarNames.Add(data);
+                    }
+                }
+            }
+
+            if (similarNames.Count == 0)
+            {
+                Console.WriteLine("no employee with such name!");
+                return null;
+            }
+            else if (similarNames.Count == 1)
+            {
+                return similarNames[0];
+            }
+
+            Console.WriteLine("Choose the wanted employee :-");
+            int index = 0;
+            foreach (var item in similarNames)
+            {
+                Console.WriteLine($"{index + 1}{item["HospitalID"]}\t :\t {item["FullName"]}");
+                index++;
+            }
+            while (true)
+            {
+                try
+                {
+                    int choice = int.Parse(Console.ReadLine());
+                    if (choice == 0)
+                    {
+                        return null;
+                    }
+                    return similarNames[choice];
+
+                }
+                catch (IndexOutOfRangeException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.WriteLine("Choose a valid choice! or enter null to return");
                 }
             }
         }
-        return null;
+
     }
     //*********************************************************************promotion****************************************************************
     public void pormotion()
@@ -607,6 +750,7 @@ public class HR : Employee, WritingReports
     {
 
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["HospitalID"] = "HRAE1706";
         data["FirstName"] = "Abdullah";
         data["LastName"] = "Elrouby";
         data["PhoneNumber"] = "01220200683";
@@ -623,22 +767,26 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "HR";
         data["PreviousExperience"] = PE;
-        data["HospitalID"] = "HRAE1706";
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
         data["Department"] = "HR";
 
-        var rouby = new HR(data);
-        Dictionary<string, object> r = new Dictionary<string, object>();
-        r[rouby.HospitalID] = rouby;
-        Employees["HR"] = r;
-        IDsBeckups[rouby.HospitalID] = rouby.FullName;
+
+        var rouby = new HR();
+        rouby.StoreData(data, "HR");
+
+        //Dictionary<string, object> r = new Dictionary<string, object>();
+        //r[rouby.HospitalID] = rouby;
+        //Employees["HR"] = r;
+        //IDsBeckups[rouby.HospitalID] = rouby.FullName;
+
         // Employees["HR"][rouby.HospitalID] = rouby;
     }
     public static void CrearManger() // alaa
     {
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["HospitalID"] = "MAAS1234";
         data["FirstName"] = "Alaa";
         data["LastName"] = "Saleh";
         data["PhoneNumber"] = "01220200683";
@@ -655,22 +803,25 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Manger";
         data["PreviousExperience"] = PE;
-        data["HospitalID"] = "MAAS1234";
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
         data["Department"] = "Manager";
 
-        var alaa = new Manger(data);
-        Dictionary<string, object> s = new Dictionary<string, object>();
-        s[alaa.HospitalID] = alaa;
-        Employees["Manager"] = s;
-        IDsBeckups[alaa.HospitalID] = alaa.FullName;
+        var rouby = new HR();
+        rouby.StoreData(data, "Manager");
+
+        //var alaa = new Manger(data);
+        //Dictionary<string, object> s = new Dictionary<string, object>();
+        //s[alaa.HospitalID] = alaa;
+        //Employees["Manager"] = s;
+        //IDsBeckups[alaa.HospitalID] = alaa.FullName;
     }
 
     public static void CreatReceptionist() // heba
     {
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["HospitalID"] = "REHM1234";
         data["FirstName"] = "Heba-Allah";
         data["LastName"] = "Mohamed";
         data["PhoneNumber"] = "01220200683";
@@ -687,22 +838,25 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Receptionist";
         data["PreviousExperience"] = PE;
-        data["HospitalID"] = "REHM1234";
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
         data["Department"] = "Receptionist";
 
-        var heba = new Receptionist(data);
-        Dictionary<string, object> h = new Dictionary<string, object>();
-        h[heba.HospitalID] = heba;
-        Employees["Receptionist"] = h;
-        IDsBeckups[heba.HospitalID] = heba.FullName;
+        var rouby = new HR();
+        rouby.StoreData(data, "Receptionist");
+
+        //var heba = new Receptionist(data);
+        //Dictionary<string, object> h = new Dictionary<string, object>();
+        //h[heba.HospitalID] = heba;
+        //Employees["Receptionist"] = h;
+        //IDsBeckups[heba.HospitalID] = heba.FullName;
     }
 
     public static void CreatAccountant() // bakr
     {
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["HospitalID"] = "ACMB1234";
         data["FirstName"] = "Mahmoud";
         data["LastName"] = "Bakr";
         data["PhoneNumber"] = "01220200683";
@@ -719,21 +873,24 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Accountant";
         data["PreviousExperience"] = PE;
-        data["HospitalID"] = "ACMB1234";
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
         data["Department"] = "Accountant";
 
-        var mahmoud = new Accountant(data);
-        Dictionary<string, object> m = new Dictionary<string, object>();
-        m[mahmoud.HospitalID] = mahmoud;
-        Employees["Accountant"] = m;
-        IDsBeckups[mahmoud.HospitalID] = mahmoud.FullName;
+        var rouby = new HR();
+        rouby.StoreData(data, "Accountant");
+
+        //var mahmoud = new Accountant(data);
+        //Dictionary<string, object> m = new Dictionary<string, object>();
+        //m[mahmoud.HospitalID] = mahmoud;
+        //Employees["Accountant"] = m;
+        //IDsBeckups[mahmoud.HospitalID] = mahmoud.FullName;
     }
     public static void CreatDoctor() // menna
     {
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["HospitalID"] = "DOMR1234";
         data["FirstName"] = "Menna-Allah";
         data["LastName"] = "Ragab";
         data["PhoneNumber"] = "01220200683";
@@ -750,21 +907,24 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Doctor";
         data["PreviousExperience"] = PE;
-        data["HospitalID"] = "DOMR1234";
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
         data["Department"] = "Doctor";
 
-        var menna = new Doctor(data);
-        Dictionary<string, object> m = new Dictionary<string, object>();
-        m[menna.HospitalID] = menna;
-        Employees["Doctor"] = m;
-        IDsBeckups[menna.HospitalID] = menna.FullName;
+        var rouby = new HR();
+        rouby.StoreData(data, "Doctor");
+
+        //var menna = new Doctor(data);
+        //Dictionary<string, object> m = new Dictionary<string, object>();
+        //m[menna.HospitalID] = menna;
+        //Employees["Doctor"] = m;
+        //IDsBeckups[menna.HospitalID] = menna.FullName;
     }
     public static void CreatPharmacist() // faten
     {
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["HospitalID"] = "PHFM1234";
         data["FirstName"] = "Faten";
         data["LastName"] = "Mohamed";
         data["PhoneNumber"] = "01220200683";
@@ -781,21 +941,24 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Pharmacist";
         data["PreviousExperience"] = PE;
-        data["HospitalID"] = "PHFM1234";
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
         data["Department"] = "Pharmacist";
 
-        var faten = new Pharmacist(data);
-        Dictionary<string, object> f = new Dictionary<string, object>();
-        f[faten.HospitalID] = faten;
-        Employees["Pharmacist"] = f;
-        IDsBeckups[faten.HospitalID] = faten.FullName;
+        var rouby = new HR();
+        rouby.StoreData(data, "Pharmacist");
+
+        //var faten = new Pharmacist(data);
+        //Dictionary<string, object> f = new Dictionary<string, object>();
+        //f[faten.HospitalID] = faten;
+        //Employees["Pharmacist"] = f;
+        //IDsBeckups[faten.HospitalID] = faten.FullName;
     }
     public static void CreatNurse() // radwa
     {
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["HospitalID"] = "NURM1234";
         data["FirstName"] = "Radwa";
         data["LastName"] = "Mohsen";
         data["PhoneNumber"] = "01220200683";
@@ -812,21 +975,24 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Nurse";
         data["PreviousExperience"] = PE;
-        data["HospitalID"] = "NURM1234";
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
         data["Department"] = "Nurse";
 
-        var radwa = new Nurse(data);
-        Dictionary<string, object> r = new Dictionary<string, object>();
-        r[radwa.HospitalID] = radwa;
-        Employees["Nurse"] = r;
-        IDsBeckups[radwa.HospitalID] = radwa.FullName;
+        var rouby = new HR();
+        rouby.StoreData(data, "Nurse");
+
+        //var radwa = new Nurse(data);
+        //Dictionary<string, object> r = new Dictionary<string, object>();
+        //r[radwa.HospitalID] = radwa;
+        //Employees["Nurse"] = r;
+        //IDsBeckups[radwa.HospitalID] = radwa.FullName;
     }
     public static void CreatRadiologist() // sara
     {
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+        data["HospitalID"] = "RASK1234";
         data["FirstName"] = "Sara";
         data["LastName"] = "Khamees";
         data["PhoneNumber"] = "01220200683";
@@ -843,16 +1009,18 @@ public class HR : Employee, WritingReports
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Radiologist";
         data["PreviousExperience"] = PE;
-        data["HospitalID"] = "RASK1234";
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
         data["Department"] = "Radiologist";
 
-        var sara = new Radiologist(data);
-        Dictionary<string, object> s = new Dictionary<string, object>();
-        s[sara.HospitalID] = sara;
-        Employees["Radiologist"] = s;
-        IDsBeckups[sara.HospitalID] = sara.FullName;
+        var rouby = new HR();
+        rouby.StoreData(data, "Radiologist");
+
+        //var sara = new Radiologist(data);
+        //Dictionary<string, object> s = new Dictionary<string, object>();
+        //s[sara.HospitalID] = sara;
+        //Employees["Radiologist"] = s;
+        //IDsBeckups[sara.HospitalID] = sara.FullName;
     }
 }

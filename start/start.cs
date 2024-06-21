@@ -1,9 +1,10 @@
 ﻿using hospital_classes;
-
+using OfficeOpenXml;
 internal partial class Start
 {
     private static void Main(string[] args)
     {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
         fakeDataBase();
 

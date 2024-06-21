@@ -17,3 +17,12 @@ D:\codez\uni projects\hospital system\start\obj\Debug\net8.0\refint\start.dll
 D:\codez\uni projects\hospital system\start\obj\Debug\net8.0\start.pdb
 D:\codez\uni projects\hospital system\start\obj\Debug\net8.0\start.genruntimeconfig.cache
 D:\codez\uni projects\hospital system\start\obj\Debug\net8.0\ref\start.dll
+D:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.csproj.AssemblyReference.cache
+D:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.GeneratedMSBuildEditorConfig.editorconfig
+D:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.AssemblyInfoInputs.cache
+D:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.AssemblyInfo.cs
+D:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.csproj.CoreCompileInputs.cache
+D:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.sourcelink.json
+D:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.dll
+D:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\refint\start.dll
+D:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.pdb

@@ -43,7 +43,7 @@ public class Employee : Person
         Department = "";
     }
     public Employee(Dictionary<string, dynamic> total, double raisesAndBouns = 0.0, bool salaryReceived = false)
-     : base(firstname: total["FirstName"], lastname: total["LastName"], phonenumber: total["PhoneNumber"], age: total["Age"], dateofbirth: total["DateOfBirth"], gender: total["Gender"], statue: total["Statue"], address: total["Address"], bloodtype: total["BloodType"])
+     : base(fullname: total["FullName"], phonenumber: total["PhoneNumber"], age: total["Age"], dateofbirth: total["DateOfBirth"], gender: total["Gender"], statue: total["Statue"], address: total["Address"], bloodtype: total["BloodType"])
     {
         SalaryReceived = salaryReceived;
         Bouns = raisesAndBouns;
