@@ -22,9 +22,9 @@ internal partial class Start
     {
         if (File.Exists("D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx"))
         {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     private static void fisrtLogin()
@@ -124,10 +124,8 @@ internal partial class Start
 
     private static void fakeDataBase()
     {
-        if (!HR.Employees.ContainsKey("Manager"))
-        {
-            HR.CrearManger();
-        }
+
+        HR.CreatManger();
         HR.creatHR();
         HR.CreatAccountant();
         HR.CreatReceptionist();

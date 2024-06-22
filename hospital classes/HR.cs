@@ -7,7 +7,7 @@ public class HR : Employee, WritingReports
 {
     static public Dictionary<string, Dictionary<string, object>> Employees = new Dictionary<string, Dictionary<string, object>>(); // will be used by the accountatnt to access the employees
     static private Dictionary<string, string> IDsBeckups = new Dictionary<string, string>(); // if someone forgot thier id
-    private Dictionary<string,int> WorkSheetIndex = new Dictionary<string, int>();
+    //private static Dictionary<string, int> WorkSheetIndex = new Dictionary<string, int>();
     private string[] jopTitles;
     public static int NumberofHR;
 
@@ -204,85 +204,100 @@ public class HR : Employee, WritingReports
 
     public void StoreData(Dictionary<string, dynamic> data, string department)
     {
-     string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
 
         using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
         {
             ExcelWorksheet sheet; // employe hole data sheet
             int col = 1;
-            bool firstTime = true;
-            if (!WorkSheetIndex.ContainsKey(department))
+
+            if (!EmployeeData.Workbook.Worksheets.Any(sheet => sheet.Name == department))
             {
                 sheet = EmployeeData.Workbook.Worksheets.Add(department);
-                WorkSheetIndex[department] = WorkSheetIndex.Count;
 
                 foreach (var key in data)
                 {
 
-                    if(key.Key == "PreviousExperience")
+                    if (key.Key == "PreviousExperience")
                     {
                         continue;
                     }
                     sheet.Cells[1, col].Value = key.Key;
+                    sheet.Cells[1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     col++;
                 }
 
             }
             else
             {
-                firstTime = false;
-                sheet = EmployeeData.Workbook.Worksheets[WorkSheetIndex[department]];
+                sheet = EmployeeData.Workbook.Worksheets[department];
             }
 
-            int row = sheet.Dimension.Rows + 1;
+            int row = sheet.Dimension.End.Row;
+            row++;
             foreach (var value in data)
             {
                 if (value.Key == "PreviousExperience")
                 {
                     continue;
                 }
-                sheet.Cells[row, col].Value = value;
+                sheet.Cells[row, col].Value = value.Value;
+                sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
                 col++;
             }
 
             ExcelWorksheet empSheet; // employee count sheet
-            if(!WorkSheetIndex.ContainsKey("Number of Employee"))
+            if (!EmployeeData.Workbook.Worksheets.Any(sheet => sheet.Name == "NumberOfEmployee"))
             {
-                empSheet = EmployeeData.Workbook.Worksheets.Add("Number of Employee");
-                WorkSheetIndex["Number of Employee"] = WorkSheetIndex.Count;
+                empSheet = EmployeeData.Workbook.Worksheets.Add("NumberOfEmployee");
                 col = 1;
-                foreach(var item in jopTitles)
+                foreach (var item in jopTitles)
                 {
                     empSheet.Cells[1, col].Value = item;
+                    empSheet.Cells[1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-                    if(item == department)
+                    if (item == department)
                     {
-                        empSheet.Cells[2,col].Value = 1;
+                        empSheet.Cells[2, col].Value = 1;
                     }
                     empSheet.Cells[2, col].Value = 0;
+                    empSheet.Cells[2, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
 
                     col++;
                 }
                 empSheet.Cells[1, col].Value = "Employee";
+                empSheet.Cells[1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
                 empSheet.Cells[2, col].Formula = $"=SUM(A2:{col - 1}2)";
+                empSheet.Cells[2, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
             }
             else
             {
-                empSheet = EmployeeData.Workbook.Worksheets[WorkSheetIndex["Number of Employee"]];
+                empSheet = EmployeeData.Workbook.Worksheets["NumberOfEmployee"];
+                int colCount = empSheet.Dimension.End.Column;
                 col = 1;
 
-                while (true)
+                while (col <= colCount)
                 {
-                    if (empSheet.Cells[1, col].Value == department)
+                    if(department == "Manger") break;
+
+                    if (empSheet.Cells[1, col].Value.ToString() == department)
                     {
-                        int val = (int)empSheet.Cells[2, col].Value;
+                        double val = (double)empSheet.Cells[2, col].Value;
                         empSheet.Cells[2, col].Value = val + 1;
+                        empSheet.Cells[2, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
                         break;
                     }
+                    col++;
                 }
+                
             }
 
-            if (firstTime)
+            if (!File.Exists(excelFilePath))
             {
                 EmployeeData.SaveAs(excelFilePath);
             }
@@ -292,15 +307,14 @@ public class HR : Employee, WritingReports
             }
         }
     }
-
     public void accessEmployeeExcelFile(string id, string deprtment, string field, object value) // edit a targted data
     {
         string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
             ExcelWorksheet sheet = package.Workbook.Worksheets[deprtment];
-            int colCount = sheet.Dimension.Columns;
-            int rowCount = sheet.Dimension.Rows;
+            int colCount = sheet.Dimension.End.Column;
+            int rowCount = sheet.Dimension.End.Row;
 
             for (int row = 2; row <= colCount; row++)
             {
@@ -311,6 +325,8 @@ public class HR : Employee, WritingReports
                         if (sheet.Cells[1, col].Value.ToString() == field)
                         {
                             sheet.Cells[row, col].Value = value;
+                            sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
                             package.Save();
                             return;
                         }
@@ -384,10 +400,10 @@ public class HR : Employee, WritingReports
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
-            ExcelWorksheet sheet = package.Workbook.Worksheets[WorkSheetIndex[department]];
+            ExcelWorksheet sheet = package.Workbook.Worksheets[department];
 
-            int rowConut = sheet.Dimension.Rows;
-            int colCount = sheet.Dimension.Columns;
+            int rowConut = sheet.Dimension.End.Row;
+            int colCount = sheet.Dimension.End.Column;
             for (int row = 2; row <= rowConut; row++)
             {
                 string target = sheet.Cells[row, 1].Value.ToString();
@@ -419,13 +435,13 @@ public class HR : Employee, WritingReports
         {
             ExcelWorksheet sheet = EmployeeData.Workbook.Worksheets["Number of Employee"];
 
-            int colCount = sheet.Dimension.Columns;
+            int colCount = sheet.Dimension.End.Column;
 
             for (int col = 1; col <= colCount; col++)
             {
                 Console.WriteLine($"{sheet.Cells[1, col].Value.ToString()}\t:\t{sheet.Cells[2, col].Value.ToString()}");
             }
-   
+
         }
     }
 
@@ -442,7 +458,7 @@ public class HR : Employee, WritingReports
                 break;
             }
             catch (Exception e)
-            {   
+            {
                 Console.WriteLine($"Exception {e.Message}");
                 Console.WriteLine("Employee not found");
                 Console.WriteLine("do you want to continue? (yes/no): ");
@@ -460,17 +476,17 @@ public class HR : Employee, WritingReports
         dynamic logoutTime = ThisEmployee["DailyLogoutTime"];
         dynamic workhours = ThisEmployee["WorkHours"];
 
-        if(loginTime == null)
+        if (loginTime == null)
         {
             int timeNow = DateTime.Now.Hour;
-            if(timeNow > 10)
+            if (timeNow > 10)
             {
                 Console.WriteLine($"{name} is abscent today");
                 return;
             }
         }
 
-        if(loginTime == null)
+        if (loginTime == null)
         {
             Console.WriteLine($"{name} has not log-out yet");
             return;
@@ -530,8 +546,8 @@ public class HR : Employee, WritingReports
         addTodayesReport(ThisEmployee["HospitalID"], report);
 
         // update the report fieald in employee data which hold the latest report.
-        accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"] ,"HRreport", report); 
-        
+        accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "HRreport", report);
+
     }
 
     private void creatNewXLSXfile() // create new excel file for the reports if not already exist
@@ -542,8 +558,10 @@ public class HR : Employee, WritingReports
         {
             ExcelWorksheet reportsSheet = package.Workbook.Worksheets.Add("Reports_Sheet");
             reportsSheet.Cells["A1"].Value = "ID";
+            reportsSheet.Cells["A1"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-        package.SaveAs(excelFilePath);
+
+            package.SaveAs(excelFilePath);
         }
     }
 
@@ -554,26 +572,34 @@ public class HR : Employee, WritingReports
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
             ExcelWorksheet reportsSheet = package.Workbook.Worksheets["Reports_Sheet"];
-            int colCount = reportsSheet.Dimension.Columns;
-            int rowCount = reportsSheet.Dimension.Rows;
+            int colCount = reportsSheet.Dimension.End.Column;
+            int rowCount = reportsSheet.Dimension.End.Row;
 
             for (int row = 2; row <= rowCount; row++)
             {
-                string target = reportsSheet.Cells[row,1].Value.ToString();
+                string target = reportsSheet.Cells[row, 1].Value.ToString();
                 if (target == id)
                 {
                     reportsSheet.Cells[1, colCount].Value = DateOnly.FromDateTime(DateTime.Now.Date);
+                    reportsSheet.Cells[1, colCount].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
                     reportsSheet.Cells[row, colCount + 1].Value = report;
+                    reportsSheet.Cells[row, colCount].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
                     package.SaveAs(excelFilePath);
                     return;
                 }
             }
             reportsSheet.Cells[rowCount + 1, 1].Value = id;
+            reportsSheet.Cells[rowCount + 1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
             for (int col = 2; col <= colCount; col++)
             {
                 reportsSheet.Cells[rowCount + 1, col].Value = $"first report at {DateTime.Now.Date.ToString()}";
+                reportsSheet.Cells[rowCount + 1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
             }
             reportsSheet.Cells[rowCount + 1, colCount + 1].Value = report;
+            reportsSheet.Cells[rowCount + 1, colCount + 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
             package.SaveAs(excelFilePath);
         }
     }
@@ -584,17 +610,17 @@ public class HR : Employee, WritingReports
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
             ExcelWorksheet sheet = package.Workbook.Worksheets[0];
-            int colCount = sheet.Dimension.Columns;
-            int rowCount = sheet.Dimension.Rows;
-            for (int row = 2;row <= rowCount; row++)
+            int colCount = sheet.Dimension.End.Column;
+            int rowCount = sheet.Dimension.End.Row;
+            for (int row = 2; row <= rowCount; row++)
             {
-                if (sheet.Cells[row,1].Value.ToString() == id)
+                if (sheet.Cells[row, 1].Value.ToString() == id)
                 {
-                    for (int col = 2;col <= colCount; col++)
+                    for (int col = 2; col <= colCount; col++)
                     {
-                        if ((DateOnly)sheet.Cells[1,col].Value == date)
+                        if ((DateOnly)sheet.Cells[1, col].Value == date)
                         {
-                            return sheet.Cells[row,col].Value.ToString();
+                            return sheet.Cells[row, col].Value.ToString();
                         }
                     }
                     Console.WriteLine($"Some thing wrong with this date {date.ToString()}!\nplz, make sure u entered it right");
@@ -614,7 +640,7 @@ public class HR : Employee, WritingReports
         var hr = new HR();
         return hr.searchDataByID(id.ToUpper());
     }
-    public static Dictionary<string,dynamic> searchEmployee() // for inner methods in this namespace
+    public static Dictionary<string, dynamic> searchEmployee() // for inner methods in this namespace
     {
         while (true)
         {
@@ -690,33 +716,33 @@ public class HR : Employee, WritingReports
             {
 
 
-                switch (id[0..2].ToLower())
+                switch (id[0..2])
                 {
-                    case "nu":
+                    case "NU":
                         sheet = package.Workbook.Worksheets["Nurse"];
                         rightID = false;
                         break;
-                    case "ph":
+                    case "PH":
                         sheet = package.Workbook.Worksheets["Pharmacist"];
                         rightID = false;
                         break;
-                    case "ra":
+                    case "RA":
                         sheet = package.Workbook.Worksheets["Radiologist"];
                         rightID = false;
                         break;
-                    case "re":
+                    case "RE":
                         sheet = package.Workbook.Worksheets["Receptionist"];
                         rightID = false;
                         break;
-                    case "do":
+                    case "DO":
                         sheet = package.Workbook.Worksheets["Doctor"];
                         rightID = false;
                         break;
-                    case "hr":
+                    case "HR":
                         sheet = package.Workbook.Worksheets["HR"];
                         rightID = false;
                         break;
-                    case "ac":
+                    case "AC":
                         sheet = package.Workbook.Worksheets["Accountant"];
                         rightID = false;
                         break;
@@ -731,8 +757,8 @@ public class HR : Employee, WritingReports
                         continue;
                 }
             }
-            int rowCount = sheet.Dimension.Rows;
-            int colCount = sheet.Dimension.Columns;
+            int rowCount = sheet.Dimension.End.Row;
+            int colCount = sheet.Dimension.End.Column;
             for (int row = 2; row <= rowCount; row++)
             {
                 string target = sheet.Cells[row, 1].Value.ToString();
@@ -760,16 +786,17 @@ public class HR : Employee, WritingReports
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
 
+            ExcelWorksheets sheets = package.Workbook.Worksheets; 
             ExcelWorksheet sheet = null;
 
             List<Dictionary<string, dynamic>> similarNames = new List<Dictionary<string, dynamic>>();
 
-            foreach (var item in WorkSheetIndex)
+            foreach (var item in sheets)
             {
-                sheet = package.Workbook.Worksheets[item.Value];
+                sheet = package.Workbook.Worksheets[item.Name];
 
-                int rowCount = sheet.Dimension.Rows;
-                int colCount = sheet.Dimension.Columns;
+                int rowCount = sheet.Dimension.End.Row;
+                int colCount = sheet.Dimension.End.Column;
                 for (int row = 2; row <= rowCount; row++)
                 {
                     string target = sheet.Cells[row, 2].Value.ToString();
@@ -839,7 +866,7 @@ public class HR : Employee, WritingReports
         {
             accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "Salary", rasieValue);
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
@@ -881,7 +908,7 @@ public class HR : Employee, WritingReports
     private string GetHrReport(string id)
     {
         Console.WriteLine("Enter the wanted date in yyyy-mm--dd");
-        while (true) 
+        while (true)
         {
             Console.Write("Enter date here : ");
             string stringdate = Console.ReadLine();
@@ -1023,7 +1050,7 @@ public class HR : Employee, WritingReports
         rouby.StoreData(data, "HR");
 
     }
-    public static void CrearManger() // alaa
+    public static void CreatManger() // alaa
     {
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
         data["HospitalID"] = "MAAS1234";
@@ -1046,7 +1073,7 @@ public class HR : Employee, WritingReports
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
-        data["Department"] = "Manager";
+        data["Department"] = "Manger";
 
         //other prop needed
         data["Bouns"] = 0.0;
@@ -1063,7 +1090,7 @@ public class HR : Employee, WritingReports
         data["Warnings"] = 0;
 
         var rouby = new HR();
-        rouby.StoreData(data, "Manager");
+        rouby.StoreData(data, "Manger");
 
     }
 
@@ -1318,7 +1345,7 @@ public class HR : Employee, WritingReports
         DateTime? date = null;
         data["DailyLoginTime"] = date;
         data["DailyLogoutTime"] = date;
-        
+
         data["HRreport"] = string.Empty;
         data["SalaryReceived"] = false;
         data["Warnings"] = 0;

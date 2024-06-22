@@ -22,8 +22,12 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -32,7 +36,7 @@
               "RelativeDocumentMoniker": "start\\start.cs",
               "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\start\\start.cs",
               "RelativeToolTip": "start\\start.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "ViewState": "AQIAABsAAAAAAAAAAAAYwB4AAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-06-22T00:18:14.448Z",
               "EditorCaption": ""
@@ -47,12 +51,7 @@
               "RelativeToolTip": "hospital classes\\Patient.cs",
               "ViewState": "AQIAAB4AAAAAAAAAAAAIwC4AAAAgAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-22T00:16:13.17Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+              "WhenOpened": "2024-06-22T00:16:13.17Z"
             },
             {
               "$type": "Document",
@@ -64,8 +63,7 @@
               "RelativeToolTip": "hospital classes\\Person.cs",
               "ViewState": "AQIAAA0AAAAAAAAAAAA4wBwAAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-20T23:34:22.225Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-06-20T23:34:22.225Z"
             }
           ]
         }
