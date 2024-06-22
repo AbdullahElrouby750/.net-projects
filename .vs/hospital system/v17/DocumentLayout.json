@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "D:\\codez\\uni projects\\hospital system my work\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|d:\\codez\\uni projects\\hospital system my work\\hospital classes\\hr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|solutionrelative:hospital classes\\hr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|d:\\codez\\uni projects\\hospital system my work\\hospital classes\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|solutionrelative:hospital classes\\employee.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{EEACD304-737D-43C6-B881-1B74F41B652D}|start\\start.csproj|d:\\codez\\uni projects\\hospital system my work\\start\\start.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{EEACD304-737D-43C6-B881-1B74F41B652D}|start\\start.csproj|solutionrelative:start\\start.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|d:\\codez\\uni projects\\hospital system my work\\hospital classes\\person.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|solutionrelative:hospital classes\\person.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|d:\\codez\\uni projects\\hospital system my work\\hospital classes\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|solutionrelative:hospital classes\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,32 +22,32 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Employee.cs",
-              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Employee.cs",
-              "RelativeDocumentMoniker": "hospital classes\\Employee.cs",
-              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Employee.cs",
-              "RelativeToolTip": "hospital classes\\Employee.cs",
-              "ViewState": "AQIAACgAAAAAAAAAAAAQwDUAAAAmAAAA",
+              "DocumentIndex": 0,
+              "Title": "start.cs",
+              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\start\\start.cs",
+              "RelativeDocumentMoniker": "start\\start.cs",
+              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\start\\start.cs",
+              "RelativeToolTip": "start\\start.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-21T00:13:58.709Z",
+              "WhenOpened": "2024-06-22T00:18:14.448Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Person.cs",
-              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Person.cs",
-              "RelativeDocumentMoniker": "hospital classes\\Person.cs",
-              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Person.cs",
-              "RelativeToolTip": "hospital classes\\Person.cs",
-              "ViewState": "AQIAAA0AAAAAAAAAAAAiwBQAAAAMAAAA",
+              "Title": "Patient.cs",
+              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Patient.cs",
+              "RelativeDocumentMoniker": "hospital classes\\Patient.cs",
+              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Patient.cs",
+              "RelativeToolTip": "hospital classes\\Patient.cs",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAIwC4AAAAgAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-20T23:34:22.225Z",
+              "WhenOpened": "2024-06-22T00:16:13.17Z",
               "EditorCaption": ""
             },
             {
@@ -56,15 +56,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "HR.cs",
-              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\HR.cs",
-              "RelativeDocumentMoniker": "hospital classes\\HR.cs",
-              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\HR.cs",
-              "RelativeToolTip": "hospital classes\\HR.cs",
-              "ViewState": "AQIAAEUBAAAAAAAAAAAWwFABAAAcAAAA",
+              "DocumentIndex": 1,
+              "Title": "Person.cs",
+              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Person.cs",
+              "RelativeDocumentMoniker": "hospital classes\\Person.cs",
+              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Person.cs",
+              "RelativeToolTip": "hospital classes\\Person.cs",
+              "ViewState": "AQIAAA0AAAAAAAAAAAA4wBwAAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-20T19:48:20.163Z",
+              "WhenOpened": "2024-06-20T23:34:22.225Z",
               "EditorCaption": ""
             }
           ]

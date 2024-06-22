@@ -54,7 +54,7 @@ public class HR : Employee, WritingReports
 
         StoreData(data, jopTitles[jopIndex]);
     }
-    public Dictionary<string, dynamic> GetNewEmployeesData(string department)
+    public Dictionary<string, dynamic> GetNewEmployeesData(string department) // get new date from employee
     {
         Dictionary<string, dynamic> Data = new Dictionary<string, dynamic>();
 
@@ -161,6 +161,20 @@ public class HR : Employee, WritingReports
 
         Data["Department"] = department;
 
+        //other prop needed
+        Data["Bouns"] = 0.0;
+
+        TimeSpan? time = null;
+        Data["WorkHours"] = time;
+
+        DateTime? date = null;
+        Data["DailyLoginTime"] = date;
+        Data["DailyLogoutTime"] = date;
+
+        Data["HRreport"] = string.Empty;
+        Data["SalaryReceived"] = false;
+        Data["Warnings"] = 0;
+
         return Data;
     }
 
@@ -194,7 +208,7 @@ public class HR : Employee, WritingReports
 
         using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
         {
-            ExcelWorksheet sheet;
+            ExcelWorksheet sheet; // employe hole data sheet
             int col = 1;
             bool firstTime = true;
             if (!WorkSheetIndex.ContainsKey(department))
@@ -204,9 +218,15 @@ public class HR : Employee, WritingReports
 
                 foreach (var key in data)
                 {
+
+                    if(key.Key == "PreviousExperience")
+                    {
+                        continue;
+                    }
                     sheet.Cells[1, col].Value = key.Key;
                     col++;
                 }
+
             }
             else
             {
@@ -217,9 +237,51 @@ public class HR : Employee, WritingReports
             int row = sheet.Dimension.Rows + 1;
             foreach (var value in data)
             {
+                if (value.Key == "PreviousExperience")
+                {
+                    continue;
+                }
                 sheet.Cells[row, col].Value = value;
                 col++;
             }
+
+            ExcelWorksheet empSheet; // employee count sheet
+            if(!WorkSheetIndex.ContainsKey("Number of Employee"))
+            {
+                empSheet = EmployeeData.Workbook.Worksheets.Add("Number of Employee");
+                WorkSheetIndex["Number of Employee"] = WorkSheetIndex.Count;
+                col = 1;
+                foreach(var item in jopTitles)
+                {
+                    empSheet.Cells[1, col].Value = item;
+
+                    if(item == department)
+                    {
+                        empSheet.Cells[2,col].Value = 1;
+                    }
+                    empSheet.Cells[2, col].Value = 0;
+
+                    col++;
+                }
+                empSheet.Cells[1, col].Value = "Employee";
+                empSheet.Cells[2, col].Formula = $"=SUM(A2:{col - 1}2)";
+            }
+            else
+            {
+                empSheet = EmployeeData.Workbook.Worksheets[WorkSheetIndex["Number of Employee"]];
+                col = 1;
+
+                while (true)
+                {
+                    if (empSheet.Cells[1, col].Value == department)
+                    {
+                        int val = (int)empSheet.Cells[2, col].Value;
+                        empSheet.Cells[2, col].Value = val + 1;
+                        break;
+                    }
+                }
+            }
+
             if (firstTime)
             {
                 EmployeeData.SaveAs(excelFilePath);
@@ -230,6 +292,38 @@ public class HR : Employee, WritingReports
             }
         }
     }
+
+    public void accessEmployeeExcelFile(string id, string deprtment, string field, object value) // edit a targted data
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet sheet = package.Workbook.Worksheets[deprtment];
+            int colCount = sheet.Dimension.Columns;
+            int rowCount = sheet.Dimension.Rows;
+
+            for (int row = 2; row <= colCount; row++)
+            {
+                if (sheet.Cells[row, 1].Value.ToString() == id)
+                {
+                    for (int col = 0; col <= colCount; col++)
+                    {
+                        if (sheet.Cells[1, col].Value.ToString() == field)
+                        {
+                            sheet.Cells[row, col].Value = value;
+                            package.Save();
+                            return;
+                        }
+                    }
+
+                }
+            }
+            Console.WriteLine($"{id} not in the data!\nMake sure u entered it right");
+            return;
+        }
+    }
+
+
 
     //*********************************************************************Firing proccesses****************************************************************
 
@@ -284,7 +378,7 @@ public class HR : Employee, WritingReports
         } while (true);
     }
 
-    private bool deleteData(string id, string department)
+    private bool deleteData(string id, string department) // delete from database
     {
         string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
 
@@ -304,6 +398,7 @@ public class HR : Employee, WritingReports
                     try
                     {
                         sheet.DeleteRow(targetRow);
+                        package.Save();
                         return true;
                     }
                     catch (Exception ex)
@@ -316,25 +411,29 @@ public class HR : Employee, WritingReports
         }
     }
     //*********************************************************************Counting employee****************************************************************
-    public static int numberOfEmployyes()
+    public static void numberOfEmployyes()
     {
-        Console.WriteLine($"Number of total employees:\t {NumberOfEmployees}");
-        Console.WriteLine($"Number of total receptionists:\t {Receptionist.NumberofReceptionist}");
-        Console.WriteLine($"Number of total HRs:\t {NumberofHR}");
-        Console.WriteLine($"Number of total accountants:\t {Accountant.NumberOfAccountant}");
-        Console.WriteLine($"Number of total doctors:\t {Doctor.numberOfDoctors}");
-        Console.WriteLine($"Number of total Pharmacists:\t {Pharmacist.NumberOfPharmacists}");
-        Console.WriteLine($"Number of total nurses:\t {Nurse.NumberOfNurses}");
-        Console.WriteLine($"Number of total radiologists:\t {Radiologist.numberOfRadiologist}");
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
 
-        return NumberOfEmployees;
+        using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet sheet = EmployeeData.Workbook.Worksheets["Number of Employee"];
+
+            int colCount = sheet.Dimension.Columns;
+
+            for (int col = 1; col <= colCount; col++)
+            {
+                Console.WriteLine($"{sheet.Cells[1, col].Value.ToString()}\t:\t{sheet.Cells[2, col].Value.ToString()}");
+            }
+   
+        }
     }
 
     //*********************************************************************preformance reports****************************************************************
     public void WriteReport() // feutures !!! make this a work hours auto checker methods and the preformance method check the work quality of every employee
     {
         string report = string.Empty;
-        object ThisEmployee;
+        Dictionary<String, dynamic> ThisEmployee = new Dictionary<string, dynamic>();
         while (true)
         {
             try
@@ -354,26 +453,30 @@ public class HR : Employee, WritingReports
             }
         }
 
+        string name = ThisEmployee["FullName"];
+        dynamic salary = ThisEmployee["Salary"];
 
-        dynamic name = ThisEmployee.GetType().GetProperty("FullName")?.GetValue(ThisEmployee)!;
-        dynamic salary = ThisEmployee.GetType().GetProperty("Salary")?.GetValue(ThisEmployee)!;
+        dynamic loginTime = ThisEmployee["DailyLoginTime"];
+        dynamic logoutTime = ThisEmployee["DailyLogoutTime"];
+        dynamic workhours = ThisEmployee["WorkHours"];
 
-        dynamic loginTime = ThisEmployee.GetType().GetProperty("DailyLoginTime")?.GetValue(ThisEmployee)!;
-        dynamic logoutTime = ThisEmployee.GetType().GetProperty("DailyLogoutTime")?.GetValue(ThisEmployee)!;
-        dynamic workhours = ThisEmployee.GetType().GetProperty("WorkHours")?.GetValue(ThisEmployee)!;
-
-        TimeSpan elapsedTime = new TimeSpan(0, 0, 0);
-        try
+        if(loginTime == null)
         {
-            elapsedTime = logoutTime - loginTime;
-
+            int timeNow = DateTime.Now.Hour;
+            if(timeNow > 10)
+            {
+                Console.WriteLine($"{name} is abscent today");
+                return;
+            }
         }
-        catch (Exception)
+
+        if(loginTime == null)
         {
             Console.WriteLine($"{name} has not log-out yet");
             return;
-
         }
+
+        TimeSpan elapsedTime = logoutTime - loginTime;
 
         // login and logout time will be added in the future!!!
         double deductionAndBounsPercentage;
@@ -385,7 +488,7 @@ public class HR : Employee, WritingReports
             int warning;
             try
             {
-                warning = int.Parse(ThisEmployee.GetType().GetProperty("Warnings")?.GetValue(ThisEmployee)!.ToString()!);
+                warning = ThisEmployee["Warnings"];
             }
             catch (Exception)
             {
@@ -395,13 +498,13 @@ public class HR : Employee, WritingReports
             if (warning < 3)
             {
                 warning++;
-                ThisEmployee.GetType().GetProperty("Warnings")?.SetValue(ThisEmployee, warning);
+                ThisEmployee["Warnings"] = warning;
                 report += $"{name} logged in at {loginTime}\n{name} logged out at {logoutTime}\n{name} today work hours {elapsedTime}\nanother worning sent.\n{name} has {warning} warnings now";
             }
             else
             {
-                ThisEmployee.GetType().GetProperty("Warnings")?.SetValue(ThisEmployee, 0);
-                ThisEmployee.GetType().GetProperty("Bouns")?.SetValue(ThisEmployee, salary * -deductionAndBounsPercentage); //deduction after 3 warnengs only
+                ThisEmployee["Warnings"] = 0;
+                ThisEmployee["Bouns"] = salary * -deductionAndBounsPercentage; //deduction after 3 warnengs only
                 report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n{name} has already passed the limited warning.\n Applying deduction by 5% = {salary * deductionAndBounsPercentage}\n{name} has 0 warnings now";
             }
         }
@@ -409,7 +512,7 @@ public class HR : Employee, WritingReports
         {
             deductionAndBounsPercentage = 0.05;
             double bounsvalue = (elapsedTime - workhours) * deductionAndBounsPercentage * salary;
-            ThisEmployee.GetType().GetProperty("Bouns")?.SetValue(ThisEmployee, bounsvalue);
+            ThisEmployee["Bouns"] = bounsvalue;
             report += $"{name} logged in at {loginTime}.\n{name} logged out at {logoutTime}.\n{name} today work hours {workhours}.\n Adding bouns by 5%{bounsvalue}.";
         }
         else
@@ -419,8 +522,90 @@ public class HR : Employee, WritingReports
 
         var timeWritten = DateTime.Now;
         report += $"\n\nHR : {FullName}\nDate : {timeWritten}";
-        ThisEmployee.GetType().GetProperty("HRreport")?.SetValue(ThisEmployee, report);
+        ThisEmployee["HRreport"] = report;
+
+        if (!File.Exists("D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx")) creatNewXLSXfile();
+
+        // store the reoprt in the report sheet
+        addTodayesReport(ThisEmployee["HospitalID"], report);
+
+        // update the report fieald in employee data which hold the latest report.
+        accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"] ,"HRreport", report); 
+        
     }
+
+    private void creatNewXLSXfile() // create new excel file for the reports if not already exist
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx";
+
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet reportsSheet = package.Workbook.Worksheets.Add("Reports_Sheet");
+            reportsSheet.Cells["A1"].Value = "ID";
+
+        package.SaveAs(excelFilePath);
+        }
+    }
+
+    private void addTodayesReport(string id, string report) // add newest report to target id
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx";
+
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet reportsSheet = package.Workbook.Worksheets["Reports_Sheet"];
+            int colCount = reportsSheet.Dimension.Columns;
+            int rowCount = reportsSheet.Dimension.Rows;
+
+            for (int row = 2; row <= rowCount; row++)
+            {
+                string target = reportsSheet.Cells[row,1].Value.ToString();
+                if (target == id)
+                {
+                    reportsSheet.Cells[1, colCount].Value = DateOnly.FromDateTime(DateTime.Now.Date);
+                    reportsSheet.Cells[row, colCount + 1].Value = report;
+                    package.SaveAs(excelFilePath);
+                    return;
+                }
+            }
+            reportsSheet.Cells[rowCount + 1, 1].Value = id;
+            for (int col = 2; col <= colCount; col++)
+            {
+                reportsSheet.Cells[rowCount + 1, col].Value = $"first report at {DateTime.Now.Date.ToString()}";
+            }
+            reportsSheet.Cells[rowCount + 1, colCount + 1].Value = report;
+            package.SaveAs(excelFilePath);
+        }
+    }
+
+    public string getDataFromReportExcelFile(string id, DateOnly? date) // get the targeted report for an employee
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx";
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet sheet = package.Workbook.Worksheets[0];
+            int colCount = sheet.Dimension.Columns;
+            int rowCount = sheet.Dimension.Rows;
+            for (int row = 2;row <= rowCount; row++)
+            {
+                if (sheet.Cells[row,1].Value.ToString() == id)
+                {
+                    for (int col = 2;col <= colCount; col++)
+                    {
+                        if ((DateOnly)sheet.Cells[1,col].Value == date)
+                        {
+                            return sheet.Cells[row,col].Value.ToString();
+                        }
+                    }
+                    Console.WriteLine($"Some thing wrong with this date {date.ToString()}!\nplz, make sure u entered it right");
+                    return null;
+                }
+            }
+            Console.WriteLine($"This id {id} does not exist in the data!\nPlz. make sure u entered it right");
+            return null;
+        }
+    }
+
 
     //*********************************************************************search employee****************************************************************
 
@@ -429,7 +614,7 @@ public class HR : Employee, WritingReports
         var hr = new HR();
         return hr.searchDataByID(id.ToUpper());
     }
-    public static Dictionary<string,dynamic> searchEmployee()
+    public static Dictionary<string,dynamic> searchEmployee() // for inner methods in this namespace
     {
         while (true)
         {
@@ -646,12 +831,18 @@ public class HR : Employee, WritingReports
     {
         var ThisEmployee = searchEmployee();
 
-        dynamic startDate = ThisEmployee.GetType().GetProperty("StartingDate")?.GetValue(ThisEmployee)!;
+        dynamic startDate = ThisEmployee["StartingDate"];
         TimeSpan yearsSpent = DateTime.Now.Year - startDate.Year;
 
         double rasieValue = yearsSpent.Days / 365 * 0.2;
-
-        ThisEmployee.GetType().GetProperty("Salary")?.SetValue(ThisEmployee, rasieValue);
+        try
+        {
+            accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "Salary", rasieValue);
+        }
+        catch (Exception ex) 
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 
 
@@ -661,14 +852,51 @@ public class HR : Employee, WritingReports
     //*********************************************************************print hr report****************************************************************
     public void PrintHRreport()
     {
-        if (!string.IsNullOrWhiteSpace(HRreport))
+        Console.WriteLine("\n1. Latest report");
+        Console.WriteLine("2. Date's report");
+
+        while (true)
         {
-            Console.WriteLine(HRreport);
-            HRreport = string.Empty;
+            Console.Write("Choose : ");
+            int choice = int.Parse(Console.ReadLine());
+            if (choice == 1)
+            {
+
+                Console.WriteLine(HRreport);
+                return;
+            }
+            else if (choice == 2)
+            {
+                Console.WriteLine(GetHrReport(HospitalID));
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Plz enter a valid Choice!");
+            }
         }
-        else
+
+    }
+
+    private string GetHrReport(string id)
+    {
+        Console.WriteLine("Enter the wanted date in yyyy-mm--dd");
+        while (true) 
         {
-            Console.WriteLine("No repors yet for this month");
+            Console.Write("Enter date here : ");
+            string stringdate = Console.ReadLine();
+            DateOnly? date = null;
+            try
+            {
+                date = DateOnly.Parse(stringdate);
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Plz, enter the date in the right formate");
+                continue;
+            }
+            return getDataFromReportExcelFile(id, date);
         }
     }
 
@@ -682,6 +910,8 @@ public class HR : Employee, WritingReports
             Console.WriteLine($"Your main salary: {Salary}");
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
+
+            accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
         }
         else
         {
@@ -694,6 +924,7 @@ public class HR : Employee, WritingReports
     {
         DailyLoginTime = DateTime.Now;
         Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
+        accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
     }
 
 
@@ -725,9 +956,11 @@ public class HR : Employee, WritingReports
                 }
             }
         }
+        DailyLogoutTime = DateTime.Now;
+        Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
+        accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
     }
     //*********************************************************************others****************************************************************
-
 
     public void PrintIDS()
     {
@@ -772,16 +1005,23 @@ public class HR : Employee, WritingReports
         data["Specialization"] = string.Empty;
         data["Department"] = "HR";
 
+        //other prop needed
+        data["Bouns"] = 0.0;
+
+        TimeSpan? time = null;
+        data["WorkHours"] = time;
+
+        DateTime? date = null;
+        data["DailyLoginTime"] = date;
+        data["DailyLogoutTime"] = date;
+
+        data["HRreport"] = string.Empty;
+        data["SalaryReceived"] = false;
+        data["Warnings"] = 0;
 
         var rouby = new HR();
         rouby.StoreData(data, "HR");
 
-        //Dictionary<string, object> r = new Dictionary<string, object>();
-        //r[rouby.HospitalID] = rouby;
-        //Employees["HR"] = r;
-        //IDsBeckups[rouby.HospitalID] = rouby.FullName;
-
-        // Employees["HR"][rouby.HospitalID] = rouby;
     }
     public static void CrearManger() // alaa
     {
@@ -808,14 +1048,23 @@ public class HR : Employee, WritingReports
         data["Specialization"] = string.Empty;
         data["Department"] = "Manager";
 
+        //other prop needed
+        data["Bouns"] = 0.0;
+
+        TimeSpan? time = null;
+        data["WorkHours"] = time;
+
+        DateTime? date = null;
+        data["DailyLoginTime"] = date;
+        data["DailyLogoutTime"] = date;
+
+        data["HRreport"] = string.Empty;
+        data["SalaryReceived"] = false;
+        data["Warnings"] = 0;
+
         var rouby = new HR();
         rouby.StoreData(data, "Manager");
 
-        //var alaa = new Manger(data);
-        //Dictionary<string, object> s = new Dictionary<string, object>();
-        //s[alaa.HospitalID] = alaa;
-        //Employees["Manager"] = s;
-        //IDsBeckups[alaa.HospitalID] = alaa.FullName;
     }
 
     public static void CreatReceptionist() // heba
@@ -843,14 +1092,23 @@ public class HR : Employee, WritingReports
         data["Specialization"] = string.Empty;
         data["Department"] = "Receptionist";
 
+        //other prop needed
+        data["Bouns"] = 0.0;
+
+        TimeSpan? time = null;
+        data["WorkHours"] = time;
+
+        DateTime? date = null;
+        data["DailyLoginTime"] = date;
+        data["DailyLogoutTime"] = date;
+
+        data["HRreport"] = string.Empty;
+        data["SalaryReceived"] = false;
+        data["Warnings"] = 0;
+
         var rouby = new HR();
         rouby.StoreData(data, "Receptionist");
 
-        //var heba = new Receptionist(data);
-        //Dictionary<string, object> h = new Dictionary<string, object>();
-        //h[heba.HospitalID] = heba;
-        //Employees["Receptionist"] = h;
-        //IDsBeckups[heba.HospitalID] = heba.FullName;
     }
 
     public static void CreatAccountant() // bakr
@@ -878,14 +1136,24 @@ public class HR : Employee, WritingReports
         data["Specialization"] = string.Empty;
         data["Department"] = "Accountant";
 
+        //other prop needed
+        data["Bouns"] = 0.0;
+
+        TimeSpan? time = null;
+        data["WorkHours"] = time;
+
+        DateTime? date = null;
+        data["DailyLoginTime"] = date;
+        data["DailyLogoutTime"] = date;
+
+        data["HRreport"] = string.Empty;
+        data["SalaryReceived"] = false;
+        data["Warnings"] = 0;
+
         var rouby = new HR();
         rouby.StoreData(data, "Accountant");
 
-        //var mahmoud = new Accountant(data);
-        //Dictionary<string, object> m = new Dictionary<string, object>();
-        //m[mahmoud.HospitalID] = mahmoud;
-        //Employees["Accountant"] = m;
-        //IDsBeckups[mahmoud.HospitalID] = mahmoud.FullName;
+
     }
     public static void CreatDoctor() // menna
     {
@@ -912,14 +1180,23 @@ public class HR : Employee, WritingReports
         data["Specialization"] = string.Empty;
         data["Department"] = "Doctor";
 
+        //other prop needed
+        data["Bouns"] = 0.0;
+
+        TimeSpan? time = null;
+        data["WorkHours"] = time;
+
+        DateTime? date = null;
+        data["DailyLoginTime"] = date;
+        data["DailyLogoutTime"] = date;
+
+        data["HRreport"] = string.Empty;
+        data["SalaryReceived"] = false;
+        data["Warnings"] = 0;
+
         var rouby = new HR();
         rouby.StoreData(data, "Doctor");
 
-        //var menna = new Doctor(data);
-        //Dictionary<string, object> m = new Dictionary<string, object>();
-        //m[menna.HospitalID] = menna;
-        //Employees["Doctor"] = m;
-        //IDsBeckups[menna.HospitalID] = menna.FullName;
     }
     public static void CreatPharmacist() // faten
     {
@@ -946,14 +1223,23 @@ public class HR : Employee, WritingReports
         data["Specialization"] = string.Empty;
         data["Department"] = "Pharmacist";
 
+        //other prop needed
+        data["Bouns"] = 0.0;
+
+        TimeSpan? time = null;
+        data["WorkHours"] = time;
+
+        DateTime? date = null;
+        data["DailyLoginTime"] = date;
+        data["DailyLogoutTime"] = date;
+
+        data["HRreport"] = string.Empty;
+        data["SalaryReceived"] = false;
+        data["Warnings"] = 0;
+
         var rouby = new HR();
         rouby.StoreData(data, "Pharmacist");
 
-        //var faten = new Pharmacist(data);
-        //Dictionary<string, object> f = new Dictionary<string, object>();
-        //f[faten.HospitalID] = faten;
-        //Employees["Pharmacist"] = f;
-        //IDsBeckups[faten.HospitalID] = faten.FullName;
     }
     public static void CreatNurse() // radwa
     {
@@ -980,14 +1266,23 @@ public class HR : Employee, WritingReports
         data["Specialization"] = string.Empty;
         data["Department"] = "Nurse";
 
+        //other prop needed
+        data["Bouns"] = 0.0;
+
+        TimeSpan? time = null;
+        data["WorkHours"] = time;
+
+        DateTime? date = null;
+        data["DailyLoginTime"] = date;
+        data["DailyLogoutTime"] = date;
+
+        data["HRreport"] = string.Empty;
+        data["SalaryReceived"] = false;
+        data["Warnings"] = 0;
+
         var rouby = new HR();
         rouby.StoreData(data, "Nurse");
 
-        //var radwa = new Nurse(data);
-        //Dictionary<string, object> r = new Dictionary<string, object>();
-        //r[radwa.HospitalID] = radwa;
-        //Employees["Nurse"] = r;
-        //IDsBeckups[radwa.HospitalID] = radwa.FullName;
     }
     public static void CreatRadiologist() // sara
     {
@@ -1014,13 +1309,22 @@ public class HR : Employee, WritingReports
         data["Specialization"] = string.Empty;
         data["Department"] = "Radiologist";
 
+        //other prop needed
+        data["Bouns"] = 0.0;
+
+        TimeSpan? time = null;
+        data["WorkHours"] = time;
+
+        DateTime? date = null;
+        data["DailyLoginTime"] = date;
+        data["DailyLogoutTime"] = date;
+        
+        data["HRreport"] = string.Empty;
+        data["SalaryReceived"] = false;
+        data["Warnings"] = 0;
+
         var rouby = new HR();
         rouby.StoreData(data, "Radiologist");
 
-        //var sara = new Radiologist(data);
-        //Dictionary<string, object> s = new Dictionary<string, object>();
-        //s[sara.HospitalID] = sara;
-        //Employees["Radiologist"] = s;
-        //IDsBeckups[sara.HospitalID] = sara.FullName;
     }
 }

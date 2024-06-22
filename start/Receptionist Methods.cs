@@ -4,9 +4,10 @@ internal partial class Start
 {
     private static bool ReceptionistWorkSpace(string id)
     {
-        if (HR.searchEmployee(id) is Receptionist receptionist)
+        var data = HR.searchEmployee(id);
+        if (data != null)
         {
-
+            var receptionist = new Receptionist(data);
             while (true)
             {
                 Console.WriteLine("\nChoose a jop from the list below :-\n");

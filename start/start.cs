@@ -13,14 +13,6 @@ internal partial class Start
         while (true)
         {
             login();
-            // if (Console.ReadKey(true).Key == ConsoleKey.Escape)
-            // {
-            //     break;
-            // }
-            // else
-            // {
-            //     continue;
-            // }
         }
 
 
@@ -28,7 +20,7 @@ internal partial class Start
     }
     private static bool isFirstLogin()
     {
-        if (HR.Employees.Count == 0)
+        if (File.Exists("D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx"))
         {
             return true;
         }

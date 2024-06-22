@@ -6,16 +6,23 @@ internal partial class Start
     private static bool DoctorsAndRadiologistWorkSpace(string id)
     {
         dynamic DocOrRad;
-
-        if (HR.searchEmployee(id) is Doctor doctor)
+        var data = HR.searchEmployee(id);
+        if (data != null)
         {
-            DocOrRad = doctor;
+            if (id[0..2].ToUpper() == "DO")
+            {
+                DocOrRad = new Doctor(data);
+            }
+            else if (id[0..2].ToUpper() == "RA")
+            {
+                DocOrRad = new Radiologist(data);
+            }
+            else
+            {
+                Console.Write($"\n\n{id} is invalid. plz, enter a valid one: ");
+                return false;
+            }
         }
-        else if (HR.searchEmployee(id) is Radiologist radiologist)
-        {
-            DocOrRad = radiologist;
-        }
-
         else
         {
             Console.Write($"\n\n{id} is invalid. plz, enter a valid one: ");

@@ -44,7 +44,7 @@ public class Patient : Person
     }
 
     public Patient(Dictionary<string, dynamic> patientInfo)
-        : base(patientInfo["FirstName"], patientInfo["LastName"], patientInfo["PhoneNumber"], patientInfo["Age"], patientInfo["DateOfBirth"], patientInfo["Gender"], patientInfo["Statue"], patientInfo["Address"], patientInfo["BloodType"])
+        : base(patientInfo["FullName"], patientInfo["PhoneNumber"], patientInfo["Age"], patientInfo["DateOfBirth"], patientInfo["Gender"], patientInfo["Statue"], patientInfo["Address"], patientInfo["BloodType"])
     {
         Weight = patientInfo["Weight"];
         Height = patientInfo["Height"];

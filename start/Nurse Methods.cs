@@ -4,8 +4,10 @@ internal partial class Start
 {
     private static bool NurseWorkspace(string id)
     {
-        if (HR.searchEmployee(id) is Nurse nurse)
+        var data = HR.searchEmployee(id);
+        if (data != null)
         {
+            var nurse = new Nurse(data);
             while (true)
             {
                 Console.WriteLine("\nChoose a jop from the list below :-\n");

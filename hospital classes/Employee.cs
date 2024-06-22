@@ -5,10 +5,11 @@ public class Employee : Person
 
     public double Salary { get; set; }
     public double Bouns { get; set; }
-    public List<Dictionary<DateOnly, int>> DailyWorkHours { get; set; }
-    public TimeSpan WorkHours { get; set; }
-    public DateTime? DailyLoginTime { get; set; }
-    public DateTime? DailyLogoutTime { get; set; }
+   //public List<Dictionary<DateOnly, int>> DailyWorkHours { get; set; }
+   public TimeSpan WorkHours { get; set; }
+   public DateTime? DailyLoginTime { get; set; }
+   public DateTime? DailyLogoutTime { get; set; }
+
     public readonly DateOnly StartingDate;
     public string HRreport { get; set; }
     public int Experience { get; set; }
@@ -27,7 +28,7 @@ public class Employee : Person
     {
         Salary = 0.0;
         Bouns = 0.0;
-        DailyWorkHours = new List<Dictionary<DateOnly, int>>();
+        //DailyWorkHours = new List<Dictionary<DateOnly, int>>();
         Experience = 0;
         PreviousExperience = new Dictionary<string, string>();
         HospitalID = "xxxxxxxx";
