@@ -23,3 +23,6 @@ d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\
 d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\refint\hospital classes.dll
 d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.pdb
 d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\ref\hospital classes.dll
+d:\codez\uni projects\hospital system my work\hospital classes\bin\Debug\net8.0\hospital data.dll
+d:\codez\uni projects\hospital system my work\hospital classes\bin\Debug\net8.0\hospital data.pdb
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital.B4FCFA6D.Up2Date

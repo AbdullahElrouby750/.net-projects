@@ -17,8 +17,57 @@ public static class EmployeeData
 
         using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
         {
-            ExcelWorksheet sheet = null;
 
+            ExcelWorksheet PreviousExperienceSheet = null;
+            try
+            {
+                PreviousExperienceSheet = EmployeeData.Workbook.Worksheets["PreviousExperience"];
+                if (PreviousExperienceSheet == null)
+                {
+                    throw new ArgumentNullException(nameof(PreviousExperienceSheet));
+                }
+                PreviousExperienceSheet = AddEmployeePreviousExperince(excelFilePath, PreviousExperienceSheet, data["HospitalID"], data["PreviousExperience"]);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                PreviousExperienceSheet = EmployeeData.Workbook.Worksheets.Add("PreviousExperience");
+                PreviousExperienceSheet = CreateNewPreviousExperinceSheet(excelFilePath, PreviousExperienceSheet, data["HospitalID"], data["PreviousExperience"]);
+            }
+            catch (ArgumentNullException ex)
+            {
+                PreviousExperienceSheet = EmployeeData.Workbook.Worksheets.Add("PreviousExperience");
+                PreviousExperienceSheet = CreateNewPreviousExperinceSheet(excelFilePath, PreviousExperienceSheet, data["HospitalID"], data["PreviousExperience"]);
+            }
+
+            SaveFile(excelFilePath, EmployeeData);
+
+            ExcelWorksheet empSheet = null; // employee count sheet
+            try
+            {
+                empSheet = EmployeeData.Workbook.Worksheets["NumberOfEmployee"];
+                if (empSheet == null)
+                {
+                    throw new ArgumentNullException(nameof(empSheet));
+                }
+                empSheet = AddEmployeeToEmployeeCountSheet(empSheet, department);
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                empSheet = EmployeeData.Workbook.Worksheets.Add("NumberOfEmployee");
+                empSheet = CreateNewEmplyeeCountSheet(empSheet, department);
+                empSheet = AddEmployeeToEmployeeCountSheet(empSheet, department);
+            }
+            catch (ArgumentNullException ex)
+            {
+                empSheet = EmployeeData.Workbook.Worksheets.Add("NumberOfEmployee");
+                empSheet = CreateNewEmplyeeCountSheet(empSheet, department);
+                empSheet = AddEmployeeToEmployeeCountSheet(empSheet, department);
+            }
+
+            SaveFile(excelFilePath, EmployeeData);
+
+
+            ExcelWorksheet sheet = null; // employee data sheet
             try
             {
                 sheet = EmployeeData.Workbook.Worksheets[department];
@@ -29,48 +78,23 @@ public static class EmployeeData
 
                 if (IDAlreadyAdded(sheet, data["HospitalID"])) return;
 
-                AddToExcistingDepartment(sheet, data, excelFilePath);
+                sheet = AddToExcistingDepartment(sheet, EmployeeData, data, excelFilePath);
             }
             catch (IndexOutOfRangeException ex)
             {
                 sheet = EmployeeData.Workbook.Worksheets.Add(department);
-                CreateNewDepartmentsheet(sheet, data);
-                AddToExcistingDepartment(sheet, data, excelFilePath);
+                sheet = CreateNewDepartmentsheet(sheet, data);
+                sheet = AddToExcistingDepartment(sheet, EmployeeData, data, excelFilePath);
             }
             catch (ArgumentNullException ex)
             {
                 sheet = EmployeeData.Workbook.Worksheets.Add(department);
                 sheet = CreateNewDepartmentsheet(sheet, data);
-                AddToExcistingDepartment(sheet, data, excelFilePath);
+                sheet = AddToExcistingDepartment(sheet, EmployeeData, data, excelFilePath);
             }
 
             SaveFile(excelFilePath, EmployeeData);
 
-            ExcelWorksheet empSheet = null;
-
-            try
-            {
-                empSheet = EmployeeData.Workbook.Worksheets["NumberOfEmployee"];
-                if (empSheet == null)
-                {
-                    throw new ArgumentNullException(nameof(sheet));
-                }
-                empSheet = AddEmployeeToEmployeeCountSheet(empSheet, department);
-            }
-            catch (IndexOutOfRangeException ex)
-            {
-                empSheet = EmployeeData.Workbook.Worksheets.Add("NumberOfEmployee");
-                empSheet = CreateNewEmplyeeCountSheet(empSheet, department);
-                empSheet = AddEmployeeToEmployeeCountSheet(empSheet, department);
-            }
-            catch (ArgumentNullException ex)
-            {
-                empSheet = EmployeeData.Workbook.Worksheets.Add("NumberOfEmployee");
-                empSheet = CreateNewEmplyeeCountSheet(empSheet, department);
-                empSheet = AddEmployeeToEmployeeCountSheet(empSheet, department);
-            }
-
-            SaveFile(excelFilePath, EmployeeData);
         }
     }
 
@@ -80,7 +104,7 @@ public static class EmployeeData
         int col = 1;
         foreach (var key in data)
         {
-            if (key.Key == "PreviousExperience") // skip this sheet here and will be set in "AddToExcistingDepartment" Method
+            if (key.Key == "PreviousExperience")
             {
                 continue;
             }
@@ -93,7 +117,7 @@ public static class EmployeeData
     }
 
 
-    private static ExcelWorksheet AddToExcistingDepartment(ExcelWorksheet sheet, Dictionary<string, dynamic> data, string path) //Adds employees to to thier department that alreadyexist
+    private static ExcelWorksheet AddToExcistingDepartment(ExcelWorksheet sheet, ExcelPackage package, Dictionary<string, dynamic> data, string path) //Adds employees to to thier department that alreadyexist
     {
 
         int row = sheet.Dimension.End.Row;
@@ -104,8 +128,6 @@ public static class EmployeeData
         {
             if (value.Key == "PreviousExperience")
             {
-                ExcelWorksheet previousExperienceSheet = new ExcelPackage(path).Workbook.Worksheets["PreviousExperince"];
-                AddEmployeePreviousExperince(path, previousExperienceSheet, data["HospitalID"], data["PreviousExperience"]);
                 continue;
             }
             else if (value.Key == "WorkHours")
@@ -254,12 +276,8 @@ public static class EmployeeData
         }
     }
 
-    private static ExcelWorksheet CreateNewPreviousExperinceSheet(string excelFilePath, string id, Dictionary<string, string> previousExperince)// creating Previous Experince Sheet for the first time
+    private static ExcelWorksheet CreateNewPreviousExperinceSheet(string excelFilePath, ExcelWorksheet sheet, string id, Dictionary<string, string> PreviousExperience)// creating Previous Experince Sheet for the first time
     {
-        ExcelPackage package = new ExcelPackage(excelFilePath);
-
-        ExcelWorksheet sheet = package.Workbook.Worksheets.Add("PreviousExperince");
-
         sheet.Cells["A1"].Value = "ID";
         sheet.Cells["A1"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
         sheet.Cells["A1"].Style.Font.Bold = true;
@@ -270,7 +288,7 @@ public static class EmployeeData
 
         int row = 2;
         int mapIndex = 0;
-        while (row <= previousExperince.Count * 2 + 1)
+        while (row <= PreviousExperience.Count * 2 + 1)
         {
             sheet.Cells[row, 1].Value = "Place";
             sheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
@@ -282,27 +300,22 @@ public static class EmployeeData
             sheet.Cells[row + 1, 1].Style.Font.Bold = true;
             sheet.Cells[row + 1, 1].Style.Font.Color.SetColor(Color.Blue);
 
-            sheet.Cells[row, 2].Value = previousExperince.ElementAt(mapIndex).Key;
+            sheet.Cells[row, 2].Value = PreviousExperience.ElementAt(mapIndex).Key;
             sheet.Cells[row, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-            sheet.Cells[row + 1, 2].Value = previousExperince.ElementAt(mapIndex).Value;
+            sheet.Cells[row + 1, 2].Value = PreviousExperience.ElementAt(mapIndex).Value;
             sheet.Cells[row + 1, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
             row += 2;
             mapIndex++;
         }
+        // package.SaveAs(excelFilePath);
         return sheet;
     }
 
 
-    public static ExcelWorksheet AddEmployeePreviousExperince(string excelFilePath, ExcelWorksheet sheet, string id, Dictionary<string, string> previousExperince) // add employee's previous experince to the sheet
+    public static ExcelWorksheet AddEmployeePreviousExperince(string excelFilePath, ExcelWorksheet sheet, string id, Dictionary<string, string> PreviousExperience) // add employee's previous experince to the sheet
     {
-
-        if (sheet == null)
-        {
-            return CreateNewPreviousExperinceSheet(excelFilePath, id, previousExperince);
-        }
-
         int rowCount = sheet.Dimension.End.Row;
         int targetCol = sheet.Dimension.End.Column + 1;
 
@@ -315,7 +328,7 @@ public static class EmployeeData
 
         while (true)
         {
-            if (mapIndex == previousExperince.Count) break; // All set
+            if (mapIndex == PreviousExperience.Count) break; // All set
 
             if (row > rowCount) // open new cells for more Experince
             {
@@ -345,10 +358,10 @@ public static class EmployeeData
                 }
 
 
-                sheet.Cells[row, targetCol].Value = previousExperince.ElementAt(mapIndex).Key;
+                sheet.Cells[row, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Key;
                 sheet.Cells[row, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-                sheet.Cells[row + 1, targetCol].Value = previousExperince.ElementAt(mapIndex).Value;
+                sheet.Cells[row + 1, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Value;
                 sheet.Cells[row + 1, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
                 row += 2;
@@ -357,10 +370,10 @@ public static class EmployeeData
 
                 continue;
             }
-            sheet.Cells[row, targetCol].Value = previousExperince.ElementAt(mapIndex).Key;
+            sheet.Cells[row, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Key;
             sheet.Cells[row, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-            sheet.Cells[row + 1, targetCol].Value = previousExperince.ElementAt(mapIndex).Value;
+            sheet.Cells[row + 1, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Value;
             sheet.Cells[row + 1, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
             row += 2;
@@ -516,11 +529,6 @@ public static class EmployeeData
             string field = sheet.Cells[1, col].Value.ToString();
             dynamic val = sheet.Cells[targetRow, col].Value;
 
-            if (field == "PreviousExperience")
-            {
-                data["PreviousExperience"] = getPreviousExprince(id);
-            }
-
             if (field == "WorkHours")
             {
                 if (val != null)
@@ -551,6 +559,7 @@ public static class EmployeeData
 
             data[field] = val;
         }
+        data["PreviousExperience"] = getPreviousExprince(id);
         return data;
     }
 
@@ -563,7 +572,8 @@ public static class EmployeeData
         {
             ExcelWorksheet sheet = package.Workbook.Worksheets["PreviousExperience"];
 
-            for (int col = 2; col <= sheet.Dimension.End.Column; col++)
+            int colCount = sheet.Dimension.End.Column;
+            for (int col = 2; col <= colCount; col++)
             {
                 string target = sheet.Cells[1, col].Value.ToString()!;
                 if (target.ToUpper() == id.ToUpper())

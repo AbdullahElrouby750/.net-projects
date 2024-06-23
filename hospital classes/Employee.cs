@@ -6,14 +6,14 @@ public class Employee : Person
     public double Salary { get; set; }
     public double Bouns { get; set; }
    //public List<Dictionary<DateOnly, int>> DailyWorkHours { get; set; }
-   public TimeSpan WorkHours { get; set; }
+   public TimeSpan? WorkHours { get; set; }
    public DateTime? DailyLoginTime { get; set; }
    public DateTime? DailyLogoutTime { get; set; }
 
-    public readonly DateOnly StartingDate;
+    public readonly DateOnly? StartingDate;
     public string HRreport { get; set; }
     public int Experience { get; set; }
-    public Dictionary<string, string> PreviousExperience { get; set; }
+    public Dictionary<string, string>? PreviousExperience { get; set; }
     public string HospitalID { get; set; }
     public bool SalaryReceived { get; set; }
     protected string BankAccount { get; set; }

@@ -1,0 +1,13 @@
+d:\codez\uni projects\hospital system my work\hospitalData\bin\Debug\net8.0\hospital data.deps.json
+d:\codez\uni projects\hospital system my work\hospitalData\bin\Debug\net8.0\hospital data.dll
+d:\codez\uni projects\hospital system my work\hospitalData\bin\Debug\net8.0\hospital data.pdb
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\hospital data.csproj.AssemblyReference.cache
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\hospital data.GeneratedMSBuildEditorConfig.editorconfig
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\hospital data.AssemblyInfoInputs.cache
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\hospital data.AssemblyInfo.cs
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\hospital data.csproj.CoreCompileInputs.cache
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\hospital data.sourcelink.json
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\hospital data.dll
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\refint\hospital data.dll
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\hospital data.pdb
+d:\codez\uni projects\hospital system my work\hospitalData\obj\Debug\net8.0\ref\hospital data.dll

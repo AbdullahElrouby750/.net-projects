@@ -216,10 +216,19 @@
       },
       "hospital classes/1.0.0": {
         "dependencies": {
-          "EPPlus": "7.2.0"
+          "EPPlus": "7.2.0",
+          "hospital data": "1.0.0"
         },
         "runtime": {
           "hospital classes.dll": {}
+        }
+      },
+      "hospital data/1.0.0": {
+        "dependencies": {
+          "EPPlus": "7.2.0"
+        },
+        "runtime": {
+          "hospital data.dll": {}
         }
       }
     }
@@ -371,6 +380,11 @@
       "hashPath": "system.text.json.8.0.0.nupkg.sha512"
     },
     "hospital classes/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "hospital data/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

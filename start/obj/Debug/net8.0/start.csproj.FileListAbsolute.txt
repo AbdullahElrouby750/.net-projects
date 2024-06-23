@@ -54,3 +54,5 @@ d:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\refint\star
 d:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.pdb
 d:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\start.genruntimeconfig.cache
 d:\codez\uni projects\hospital system my work\start\obj\Debug\net8.0\ref\start.dll
+d:\codez\uni projects\hospital system my work\start\bin\Debug\net8.0\hospital data.dll
+d:\codez\uni projects\hospital system my work\start\bin\Debug\net8.0\hospital data.pdb

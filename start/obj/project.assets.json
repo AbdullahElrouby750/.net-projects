@@ -396,6 +396,9 @@
       "hospital data/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "EPPlus": "7.2.0"
+        },
         "compile": {
           "bin/placeholder/hospital data.dll": {}
         },
@@ -1131,11 +1134,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\codez\\uni projects\\hospital system my work\\start\\start.csproj",
+      "projectUniqueName": "d:\\codez\\uni projects\\hospital system my work\\start\\start.csproj",
       "projectName": "start",
-      "projectPath": "D:\\codez\\uni projects\\hospital system my work\\start\\start.csproj",
+      "projectPath": "d:\\codez\\uni projects\\hospital system my work\\start\\start.csproj",
       "packagesPath": "C:\\Users\\TurboTech\\.nuget\\packages\\",
-      "outputPath": "D:\\codez\\uni projects\\hospital system my work\\start\\obj\\",
+      "outputPath": "d:\\codez\\uni projects\\hospital system my work\\start\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1157,8 +1160,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\hospital classes.csproj": {
-              "projectPath": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\hospital classes.csproj"
+            "d:\\codez\\uni projects\\hospital system my work\\hospital classes\\hospital classes.csproj": {
+              "projectPath": "d:\\codez\\uni projects\\hospital system my work\\hospital classes\\hospital classes.csproj"
             }
           }
         }
