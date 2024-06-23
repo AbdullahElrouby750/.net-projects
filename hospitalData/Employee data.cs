@@ -396,7 +396,15 @@ public static class EmployeeData
 
     private static bool IDAlreadyAdded(ExcelWorksheet sheet, string TargetID) // check if this id already added
     {
-        return sheet.Cells[1, 1, sheet.Dimension.End.Row, 1].Any(cell => cell.Value != null && cell.Value.ToString().Equals(TargetID));
+        if(sheet == null) return false;
+
+        int colCount = sheet.Dimension.End.Column;
+
+        for (int col  = 2; col  <= colCount; col ++)
+        {
+            if (sheet.Cells[1, col].Value == TargetID) return true;
+        }
+        return false;
     }
 
     //*********************************************************************Firing proccesses****************************************************************

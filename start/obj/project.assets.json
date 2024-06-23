@@ -1134,11 +1134,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\codez\\uni projects\\hospital system my work\\start\\start.csproj",
+      "projectUniqueName": "D:\\codez\\uni projects\\hospital system my work\\start\\start.csproj",
       "projectName": "start",
-      "projectPath": "d:\\codez\\uni projects\\hospital system my work\\start\\start.csproj",
+      "projectPath": "D:\\codez\\uni projects\\hospital system my work\\start\\start.csproj",
       "packagesPath": "C:\\Users\\TurboTech\\.nuget\\packages\\",
-      "outputPath": "d:\\codez\\uni projects\\hospital system my work\\start\\obj\\",
+      "outputPath": "D:\\codez\\uni projects\\hospital system my work\\start\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -1160,8 +1160,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "d:\\codez\\uni projects\\hospital system my work\\hospital classes\\hospital classes.csproj": {
-              "projectPath": "d:\\codez\\uni projects\\hospital system my work\\hospital classes\\hospital classes.csproj"
+            "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\hospital classes.csproj": {
+              "projectPath": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\hospital classes.csproj"
             }
           }
         }
