@@ -13,6 +13,7 @@ public static class EmployeeData
 
     public static void StoreData(Dictionary<string, dynamic> data, string department) // main method in store data proccess
     {
+        
         string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
 
         using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
@@ -22,6 +23,8 @@ public static class EmployeeData
             try
             {
                 PreviousExperienceSheet = EmployeeData.Workbook.Worksheets["PreviousExperience"];
+                if (IDAlreadyAdded(PreviousExperienceSheet, data["HospitalID"])) return;
+
                 if (PreviousExperienceSheet == null)
                 {
                     throw new ArgumentNullException(nameof(PreviousExperienceSheet));
