@@ -10,16 +10,16 @@ D:\codez\uni projects\hospital system\hospital classes\obj\Debug\net8.0\hospital
 D:\codez\uni projects\hospital system\hospital classes\obj\Debug\net8.0\refint\hospital classes.dll
 D:\codez\uni projects\hospital system\hospital classes\obj\Debug\net8.0\hospital classes.pdb
 D:\codez\uni projects\hospital system\hospital classes\obj\Debug\net8.0\ref\hospital classes.dll
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.csproj.AssemblyReference.cache
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.GeneratedMSBuildEditorConfig.editorconfig
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.AssemblyInfoInputs.cache
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.AssemblyInfo.cs
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.csproj.CoreCompileInputs.cache
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.sourcelink.json
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.dll
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\refint\hospital classes.dll
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.pdb
-D:\codez\uni projects\hospital system my work\hospital classes\bin\Debug\net8.0\hospital classes.deps.json
-D:\codez\uni projects\hospital system my work\hospital classes\bin\Debug\net8.0\hospital classes.dll
-D:\codez\uni projects\hospital system my work\hospital classes\bin\Debug\net8.0\hospital classes.pdb
-D:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\ref\hospital classes.dll
+d:\codez\uni projects\hospital system my work\hospital classes\bin\Debug\net8.0\hospital classes.deps.json
+d:\codez\uni projects\hospital system my work\hospital classes\bin\Debug\net8.0\hospital classes.dll
+d:\codez\uni projects\hospital system my work\hospital classes\bin\Debug\net8.0\hospital classes.pdb
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.csproj.AssemblyReference.cache
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.GeneratedMSBuildEditorConfig.editorconfig
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.AssemblyInfoInputs.cache
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.AssemblyInfo.cs
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.csproj.CoreCompileInputs.cache
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.sourcelink.json
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.dll
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\refint\hospital classes.dll
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\hospital classes.pdb
+d:\codez\uni projects\hospital system my work\hospital classes\obj\Debug\net8.0\ref\hospital classes.dll

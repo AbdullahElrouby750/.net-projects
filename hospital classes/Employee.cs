@@ -44,14 +44,14 @@ public class Employee : Person
         Department = "";
     }
     public Employee(Dictionary<string, dynamic> total, double raisesAndBouns = 0.0, bool salaryReceived = false)
-     : base(fullname: total["FullName"], phonenumber: total["PhoneNumber"], age: total["Age"], dateofbirth: total["DateOfBirth"], gender: total["Gender"], statue: total["Statue"], address: total["Address"], bloodtype: total["BloodType"])
+     : base(fullname: total["FullName"], phonenumber: total["PhoneNumber"], age: (int)total["Age"], dateofbirth: total["DateOfBirth"], gender: total["Gender"], statue: total["Statue"], address: total["Address"], bloodtype: total["BloodType"])
     {
         SalaryReceived = salaryReceived;
         Bouns = raisesAndBouns;
         HRreport = "";
         Warnings = 0;
         Salary = total["Salary"];
-        Experience = total["Experience"];
+        Experience = (int)total["Experience"];
         HospitalID = total["HospitalID"];
         BankAccount = total["BankAccount"];
         AccountNumber = total["AccountNumber"];

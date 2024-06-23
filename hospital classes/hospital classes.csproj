@@ -11,4 +11,9 @@
     <PackageReference Include="EPPlus" Version="7.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\hospitalData\hospital data.csproj" />
+  </ItemGroup>
+
+	
 </Project>

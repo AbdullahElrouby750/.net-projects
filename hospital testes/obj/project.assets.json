@@ -775,13 +775,24 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
-          "EPPlus": "7.2.0"
+          "EPPlus": "7.2.0",
+          "hospital data": "1.0.0"
         },
         "compile": {
           "bin/placeholder/hospital classes.dll": {}
         },
         "runtime": {
           "bin/placeholder/hospital classes.dll": {}
+        }
+      },
+      "hospital data/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "compile": {
+          "bin/placeholder/hospital data.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/hospital data.dll": {}
         }
       }
     }
@@ -2154,6 +2165,11 @@
       "type": "project",
       "path": "../hospital classes/hospital classes.csproj",
       "msbuildProject": "../hospital classes/hospital classes.csproj"
+    },
+    "hospital data/1.0.0": {
+      "type": "project",
+      "path": "../hospitalData/hospital data.csproj",
+      "msbuildProject": "../hospitalData/hospital data.csproj"
     }
   },
   "projectFileDependencyGroups": {
