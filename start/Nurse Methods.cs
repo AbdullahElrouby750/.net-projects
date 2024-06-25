@@ -43,13 +43,13 @@ internal partial class Start
                         pressEnterToContinue();
                         break;
                     case 5:
-                    // WriteReportToManger();
-                    // pressEnterToContinue();
-                    // break;
+                        Manger.WriteReportToManger(nurse);
+                        pressEnterToContinue();
+                        break;
                     case 6:
-                    // WriteReview();
-                    // pressEnterToContinue();
-                    // break;
+                        Manger.WriteReview(nurse);
+                        pressEnterToContinue();
+                        break;
                     case 7:
                         nurse.WriteReport();
                         pressEnterToContinue();

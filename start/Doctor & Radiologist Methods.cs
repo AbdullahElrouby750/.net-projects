@@ -57,12 +57,12 @@ internal partial class Start
                     pressEnterToContinue();
                     break;
                 case "5":
-                    // WriteReportToManger();
-                    // pressEnterToContinue();
+                    Manger.WriteReportToManger(DocOrRad);
+                    pressEnterToContinue();
                     break;
                 case "6":
-                    // WriteReview();
-                    // pressEnterToContinue();
+                    Manger.WriteReview(DocOrRad);
+                    pressEnterToContinue();
                     break;
                 case "7":
                     DocOrRad.WriteReport();

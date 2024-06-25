@@ -12,14 +12,6 @@ internal partial class Start
         while (true)
         {
             login();
-            // if (Console.ReadKey(true).Key == ConsoleKey.Escape)
-            // {
-            //     break;
-            // }
-            // else
-            // {
-            //     continue;
-            // }
         }
 
 
@@ -63,6 +55,7 @@ internal partial class Start
             switch (id[0..2])
             {
                 case "MA":
+                stop = MangerWorkSpace(id);
                     break;
                 case "HR":
                     stop = HRWorkSpace(id);

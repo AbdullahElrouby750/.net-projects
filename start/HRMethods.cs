@@ -52,12 +52,12 @@ internal partial class Start
                                 pressEnterToContinue();
                                 break;
                             case 6:
-                                // WriteReportToManger();
-                                // pressEnterToContinue();
+                                Manger.WriteReportToManger(hr);
+                                pressEnterToContinue();
                                 break;
                             case 7:
-                                // WriteReview();
-                                // pressEnterToContinue();
+                                Manger.WriteReview(hr);
+                                pressEnterToContinue();
                                 break;
                             case 8:
                                 hr.pormotion();

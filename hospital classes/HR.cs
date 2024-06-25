@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace hospital_classes;
 
 public class HR : Employee, WritingReports
@@ -569,7 +567,6 @@ public class HR : Employee, WritingReports
                 {
                     DailyLogoutTime = DateTime.Now;
                     Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
-
                     break;
                 }
                 else if (answer == "n")
@@ -659,12 +656,12 @@ public class HR : Employee, WritingReports
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
         data["Specialization"] = string.Empty;
-        data["Department"] = "Manager";
+        data["Department"] = "Manger";
 
         var alaa = new Manger(data);
         Dictionary<string, object> s = new Dictionary<string, object>();
         s[alaa.HospitalID] = alaa;
-        Employees["Manager"] = s;
+        Employees["Manger"] = s;
         IDsBeckups[alaa.HospitalID] = alaa.FullName;
     }
 

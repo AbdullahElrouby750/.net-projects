@@ -1,58 +1,73 @@
+using System.Runtime.CompilerServices;
 using hospital_classes;
-
 internal partial class Start
 {
-    private static bool AccountantWorkSpace(string id)
+    private static bool MangerWorkSpace(string id)
     {
-        if (HR.searchEmployee(id) is Accountant accountant)
+        if (HR.Employees["Manger"].ContainsKey(id))
         {
-
+            Manger manger = (Manger)HR.Employees["Manger"][id];
+            HR hr = new HR();
             while (true)
             {
                 Console.WriteLine("\nChoose a jop from the list below :-\n");
                 Console.WriteLine("1. Login");
                 Console.WriteLine("2. Logout");
                 Console.WriteLine("3. Print your Salary");
-                Console.WriteLine("4. Print HR report");
-                Console.WriteLine("5. Write a report to the manger");
-                Console.WriteLine("6. Write a review to the manger");
-                Console.WriteLine("7. send Salary to employees");
-                Console.WriteLine("8. Exit\n\n");
+                Console.WriteLine("4. Write a Report about an employee");
+                Console.WriteLine("5. approve Reports");
+                Console.WriteLine("6. Read Reviews");
+                Console.WriteLine("7. Apply a pormotion");
+                Console.WriteLine("8. Hire");
+                Console.WriteLine("9. Fire");
+                Console.WriteLine("10. Print ID list");
+                Console.WriteLine("11. Exit\n\n");
 
                 Console.Write("Enter your choice : ");
                 int choice = int.Parse(Console.ReadLine()!);
-
                 switch (choice)
                 {
                     case 1:
-                        accountant.login();
+                        manger.login();
                         pressEnterToContinue();
                         break;
                     case 2:
-                        accountant.logout();
+                        manger.logout();
                         pressEnterToContinue();
                         break;
                     case 3:
-                        accountant.Printsalary();
+                        manger.Printsalary();
                         pressEnterToContinue();
                         break;
                     case 4:
-                        accountant.PrintHRreport();
+                        hr.WriteReport();
                         pressEnterToContinue();
                         break;
                     case 5:
-                        Manger.WriteReportToManger(accountant);
+                        manger.approveReports();
                         pressEnterToContinue();
                         break;
                     case 6:
-                        Manger.WriteReview(accountant);
+                        manger.ReadReviews();
                         pressEnterToContinue();
                         break;
                     case 7:
-                        accountant.sendSalary();
+                        hr.pormotion();
                         pressEnterToContinue();
                         break;
                     case 8:
+                        hr.Hire();
+                        pressEnterToContinue();
+                        break;
+                    case 9:
+                        hr.Fire();
+                        pressEnterToContinue();
+                        break;
+                    case 10:
+                        hr.PrintIDS();
+                        pressEnterToContinue();
+                        break;
+                    case 11:
                         return true;
                     default:
                         Console.WriteLine("\nPlease enter a valid choice");
@@ -66,5 +81,6 @@ internal partial class Start
             return false;
         }
     }
+
 
 }
