@@ -15,10 +15,9 @@ internal partial class Start
                 Console.WriteLine("2. Logout");
                 Console.WriteLine("3. Print your Salary");
                 Console.WriteLine("4. Print HR report");
-                Console.WriteLine("5. Write a report to the manger");
-                Console.WriteLine("6. Write a review to the manger");
-                Console.WriteLine("7. send Salary to employees");
-                Console.WriteLine("8. Exit\n\n");
+                Console.WriteLine("5. Write a report or a review to the manger");
+                Console.WriteLine("6. send Salary to employees");
+                Console.WriteLine("7. Exit\n\n");
 
                 Console.Write("Enter your choice : ");
                 int choice = int.Parse(Console.ReadLine()!);
@@ -27,33 +26,29 @@ internal partial class Start
                 {
                     case 1:
                         accountant.login();
-                        //pressEnterToContinue();
+                        pressEnterToContinue();
                         break;
                     case 2:
                         accountant.logout();
-                        //pressEnterToContinue();
+                        pressEnterToContinue();
                         break;
                     case 3:
                         accountant.Printsalary();
-                        //pressEnterToContinue();
+                        pressEnterToContinue();
                         break;
                     case 4:
                         accountant.PrintHRreport();
-                        //pressEnterToContinue();
+                        pressEnterToContinue();
                         break;
                     case 5:
-                        // WriteReportToManger();
-                        // //pressEnterToContinue();
+                        Manger.WriteReportAndReviewToManger(accountant);
+                        pressEnterToContinue();
                         break;
                     case 6:
-                        // WriteReview();
-                        // //pressEnterToContinue();
+                        accountant.sendSalary();
+                        pressEnterToContinue();
                         break;
                     case 7:
-                        accountant.sendSalary();
-                        //pressEnterToContinue();
-                        break;
-                    case 8:
                         return true;
                     default:
                         Console.WriteLine("\nPlease enter a valid choice");

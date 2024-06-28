@@ -13,7 +13,7 @@ public static class EmployeeData
 
     public static void StoreData(Dictionary<string, dynamic> data, string department) // main method in store data proccess
     {
-        
+
         string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
 
         using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
@@ -135,25 +135,40 @@ public static class EmployeeData
             }
             else if (value.Key == "WorkHours")
             {
+                TimeSpan strValue;
                 if (value.Value != null)
                 {
-                    TimeSpan strValue = value.Value;
-                    sheet.Cells[row, col].Value = strValue.ToString();
-                    sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    col++;
-                    continue;
+                    strValue = value.Value;
+                sheet.Cells[row, col].Value = strValue.ToString();
+
                 }
+                else
+                {
+                    sheet.Cells[row, col].Value = string.Empty;
+
+                }
+                sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                col++;
+                continue;
             }
             else if (value.Key == "DailyLoginTime" || value.Key == "DailyLogoutTime")
             {
+                DateTime strValue;
                 if (value.Value != null)
                 {
-                    DateTime strValue = value.Value;
+                    strValue = value.Value;
                     sheet.Cells[row, col].Value = strValue.ToString();
-                    sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    col++;
-                    continue;
+
                 }
+                else
+                {
+                    sheet.Cells[row, col].Value = string.Empty;
+
+                }
+                sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                col++;
+                continue;
+
             }
 
             sheet.Cells[row, col].Value = value.Value;
@@ -197,7 +212,7 @@ public static class EmployeeData
         sheet.Cells[1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
         sheet.Cells[1, col].Style.Font.Bold = true;
 
-        sheet.Cells[2, col].Formula = $"=SUM(A2:{col - 1}2)";
+        sheet.Cells[2, col].Formula = $"=SUM(A2:G2)";
         sheet.Cells[2, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
         return sheet;
@@ -252,7 +267,7 @@ public static class EmployeeData
             {
                 if (sheet.Cells[row, 1].Value.ToString() == id)
                 {
-                    for (int col = 0; col <= colCount; col++)
+                    for (int col = 2; col <= colCount; col++)
                     {
                         if (sheet.Cells[1, col].Value.ToString() == field)
                         {
@@ -278,6 +293,37 @@ public static class EmployeeData
             return;
         }
     }
+
+
+    public static string accessEmployeeExcelFile(string id, string deprtment, string field) // get a targted data
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet sheet = package.Workbook.Worksheets[deprtment];
+            int colCount = sheet.Dimension.End.Column;
+            int rowCount = sheet.Dimension.End.Row;
+
+            for (int row = 2; row <= colCount; row++)
+            {
+                if (sheet.Cells[row, 1].Value.ToString() == id)
+                {
+                    for (int col = 2; col <= colCount; col++)
+                    {
+                        if (sheet.Cells[1, col].Value.ToString() == field)
+                        {
+                            
+                            return sheet.Cells[row, col].Value.ToString()!;
+                        }
+                    }
+
+                }
+            }
+            Console.WriteLine($"{id} not in the data!\nMake sure u entered it right");
+            return null;
+        }
+    }
+
 
     private static ExcelWorksheet CreateNewPreviousExperinceSheet(string excelFilePath, ExcelWorksheet sheet, string id, Dictionary<string, string> PreviousExperience)// creating Previous Experince Sheet for the first time
     {
@@ -396,13 +442,13 @@ public static class EmployeeData
 
     private static bool IDAlreadyAdded(ExcelWorksheet sheet, string TargetID) // check if this id already added
     {
-        if(sheet == null) return false;
+        if (sheet == null) return false;
 
         int colCount = sheet.Dimension.End.Column;
 
-        for (int col  = 2; col  <= colCount; col ++)
+        for (int col = 2; col <= colCount; col++)
         {
-            if (sheet.Cells[1, col].Value == TargetID) return true;
+            if (sheet.Cells[1, col].Value.ToString() == TargetID) return true;
         }
         return false;
     }
@@ -444,7 +490,7 @@ public static class EmployeeData
 
     //*********************************************************************preformance reports****************************************************************
 
-    public static void creatNewXLSXfile() // create new excel file for the reports if not already exist
+    public static void creatNewReportXLSXsheet() // create new excel file for the reports if not already exist
     {
         string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx";
 
@@ -468,33 +514,67 @@ public static class EmployeeData
             ExcelWorksheet reportsSheet = package.Workbook.Worksheets["Reports_Sheet"];
             int colCount = reportsSheet.Dimension.End.Column;
             int rowCount = reportsSheet.Dimension.End.Row;
+            DateTime lastCellDate;
+            if(colCount == 1)
+            {
+                lastCellDate = new DateTime();
+            }
+            else
+            {
+                lastCellDate = DateTime.Parse(reportsSheet.Cells[1, colCount].Value.ToString()!);
+            }
 
             for (int row = 2; row <= rowCount; row++)
             {
                 string target = reportsSheet.Cells[row, 1].Value.ToString();
                 if (target == id)
                 {
-                    reportsSheet.Cells[1, colCount].Value = DateOnly.FromDateTime(DateTime.Now.Date);
-                    reportsSheet.Cells[1, colCount].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    reportsSheet.Cells[1, colCount].Style.Font.Bold = true;
+                    if (reportsSheet.Cells[row, colCount].Value.ToString() != null)
+                    {
+                        Console.WriteLine("Today's report have been added already for this Employee");
+                        return;
+                    }
 
-                    reportsSheet.Cells[row, colCount + 1].Value = report;
-                    reportsSheet.Cells[row, colCount].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    if (DateTime.Now.Date > lastCellDate.Date || lastCellDate == DateTime.MinValue) // first report written for today
+                    {
+
+                        reportsSheet.Cells[1, colCount + 1].Value = DateOnly.FromDateTime(DateTime.Now.Date).ToString();
+                        reportsSheet.Cells[1, colCount + 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        reportsSheet.Cells[1, colCount + 1].Style.Font.Bold = true;
+
+                        reportsSheet.Cells[row, colCount + 1].Value = report;
+                        reportsSheet.Cells[row, colCount + 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                    }
+                    else if(DateTime.Now.Day == lastCellDate.Day) // allready there is reports for today
+                    {
+                        reportsSheet.Cells[row, colCount].Value = report;
+                        reportsSheet.Cells[row, colCount].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    }
 
                     package.SaveAs(excelFilePath);
                     return;
                 }
             }
+
+            if (DateTime.Now.Date > lastCellDate.Date || lastCellDate == DateTime.MinValue) // first report written for today
+            {
+                reportsSheet.Cells[1, colCount + 1].Value = DateOnly.FromDateTime(DateTime.Now.Date).ToString();
+                reportsSheet.Cells[1, colCount + 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                reportsSheet.Cells[1, colCount + 1].Style.Font.Bold = true;
+                colCount++;
+            }
+
             reportsSheet.Cells[rowCount + 1, 1].Value = id;
             reportsSheet.Cells[rowCount + 1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
             reportsSheet.Cells[rowCount + 1, 1].Style.Font.Bold = true;
-            for (int col = 2; col <= colCount; col++)
+            for (int col = 2; col < colCount; col++)
             {
                 reportsSheet.Cells[rowCount + 1, col].Value = $"first report at {DateTime.Now.Date.ToString()}";
                 reportsSheet.Cells[rowCount + 1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
             }
-            reportsSheet.Cells[rowCount + 1, colCount + 1].Value = report;
-            reportsSheet.Cells[rowCount + 1, colCount + 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+            reportsSheet.Cells[rowCount + 1, colCount].Value = report;
+            reportsSheet.Cells[rowCount + 1, colCount].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
             package.SaveAs(excelFilePath);
         }
@@ -505,7 +585,14 @@ public static class EmployeeData
         string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx";
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
-            ExcelWorksheet sheet = package.Workbook.Worksheets[0];
+            ExcelWorksheet sheet = package.Workbook.Worksheets["Reports_Sheet"];
+
+            if(sheet == null)
+            {
+                Console.WriteLine("No reports for you yet");
+                return string.Empty;
+            }
+
             int colCount = sheet.Dimension.End.Column;
             int rowCount = sheet.Dimension.End.Row;
             for (int row = 2; row <= rowCount; row++)
@@ -514,7 +601,7 @@ public static class EmployeeData
                 {
                     for (int col = 2; col <= colCount; col++)
                     {
-                        if ((DateOnly)sheet.Cells[1, col].Value == date)
+                        if (DateOnly.Parse(sheet.Cells[1, col].Value.ToString()) == date)
                         {
                             return sheet.Cells[row, col].Value.ToString();
                         }
@@ -542,23 +629,27 @@ public static class EmployeeData
 
             if (field == "WorkHours")
             {
-                if (val != null)
+                if (val != string.Empty)
                 {
                     TimeSpan workhours = TimeSpan.Parse(val);
                     data[field] = workhours;
                     continue;
                 }
+                data[field] = new TimeSpan();
+                continue;
             }
             else if (field == "DailyLogoutTime" || field == "DailyLoginTime")
             {
-                if (val != null)
+                if (val != string.Empty)
                 {
                     DateTime date = DateTime.Parse(val);
                     data[field] = date;
                     continue;
                 }
+                data[field] = new DateTime();
+                continue;
             }
-            else if (field == "DateOfBirth" || field == "StartDate")
+            else if (field == "DateOfBirth" || field == "StartingDate")
             {
                 if (val != null)
                 {
@@ -566,6 +657,8 @@ public static class EmployeeData
                     data[field] = date;
                     continue;
                 }
+                data[field] = new DateOnly();
+                continue;
             }
 
             data[field] = val;
@@ -613,5 +706,74 @@ public static class EmployeeData
         }
         return data;
     }
+
+    public static Dictionary<string, string> getIDS()// return a dictionary containing the ids and the name of the employees
+    {
+        string path = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+        if (!File.Exists(path))
+        {
+            return null;
+        }
+
+
+        Dictionary<string, string> IDandName = new Dictionary<string, string>();
+
+        using (ExcelPackage package = new ExcelPackage(path))
+        {
+            ExcelWorksheet sheets = null;
+
+
+            int sheetsCount = package.Workbook.Worksheets.Count;
+            int startIndex = 2;
+
+            while (startIndex < sheetsCount)
+            {
+                sheets = package.Workbook.Worksheets[startIndex];
+
+                int rowConut = sheets.Dimension.End.Row;
+                for (int row = 2; row <= rowConut; row++)
+                {
+                    IDandName[sheets.Cells[row, 1].Value.ToString()!] = sheets.Cells[row, 2].Value.ToString()!;
+                }
+
+                startIndex++;
+            }
+        }
+        return IDandName;
+    }
+
+    //*********************************************************************Counting employee****************************************************************
+    public static void numberOfEmployyes()
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+
+        using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet sheet = EmployeeData.Workbook.Worksheets["NumberOfEmployee"];
+
+            int colCount = sheet.Dimension.End.Column;
+            int totalCount = 0;
+
+            for (int col = 1; col < colCount; col++)
+            {
+                string department = sheet.Cells[1, col].Value.ToString()!;
+                int count = int.Parse(sheet.Cells[2, col].Value.ToString()!);
+                if (department.Length < 8)
+                {
+                    Console.WriteLine($"{department}\t\t:\t{count}");
+                }
+                else
+                {
+                    Console.WriteLine($"{department}\t:\t{count}");
+
+                }
+                totalCount++;
+            }
+            Console.WriteLine($"{"Employee"}\t:\t{totalCount}");
+
+
+        }
+    }
+
 
 }

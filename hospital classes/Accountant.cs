@@ -1,6 +1,8 @@
+using hospitalData;
+
 namespace hospital_classes;
 
-public class Accountant : Employee , WritingReports
+public class Accountant : Employee, WritingReports
 {
     private string[] jopTitles;
     public static int NumberOfAccountant;
@@ -9,60 +11,94 @@ public class Accountant : Employee , WritingReports
     public Accountant()
     {
         jopTitles = ["Nurse", "Pharmacist", "Radiologist", "Receptionist", "Doctor", "HR", "Accountant"];
-        NumberOfAccountant++;
     }
 
     public Accountant(Dictionary<string, dynamic> data)
        : base(data)
     {
-        NumberOfAccountant++;
         jopTitles = ["Nurse", "Pharmacist", "Radiologist", "Receptionist", "Doctor", "HR", "Accountant"];
     }
 
     //*********************************************************************send salary****************************************************************
     public void sendSalary()// merged apply bouns and diduction for simplifications and less loops
     {
-        DateTime today = DateTime.Now;
-        if (today.Day == 1)
+        if (DateTime.Now.Day == 1)
         {
-            foreach (var item in HR.Employees)
+            var IDs = EmployeeData.getIDS();
+            foreach (var item in jopTitles)
             {
-                foreach (var IDs in item.Value)
-                {
-                    object employee = IDs.Value;
 
-                    dynamic bouns = employee.GetType().GetProperty("Bouns")?.GetValue(employee)!;
-                    dynamic salary = employee.GetType().GetProperty("Salary")?.GetValue(employee)!;
+                var thisJopID = IDs.Keys.Where(jopID => jopID[0..2].ToUpper() == item[0..2].ToUpper()).ToList();
+                if (thisJopID == null) continue;
+
+                foreach(var id in thisJopID)
+                {
+                    double bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(id, item, "Bouns"));
+                    double salary = double.Parse(EmployeeData.accessEmployeeExcelFile(id, item, "Salary"));
+
+                    string bankName = EmployeeData.accessEmployeeExcelFile(id, item, "BankAccount");
+                    string accountName = EmployeeData.accessEmployeeExcelFile(id, item, "AccountNumber");
+
                     salary += bouns;
 
-                    employee.GetType().GetProperty("SalaryReceived")?.SetValue(employee, true);
+                    //TODO : use bank name and acc no. to send the money to the emp account
+
+                    EmployeeData.accessEmployeeExcelFile(id, item, "SalaryReceived", true);
                 }
             }
         }
     }
 
 
-//*********************************************************************other interface methods****************************************************************
+    //*********************************************************************Interface methods****************************************************************
 
     //*********************************************************************print hr report****************************************************************
+   
+    public void WriteReport() {}
     public void PrintHRreport()
     {
-       if (!string.IsNullOrWhiteSpace(HRreport))
+        Console.WriteLine("\n1. Latest report");
+        Console.WriteLine("2. Date's report");
+
+        while (true)
         {
-            Console.WriteLine(HRreport);
-            HRreport = string.Empty;
+            Console.Write("Choose : ");
+            int choice = int.Parse(Console.ReadLine()!);
+            if (choice == 1)
+            {
+                HRreport = (EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "HRreport"));
+
+                if (HRreport == string.Empty)
+                {
+                    Console.WriteLine("Today's report not done yet");
+                    return;
+                }
+                Console.WriteLine();
+                Console.WriteLine(HRreport);
+                return;
+            }
+            else if (choice == 2)
+            {
+                Console.WriteLine();
+                Console.WriteLine(HR.GetHrReport(HospitalID));
+                return;
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine("Plz enter a valid Choice!");
+            }
         }
-        else
-        {
-            Console.WriteLine("No repors yet for this month");
-        }
+
     }
 
-    public void WriteReport(){}
-    
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
+        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
+        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
+        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+
         if (SalaryReceived == true)
         {
             double salaryAfterBouns = Salary + Bouns;
@@ -70,34 +106,60 @@ public class Accountant : Employee , WritingReports
             Console.WriteLine($"Your main salary: {Salary}");
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
+
+            EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
         }
         else
         {
-            Console.WriteLine($"salary not sent yet :(");
+            Console.WriteLine("salary not sent yet :(");
+            Console.WriteLine($"Your salary with bouns and diduction for so far : {Salary:c}");
         }
     }
 
     //*********************************************************************login****************************************************************
     public void login()
     {
+        if (DailyLoginTime.Date == DateTime.Now.Date)
+        {
+            Console.WriteLine($"You have already logged-in today at {DailyLoginTime}");
+            return;
+        }
         DailyLoginTime = DateTime.Now;
+        Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
+        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
     }
 
 
     //*********************************************************************logout****************************************************************
     public void logout()
     {
-        TimeSpan? hoursWorkedToday = DateTime.Now - DailyLoginTime;
+        if (DailyLoginTime.Day != DateTime.Now.Day)
+        {
+            Console.WriteLine("Warning!!! You did not log-in for today!");
+            Console.WriteLine("Can't log-out");
+            return;
+        }
+
+        if (DailyLogoutTime.Date == DateTime.Now.Date)
+        {
+            Console.WriteLine($"You have already logged-in today at {DailyLogoutTime}");
+            return;
+        }
+
+        int workedHours = DateTime.Now.Hour - DailyLoginTime.Hour;
+        TimeSpan? hoursWorkedToday = new TimeSpan(workedHours, 0, 0);
         if (hoursWorkedToday < WorkHours)
         {
             Console.WriteLine($"Warning! your logging out {WorkHours - hoursWorkedToday} hours earlier");
             Console.WriteLine("Are you sure you want to log out? y/n");
             while (true)
             {
-                string answer = Console.ReadLine();
+                string answer = Console.ReadLine()!.ToLower();
                 if (answer == "y")
                 {
                     DailyLogoutTime = DateTime.Now;
+                    Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
+
                     break;
                 }
                 else if (answer == "n")
@@ -110,6 +172,8 @@ public class Accountant : Employee , WritingReports
                 }
             }
         }
+        DailyLogoutTime = DateTime.Now;
+        Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
+        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
     }
-
 }

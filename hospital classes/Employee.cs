@@ -7,8 +7,8 @@ public class Employee : Person
     public double Bouns { get; set; }
    //public List<Dictionary<DateOnly, int>> DailyWorkHours { get; set; }
    public TimeSpan? WorkHours { get; set; }
-   public DateTime? DailyLoginTime { get; set; }
-   public DateTime? DailyLogoutTime { get; set; }
+   public DateTime DailyLoginTime { get; set; }
+   public DateTime DailyLogoutTime { get; set; }
 
     public readonly DateOnly? StartingDate;
     public string HRreport { get; set; }
@@ -39,8 +39,8 @@ public class Employee : Person
         Warnings = 0;
         HRreport = "";
         NumberOfEmployee = 0;
-        DailyLoginTime = null;
-        DailyLogoutTime = null;
+        DailyLoginTime = new DateTime();
+        DailyLogoutTime = new DateTime();
         Department = "";
     }
     public Employee(Dictionary<string, dynamic> total, double raisesAndBouns = 0.0, bool salaryReceived = false)
@@ -55,7 +55,7 @@ public class Employee : Person
         HospitalID = total["HospitalID"];
         BankAccount = total["BankAccount"];
         AccountNumber = total["AccountNumber"];
-        StartingDate = total["StartDate"];
+        StartingDate = total["StartingDate"];
         PreviousExperience = total["PreviousExperience"];
         WorkHours = total["WorkHours"];
         Department = total["Department"];

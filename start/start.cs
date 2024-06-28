@@ -36,7 +36,7 @@ internal partial class Start
         data["HospitalID"] = "MAAS0101";
         var Alaa = new Manger(data);
 
-        HR.Employees["Manger"][Alaa.HospitalID] = Alaa;
+        //HR.Employees["Manger"][Alaa.HospitalID] = Alaa;
 
         fakeDataBase();
     }
@@ -52,10 +52,11 @@ internal partial class Start
         while (true)
         {
         Console.Write("Hi there. Plz, enter your ID : ");
-            string id = Console.ReadLine().ToUpper();
+        string id = Console.ReadLine().Trim().ToUpper();
             switch (id[0..2])
             {
                 case "MA":
+                    MangerWorkSpace(id);
                     break;
                 case "HR":
                     stop = HRWorkSpace(id);
@@ -122,8 +123,10 @@ internal partial class Start
         }
     }
 
-    private static void fakeDataBase()
+    public static void fakeDataBase()
     {
+        if (!isFirstLogin()) return;
+
 
         HR.CreatManger();
         HR.creatHR();

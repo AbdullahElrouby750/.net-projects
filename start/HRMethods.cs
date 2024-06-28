@@ -19,13 +19,12 @@ internal partial class Start
                 Console.WriteLine("3. Print your Salary");
                 Console.WriteLine("4. Print HR report");
                 Console.WriteLine("5. Write a Report about an employee");
-                Console.WriteLine("6. Write a report to the manger");
-                Console.WriteLine("7. Write a review to the manger");
-                Console.WriteLine("8. Apply a pormotion");
-                Console.WriteLine("9. Hire");
-                Console.WriteLine("10. Fire");
-                Console.WriteLine("11. Print ID list");
-                Console.WriteLine("12. Exit\n\n");
+                Console.WriteLine("6. Write a report or a review to the manger");
+                Console.WriteLine("7. Apply a pormotion");
+                Console.WriteLine("8. Hire");
+                Console.WriteLine("9. Fire");
+                Console.WriteLine("10. Print ID list");
+                Console.WriteLine("11. Exit\n\n");
 
                 Console.Write("Enter your choice : ");
                 int choice = int.Parse(Console.ReadLine()!);
@@ -52,30 +51,26 @@ internal partial class Start
                         pressEnterToContinue();
                         break;
                     case 6:
-                        // WriteReportToManger();
-                        // pressEnterToContinue();
+                        Manger.WriteReportAndReviewToManger(hr);
+                        pressEnterToContinue();
                         break;
                     case 7:
-                        // WriteReview();
-                        // pressEnterToContinue();
-                        break;
-                    case 8:
                         hr.pormotion();
                         pressEnterToContinue();
                         break;
-                    case 9:
+                    case 8:
                         hr.Hire();
                         pressEnterToContinue();
                         break;
-                    case 10:
+                    case 9:
                         hr.Fire();
                         pressEnterToContinue();
                         break;
-                    case 11:
+                    case 10:
                         hr.PrintIDS();
                         pressEnterToContinue();
                         break;
-                    case 12:
+                    case 11:
                         return true;
                     default:
                         Console.WriteLine("\nPlease enter a valid choice");

@@ -36,11 +36,10 @@ internal partial class Start
             Console.WriteLine("2. Logout.");
             Console.WriteLine("3. Print your Salary.");
             Console.WriteLine("4. Print HR report.");
-            Console.WriteLine("5. Write a report to the manger.");
-            Console.WriteLine("6. Write a review to the manger.");
-            Console.WriteLine("7. Write patients report.");
-            Console.WriteLine("8. Print a patient report.");
-            Console.WriteLine("9. Exit.");
+            Console.WriteLine("5. Write a report or a review to the manger.");
+            Console.WriteLine("6. Write patients report.");
+            Console.WriteLine("7. Print a patient report.");
+            Console.WriteLine("8. Exit.");
 
             Console.Write("\nEnter your choice: ");
             string choice = Console.ReadLine()!;
@@ -63,23 +62,19 @@ internal partial class Start
                     DocOrRad.PrintHRreport();
                     pressEnterToContinue();
                     break;
-                case "5":
-                    // WriteReportToManger();
-                    // pressEnterToContinue();
+                case  "5":
+                    Manger.WriteReportAndReviewToManger(DocOrRad);
+                    pressEnterToContinue();
                     break;
                 case "6":
-                    // WriteReview();
-                    // pressEnterToContinue();
-                    break;
-                case "7":
                     DocOrRad.WriteReport();
                     pressEnterToContinue();
                     break;
-                case "8":
+                case "7":
                     Receptionist.PrintPatientReports();
                     pressEnterToContinue();
                     break;
-                case "9":
+                case "8":
                     return true;
                 default:
                     Console.WriteLine("\nPlease enter a valid choice");

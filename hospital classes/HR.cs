@@ -2,16 +2,14 @@ using System.Drawing;
 using OfficeOpenXml;
 
 using hospitalData;
+using System.Xml.Linq;
 
 namespace hospital_classes;
 
 public class HR : Employee, WritingReports
 {
-    static public Dictionary<string, Dictionary<string, object>> Employees = new Dictionary<string, Dictionary<string, object>>(); // will be used by the accountatnt to access the employees
-    static private Dictionary<string, string> IDsBeckups = new Dictionary<string, string>(); // if someone forgot thier id
-    //private static Dictionary<string, int> WorkSheetIndex = new Dictionary<string, int>();
+
     private string[] jopTitles;
-    public static int NumberofHR;
 
 
 
@@ -25,7 +23,6 @@ public class HR : Employee, WritingReports
     public HR(Dictionary<string, dynamic> data)
        : base(data)
     {
-        NumberofHR++;
         jopTitles = ["Nurse", "Pharmacist", "Radiologist", "Receptionist", "Doctor", "HR", "Accountant"];
     }
 
@@ -54,7 +51,7 @@ public class HR : Employee, WritingReports
         }
         Dictionary<string, dynamic> data = GetNewEmployeesData(jopTitles[jopIndex]);
 
-        EmployeeData.StoreData(data, jopTitles[jopIndex]);
+        EmployeeData.StoreData(data, jopTitles[jopIndex-1]);
     }
     public Dictionary<string, dynamic> GetNewEmployeesData(string department) // get new date from employee
     {
@@ -64,10 +61,10 @@ public class HR : Employee, WritingReports
 
         //Date from person class
         Console.Write("\n\nFirst Name : ");
-        string FirstName = Console.ReadLine()!.ToUpper();
+        string FirstName = Console.ReadLine()!;
 
         Console.Write("Last Name : ");
-        string LastName = Console.ReadLine()!.ToUpper();
+        string LastName = Console.ReadLine()!;
 
         Data["FullName"] = FirstName + " " + LastName;
 
@@ -120,8 +117,8 @@ public class HR : Employee, WritingReports
         }
         Console.WriteLine();
 
-        Console.Write("Start Date : ");
-        Data["StartDate"] = DateOnly.Parse(Console.ReadLine()!);
+        Data["StartingDate"] = DateOnly.FromDateTime(DateTime.Now);
+        Console.WriteLine($"Start Date : {Data["StartingDate"]}");
 
         Console.Write("Experience : ");
         Data["Experience"] = int.Parse(Console.ReadLine()!);
@@ -135,6 +132,7 @@ public class HR : Employee, WritingReports
             string companyName = Console.ReadLine()!;
             if (companyName == "")
             {
+                Data["PreviousExperience"] = new Dictionary<string, string>();
                 break;
             }
             Console.Write("Enter the job title : ");
@@ -144,7 +142,7 @@ public class HR : Employee, WritingReports
         }
         Console.WriteLine();
 
-        Data["HospitalID"] = generateID(Data["FirstName"], Data["LastName"], department);
+        Data["HospitalID"] = generateID(FirstName, LastName, department);
         Console.Write($"EmployeeID : {Data["HospitalID"]}");
         Console.WriteLine();
 
@@ -156,7 +154,9 @@ public class HR : Employee, WritingReports
         Data["AccountNumber"] = Console.ReadLine()!;
         Console.WriteLine();
 
-        Console.Write("For doctors & Radiologist -> specialization : ");
+        //Console.Write("For doctors & Radiologist -> specialization : ");
+        Data["Specialization"] = string.Empty;
+
 
 
         Console.WriteLine();
@@ -182,6 +182,8 @@ public class HR : Employee, WritingReports
 
     private string generateID(string firstName, string lastName, string department)// first two letters in department + first letter from first name and last name + four random digits
     {
+        var IDs = EmployeeData.getIDS();
+
         string emp_ID = department[0..2].ToUpper();
         emp_ID += firstName[0];
         emp_ID += lastName[0];
@@ -190,7 +192,7 @@ public class HR : Employee, WritingReports
             Random r = new Random();
             emp_ID += r.Next(0, 9);
         }
-        if (!Employees.ContainsKey(emp_ID))// make sure the id is unique
+        if (!IDs.ContainsKey(emp_ID))// make sure the id is unique
         {
             return emp_ID;
         }
@@ -201,7 +203,7 @@ public class HR : Employee, WritingReports
 
     }
 
-    
+
     //*********************************************************************Firing proccesses****************************************************************
 
     public void Fire()
@@ -255,26 +257,8 @@ public class HR : Employee, WritingReports
         } while (true);
     }
 
+
    
-    //*********************************************************************Counting employee****************************************************************
-    public static void numberOfEmployyes()
-    {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
-
-        using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
-        {
-            ExcelWorksheet sheet = EmployeeData.Workbook.Worksheets["Number of Employee"];
-
-            int colCount = sheet.Dimension.End.Column;
-
-            for (int col = 1; col <= colCount; col++)
-            {
-                Console.WriteLine($"{sheet.Cells[1, col].Value.ToString()}\t:\t{sheet.Cells[2, col].Value.ToString()}");
-            }
-
-        }
-    }
-
     //*********************************************************************preformance reports****************************************************************
     public void WriteReport() // feutures !!! make this a work hours auto checker methods and the preformance method check the work quality of every employee
     {
@@ -302,11 +286,11 @@ public class HR : Employee, WritingReports
         string name = ThisEmployee["FullName"];
         dynamic salary = ThisEmployee["Salary"];
 
-        dynamic loginTime = ThisEmployee["DailyLoginTime"];
-        dynamic logoutTime = ThisEmployee["DailyLogoutTime"];
+        DateTime loginTime = ThisEmployee["DailyLoginTime"];
+        DateTime logoutTime = ThisEmployee["DailyLogoutTime"];
         dynamic workhours = ThisEmployee["WorkHours"];
 
-        if (loginTime == null)
+        if (loginTime == null || loginTime.Date != DateTime.Now.Date)
         {
             int timeNow = DateTime.Now.Hour;
             if (timeNow > 10)
@@ -316,7 +300,7 @@ public class HR : Employee, WritingReports
             }
         }
 
-        if (loginTime == null)
+        if (logoutTime == null || loginTime.Date != DateTime.Now.Date)
         {
             Console.WriteLine($"{name} has not log-out yet");
             return;
@@ -370,7 +354,7 @@ public class HR : Employee, WritingReports
         report += $"\n\nHR : {FullName}\nDate : {timeWritten}";
         ThisEmployee["HRreport"] = report;
 
-        if (!File.Exists("D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx")) EmployeeData.creatNewXLSXfile();
+        if (!File.Exists("D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx")) EmployeeData.creatNewReportXLSXsheet();
 
         // store the reoprt in the report sheet
         EmployeeData.addTodayesReport(ThisEmployee["HospitalID"], report);
@@ -378,7 +362,9 @@ public class HR : Employee, WritingReports
         // update the report fieald in employee data which hold the latest report.
         EmployeeData.accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "HRreport", report);
 
+        Console.WriteLine("Report Was sent successfully");
     }
+
 
 
     //*********************************************************************search employee****************************************************************
@@ -466,6 +452,10 @@ public class HR : Employee, WritingReports
 
                 switch (id[0..2])
                 {
+                    case "MA":
+                        sheet = package.Workbook.Worksheets["Manger"];
+                        rightID = false;
+                        break;
                     case "NU":
                         sheet = package.Workbook.Worksheets["Nurse"];
                         rightID = false;
@@ -593,20 +583,31 @@ public class HR : Employee, WritingReports
         }
     }
 
-   
+
 
     //*********************************************************************promotion****************************************************************
     public void pormotion()
     {
         var ThisEmployee = searchEmployee();
 
-        dynamic startDate = ThisEmployee["StartingDate"];
-        TimeSpan yearsSpent = DateTime.Now.Year - startDate.Year;
+        var startDate = ThisEmployee["StartingDate"];
+        int yearsSpent = DateTime.Now.Year - startDate.Year;
 
-        double rasieValue = yearsSpent.Days / 365 * 0.2;
+        if(yearsSpent == 0)
+        {
+            Console.WriteLine($"{ThisEmployee["FullName"]} Have not complete a year in work yet!");
+            return;
+        }
+
+        double rasieValue = yearsSpent * 0.2;
+        double newSalary = ThisEmployee["Salary"] * rasieValue;
+        ThisEmployee["Salary"] += newSalary;
+
         try
         {
-            EmployeeData.accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "Salary", rasieValue);
+            Console.WriteLine($"{ThisEmployee["FullName"]} had a raise by {rasieValue * 100}% = {newSalary}\n salary now = {ThisEmployee["Salary"]}");
+
+            EmployeeData.accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "Salary", ThisEmployee["Salary"]);
         }
         catch (Exception ex)
         {
@@ -628,26 +629,35 @@ public class HR : Employee, WritingReports
             int choice = int.Parse(Console.ReadLine()!);
             if (choice == 1)
             {
+                HRreport = (EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "HRreport"));
 
+                if (HRreport == string.Empty)
+                {
+                    Console.WriteLine("Today's report not done yet");
+                    return;
+                }
+                Console.WriteLine();
                 Console.WriteLine(HRreport);
                 return;
             }
             else if (choice == 2)
             {
+                Console.WriteLine();
                 Console.WriteLine(GetHrReport(HospitalID));
                 return;
             }
             else
             {
+                Console.WriteLine();
                 Console.WriteLine("Plz enter a valid Choice!");
             }
         }
 
     }
 
-    private string GetHrReport(string id)
+    public static string GetHrReport(string id)
     {
-        Console.WriteLine("Enter the wanted date in yyyy-mm--dd");
+        Console.WriteLine("Enter the wanted date in yyyy-mm-dd");
         while (true)
         {
             Console.Write("Enter date here : ");
@@ -670,6 +680,10 @@ public class HR : Employee, WritingReports
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
+        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
+        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
+        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+
         if (SalaryReceived == true)
         {
             double salaryAfterBouns = Salary + Bouns;
@@ -682,13 +696,19 @@ public class HR : Employee, WritingReports
         }
         else
         {
-            Console.WriteLine($"salary not sent yet :(");
+            Console.WriteLine("salary not sent yet :(");
+            Console.WriteLine($"Your salary with bouns and diduction for so far : {Salary:c}");
         }
     }
 
     //*********************************************************************login****************************************************************
     public void login()
     {
+        if(DailyLoginTime.Date == DateTime.Now.Date)
+        {
+            Console.WriteLine($"You have already logged-in today at {DailyLoginTime}");
+            return;
+        }
         DailyLoginTime = DateTime.Now;
         Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
         EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
@@ -698,7 +718,21 @@ public class HR : Employee, WritingReports
     //*********************************************************************logout****************************************************************
     public void logout()
     {
-        TimeSpan? hoursWorkedToday = DateTime.Now - DailyLoginTime;
+        if(DailyLoginTime.Day != DateTime.Now.Day)
+        {
+            Console.WriteLine("Warning!!! You did not log-in for today!");
+            Console.WriteLine("Can't log-out");
+            return;
+        }
+
+        if (DailyLogoutTime.Date == DateTime.Now.Date)
+        {
+            Console.WriteLine($"You have already logged-in today at {DailyLogoutTime}");
+            return;
+        }
+
+        int workedHours = DateTime.Now.Hour - DailyLoginTime.Hour;
+        TimeSpan? hoursWorkedToday = new TimeSpan(workedHours,0,0);
         if (hoursWorkedToday < WorkHours)
         {
             Console.WriteLine($"Warning! your logging out {WorkHours - hoursWorkedToday} hours earlier");
@@ -731,8 +765,7 @@ public class HR : Employee, WritingReports
 
     public void PrintIDS()
     {
-
-        var id = IDsBeckups.OrderBy(x => x.Value).ToList();
+        var id = EmployeeData.getIDS();
         Console.WriteLine("\nName\t\t\t :\t ID");
         foreach (var item in id)
         {
@@ -745,6 +778,8 @@ public class HR : Employee, WritingReports
                 Console.WriteLine($"{item.Value}\t\t :\t {item.Key}");
             }
         }
+        Console.WriteLine();
+        EmployeeData.numberOfEmployyes();
     }
     public static void creatHR() // rouby
     {
@@ -761,7 +796,7 @@ public class HR : Employee, WritingReports
         data["BloodType"] = "A+";
         data["Salary"] = 10000;
         data["WorkHours"] = new TimeSpan(8, 0, 0);
-        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["StartingDate"] = new DateOnly(2023, 1, 1);
         data["Experience"] = 1;
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "HR";
@@ -802,7 +837,7 @@ public class HR : Employee, WritingReports
         data["BloodType"] = "A+";
         data["Salary"] = 20000;
         data["WorkHours"] = new TimeSpan(8, 0, 0);
-        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["StartingDate"] = new DateOnly(2023, 1, 1);
         data["Experience"] = 1;
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Manger";
@@ -842,9 +877,9 @@ public class HR : Employee, WritingReports
         data["Statue"] = "Single";
         data["Address"] = "Egypt. Behira. Edko";
         data["BloodType"] = "A+";
-        data["Salary"] = 60000;
+        data["Salary"] = 6000;
         data["WorkHours"] = new TimeSpan(8, 0, 0);
-        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["StartingDate"] = new DateOnly(2023, 1, 1);
         data["Experience"] = 1;
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Receptionist";
@@ -884,9 +919,9 @@ public class HR : Employee, WritingReports
         data["Statue"] = "Single";
         data["Address"] = "Egypt. Alexandria. Borj Al-arab";
         data["BloodType"] = "A+";
-        data["Salary"] = 90000;
+        data["Salary"] = 9000;
         data["WorkHours"] = new TimeSpan(8, 0, 0);
-        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["StartingDate"] = new DateOnly(2023, 1, 1);
         data["Experience"] = 1;
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Accountant";
@@ -928,7 +963,7 @@ public class HR : Employee, WritingReports
         data["BloodType"] = "A+";
         data["Salary"] = 15000;
         data["WorkHours"] = new TimeSpan(8, 0, 0);
-        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["StartingDate"] = new DateOnly(2023, 1, 1);
         data["Experience"] = 1;
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Doctor";
@@ -970,7 +1005,7 @@ public class HR : Employee, WritingReports
         data["BloodType"] = "A+";
         data["Salary"] = 11000;
         data["WorkHours"] = new TimeSpan(8, 0, 0);
-        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["StartingDate"] = new DateOnly(2023, 1, 1);
         data["Experience"] = 1;
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Pharmacist";
@@ -1011,7 +1046,7 @@ public class HR : Employee, WritingReports
         data["BloodType"] = "A+";
         data["Salary"] = 12500;
         data["WorkHours"] = new TimeSpan(8, 0, 0);
-        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["StartingDate"] = new DateOnly(2023, 1, 1);
         data["Experience"] = 1;
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Nurse";
@@ -1052,7 +1087,7 @@ public class HR : Employee, WritingReports
         data["BloodType"] = "A+";
         data["Salary"] = 14000;
         data["WorkHours"] = new TimeSpan(8, 0, 0);
-        data["StartDate"] = new DateOnly(2023, 1, 1);
+        data["StartingDate"] = new DateOnly(2023, 1, 1);
         data["Experience"] = 1;
         Dictionary<string, string> PE = new Dictionary<string, string>();
         PE["the hospital"] = "Radiologist";
@@ -1078,5 +1113,18 @@ public class HR : Employee, WritingReports
 
         EmployeeData.StoreData(data, "Radiologist");
 
+    }
+
+    public static void fakeDataBase()
+    {
+
+        HR.CreatManger();
+        HR.creatHR();
+        HR.CreatAccountant();
+        HR.CreatReceptionist();
+        HR.CreatDoctor();
+        HR.CreatNurse();
+        HR.CreatRadiologist();
+        HR.CreatPharmacist();
     }
 }

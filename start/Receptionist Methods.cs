@@ -15,10 +15,9 @@ internal partial class Start
                 Console.WriteLine("2. Logout");
                 Console.WriteLine("3. Print your Salary");
                 Console.WriteLine("4. Print HR report");
-                Console.WriteLine("5. Write a report to the manger");
-                Console.WriteLine("6. Write a review to the manger");
-                Console.WriteLine("7. Add a new patient");
-                Console.WriteLine("8. Exit\n\n");
+                Console.WriteLine("5. Write a report or a review to the manger");
+                Console.WriteLine("6. Add a new patient");
+                Console.WriteLine("7. Exit\n\n");
 
                 Console.Write("Enter your choice : ");
                 int choice = int.Parse(Console.ReadLine()!);
@@ -42,18 +41,14 @@ internal partial class Start
                         pressEnterToContinue();
                         break;
                     case 5:
-                        // WriteReportToManger();
-                        // pressEnterToContinue();
+                        Manger.WriteReportAndReviewToManger(receptionist);
+                        pressEnterToContinue();
                         break;
                     case 6:
-                        // WriteReview();
-                        // pressEnterToContinue();
-                        break;
-                    case 7:
                         receptionist.hipatient();
                         pressEnterToContinue();
                         break;
-                    case 8:
+                    case 7:
                         return true;
                     default:
                         Console.WriteLine("\nPlease enter a valid choice");

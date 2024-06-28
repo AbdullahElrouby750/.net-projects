@@ -6,6 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hospital classes", "hospital classes\hospital classes.csproj", "{C2300B91-0A5B-4488-B48B-BB85F6681416}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hospital testes", "hospital testes\hospital testes.csproj", "{C286E807-B489-4F20-9EFC-917297E8817D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E2E060AD-7BE8-40C7-A5FD-78AB72ACD851} = {E2E060AD-7BE8-40C7-A5FD-78AB72ACD851}
+		{EEACD304-737D-43C6-B881-1B74F41B652D} = {EEACD304-737D-43C6-B881-1B74F41B652D}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "start", "start\start.csproj", "{EEACD304-737D-43C6-B881-1B74F41B652D}"
 EndProject

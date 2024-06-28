@@ -1,74 +1,121 @@
-using System.Reflection.Emit;
+using hospitalData;
+
 namespace hospital_classes;
 
 public class Manger : Employee, WritingReports
 {
-    List<string> approvedFiles; // added
-    public Manger()
+    public Manger() { }
+    public Manger(Dictionary<string, dynamic> data) : base(data) { }
+
+
+
+
+    //********************************************** writing reoprorts and reviews********************************************
+
+
+    public static void WriteReportAndReviewToManger(dynamic ThisEmployee)
     {
-        approvedFiles = new List<string>();
+        string name = ThisEmployee.FullName;
+        string id = ThisEmployee.HospitalID;
+        string contentType = string.Empty;
 
-    }
-    public Manger(Dictionary<string, dynamic> data) : base(data)
-    {
-        Console.WriteLine("hi Boss,how are you today ");
-        approvedFiles = new List<string>();                 // added
-
-    }
-
-    // public string Message(int num)
-    // {
-    //     Console.WriteLine("Choose an option:");
-    //     Console.WriteLine("1. Approve List");
-    //     Console.WriteLine("2. Review List");
-
-    //     string input = Console.ReadLine();
-
-    //     if (input == "1")
-    //     {
-
-    //         return approve();
-    //     }
-    //     else if (input == "2")
-    //     {
-
-    //         return review();
-    //     }
-    //     else
-    //     {
-    //         return "Invalid choice!";
-    //     }
-    // }
-
-    public bool approve(string file)
-    {
-        Console.WriteLine("Here you will see a list of the most recent messages that require your approval");
-        string newMessage = file;
-        Console.WriteLine($"this is last message{newMessage}");
-        Console.WriteLine("Please choose one of the following options:");
-        Console.WriteLine("1. If you agree with the decision taken");
-        Console.WriteLine("2. If you do not agree with the decision taken");
-        int choice = int.Parse(Console.ReadLine());
-        switch (choice)
+        while (true)
         {
-            case 1:
-                Console.WriteLine("You chose to approve the request.");
-                approvedFiles.Add(newMessage);
-                return true;
-            case 2:
-                Console.WriteLine("You chose to reject the request.");
 
-               return false;
-            default:
-                Console.WriteLine("Invalid choice.");
-              return approve(file);
+            Console.WriteLine("For writing a report press 1\nFor  writing a review press 2");
+            Console.Write("Choose : ");
+
+            int choice = int.Parse(Console.ReadLine()!);
+            if (choice == 1)
+            {
+                contentType = "Report";
+                break;
+            }
+            else if (choice == 2)
+            {
+                contentType = "Review";
+                break;
+            }
+            else
+            {
+                Console.WriteLine("Invalid Choice!");
+            }
+
         }
+        Console.WriteLine($"Plz, Enter the {contentType}'s Title");
+        string title = Console.ReadLine()!.ToUpper();
+
+        Console.WriteLine($"Plz, Enter the {contentType}");
+        string Body = Console.ReadLine()!;
+
+        string Date = DateTime.Now.ToString();
+
+        string report = $"{title}\n{Body}\n\nBy : {name}\nID : {id}\nDate : {Date}";
+
+        MangerReportsAndReviewsFile.accessMangerReportsAndReviewsFile(contentType, title, report, Date);
     }
 
-    public void review(string feedback)
+    //********************************************** reviewing reoprorts and reviews********************************************
+
+    public void approveReportsAndReviews()
     {
-        Console.WriteLine($"Feedback received: {feedback}");
-        string massage = "Thank you for writing to us and we promise to work to solve the problem ";
+        int choice = 0;
+        string contentType = string.Empty;
+        string contentStatue = string.Empty;
+
+
+        Console.WriteLine("1. Reports\n2. Reviews");
+        while (true) // make sure its a avlid choice
+        {
+            Console.Write("\nYour Choice : ");
+            choice = int.Parse(Console.ReadLine()!);
+            if (choice == 1)
+            {
+                contentType = "Report";
+                break;
+            }
+            else if (choice == 2)
+            {
+                contentType = "Review";
+                break;
+            }
+            else
+            {
+                Console.WriteLine("plz, enter a valid choice!");
+            }
+        }
+            Console.WriteLine("1. Accepted\n2. Denied\n3. Not set.\n4. All");
+
+            while (true) // make sure its a avlid choice
+            {
+                Console.Write("\nYour Choice : ");
+                choice = int.Parse(Console.ReadLine()!);
+                if (choice < 1 || choice > 4)
+                {
+                    Console.WriteLine("plz, enter a valid choice!");
+                    continue;
+                }
+
+                break;
+            }
+
+            switch (choice)
+            {
+                case 1:
+                    contentStatue = "Accepted";
+                    break;
+                case 2:
+                    contentStatue = "Denied";
+                    break;
+                case 3:
+                    contentStatue = "NS";
+                    break;
+                case 4:
+                    contentStatue = "All";
+                    break;
+            }
+
+            MangerReportsAndReviewsFile.accessMangerReportsAndReviewsFile(contentType, contentStatue);
     }
 
     //*********************************************************************interface methods****************************************************************
@@ -78,40 +125,74 @@ public class Manger : Employee, WritingReports
     {
         //Console.WriteLine(HRreport);
     }
+    //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
+        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
+        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
+        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+
         if (SalaryReceived == true)
         {
-            int Salary = 0;
-            int Bouns = 0;
             double salaryAfterBouns = Salary + Bouns;
             Console.WriteLine($"Salary received successfully: {salaryAfterBouns:c} ");
             Console.WriteLine($"Your main salary: {Salary}");
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
+
+            EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
         }
         else
         {
-            Console.WriteLine($"salary not sent yet :(");
+            Console.WriteLine("salary not sent yet :(");
+            Console.WriteLine($"Your salary with bouns and diduction for so far : {Salary:c}");
         }
     }
+
+    //*********************************************************************login****************************************************************
     public void login()
     {
+        if (DailyLoginTime.Date == DateTime.Now.Date)
+        {
+            Console.WriteLine($"You have already logged-in today at {DailyLoginTime}");
+            return;
+        }
         DailyLoginTime = DateTime.Now;
+        Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
+        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
     }
+
+
+    //*********************************************************************logout****************************************************************
     public void logout()
     {
-        TimeSpan? hoursWorkedToday = DateTime.Now - DailyLoginTime;
+        if (DailyLoginTime.Day != DateTime.Now.Day)
+        {
+            Console.WriteLine("Warning!!! You did not log-in for today!");
+            Console.WriteLine("Can't log-out");
+            return;
+        }
+
+        if (DailyLogoutTime.Date == DateTime.Now.Date)
+        {
+            Console.WriteLine($"You have already logged-in today at {DailyLogoutTime}");
+            return;
+        }
+
+        int workedHours = DateTime.Now.Hour - DailyLoginTime.Hour;
+        TimeSpan? hoursWorkedToday = new TimeSpan(workedHours, 0, 0);
         if (hoursWorkedToday < WorkHours)
         {
             Console.WriteLine($"Warning! your logging out {WorkHours - hoursWorkedToday} hours earlier");
             Console.WriteLine("Are you sure you want to log out? y/n");
             while (true)
             {
-                string answer = Console.ReadLine();
+                string answer = Console.ReadLine()!.ToLower();
                 if (answer == "y")
                 {
                     DailyLogoutTime = DateTime.Now;
+                    Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
+
                     break;
                 }
                 else if (answer == "n")
@@ -124,8 +205,8 @@ public class Manger : Employee, WritingReports
                 }
             }
         }
-
+        DailyLogoutTime = DateTime.Now;
+        Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
+        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
     }
-
-
 }

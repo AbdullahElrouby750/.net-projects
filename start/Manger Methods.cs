@@ -1,73 +1,68 @@
-using hospital_classes;
-
+﻿using hospital_classes;
 internal partial class Start
 {
-    private static bool NurseWorkspace(string id)
+    private static bool MangerWorkSpace(string id)
     {
         var data = HR.searchEmployee(id);
         if (data != null)
         {
-            var nurse = new Nurse(data);
+            Manger manger = new Manger(data);
+            HR hr = new HR();
             while (true)
             {
                 Console.WriteLine("\nChoose a jop from the list below :-\n");
                 Console.WriteLine("1. Login");
                 Console.WriteLine("2. Logout");
                 Console.WriteLine("3. Print your Salary");
-                Console.WriteLine("4. Print HR report");
-                Console.WriteLine("5. Write a report or a review to the manger");
-                Console.WriteLine("6. Write patients report");
-                Console.WriteLine("7. Set Visits' number");
-                Console.WriteLine("8. Mark current visit as done");
-                Console.WriteLine("9. Check if there is visits left for a patient");
-                Console.WriteLine("10. Print a patient report.");
-                Console.WriteLine("11. Exit\n\n");
+                Console.WriteLine("4. Write a Report about an employee");
+                Console.WriteLine("5. approve Reports & read reviews");
+                Console.WriteLine("6. Apply a pormotion");
+                Console.WriteLine("7. Hire");
+                Console.WriteLine("8. Fire");
+                Console.WriteLine("9. Print ID list");
+                Console.WriteLine("10. Exit\n\n");
 
                 Console.Write("Enter your choice : ");
                 int choice = int.Parse(Console.ReadLine()!);
                 switch (choice)
                 {
                     case 1:
-                        nurse.login();
+                        manger.login();
                         pressEnterToContinue();
                         break;
                     case 2:
-                        nurse.logout();
+                        manger.logout();
                         pressEnterToContinue();
                         break;
                     case 3:
-                        nurse.Printsalary();
+                        manger.Printsalary();
                         pressEnterToContinue();
                         break;
                     case 4:
-                        nurse.PrintHRreport();
+                        hr.WriteReport();
                         pressEnterToContinue();
                         break;
                     case 5:
-                        Manger.WriteReportAndReviewToManger(nurse);
+                        manger.approveReportsAndReviews();
                         pressEnterToContinue();
                         break;
                     case 6:
-                        nurse.WriteReport();
+                        hr.pormotion();
                         pressEnterToContinue();
                         break;
                     case 7:
-                        nurse.AddVisit();
+                        hr.Hire();
                         pressEnterToContinue();
                         break;
                     case 8:
-                        nurse.AddVisit();
+                        hr.Fire();
                         pressEnterToContinue();
                         break;
                     case 9:
-                        nurse.NeedVisits();
+                        hr.PrintIDS();
                         pressEnterToContinue();
                         break;
                     case 10:
-                        Receptionist.PrintPatientReports();
-                        pressEnterToContinue();
-                        break;
-                    case 11:
                         return true;
                     default:
                         Console.WriteLine("\nPlease enter a valid choice");
@@ -82,3 +77,4 @@ internal partial class Start
         }
     }
 }
+
