@@ -1,4 +1,3 @@
-
 namespace hospital_classes;
 
 public class Patient : Person
@@ -14,11 +13,12 @@ public class Patient : Person
     public bool MedicalXray { get; set; }
 
     public static int NumberOfPatients { get; set; }
-    private float Bill { get; set; }
+    private double Bill { get; set; }
     public string DoctorReport { get; set; }
     public string PharmacistReport { get; set; }
     public string NurseReport { get; set; }
     public string RadiologistReport { get; set; }
+
     public bool AllVisitsDone;
 
 
@@ -46,28 +46,18 @@ public class Patient : Person
     public Patient(Dictionary<string, dynamic> patientInfo)
         : base(patientInfo["FullName"], patientInfo["PhoneNumber"], patientInfo["Age"], patientInfo["DateOfBirth"], patientInfo["Gender"], patientInfo["Statue"], patientInfo["Address"], patientInfo["BloodType"])
     {
+        //add the needed members
         Weight = patientInfo["Weight"];
         Height = patientInfo["Height"];
         CurrentProblem = patientInfo["CurrentProblem"];
         Disabilities = patientInfo["Disabilities"];
-        Operation = false;
-        Bill = 0;
-        MedicalXray = false;
-        NumberOfPatients++;
-        PatientID = NumberOfPatients;
-        AllVisitsDone = true;
+        Operation = patientInfo["Operation"];
+        Bill = patientInfo["Bill"];
+        MedicalXray = patientInfo["MedicalXray"];
+        PatientID = patientInfo["HospitalID"];
+        AllVisitsDone = patientInfo["AllVisitsDone"];
 
     }
-
-    public void SetMedicalHistory(string disease, string info)
-    {
-        if (MedicalHistory == null)
-        {
-            MedicalHistory = new Dictionary<string, string>();
-        }
-        MedicalHistory[disease] = info;
-    }
-
     public string PrintMedicalHistory()
     {
         Console.WriteLine("Medical History:");
@@ -80,16 +70,6 @@ public class Patient : Person
         }
         return MedicalHistory!.ToString()!;
     }
-
-    public void SetEmergencyContact(string fields, string info)
-    {
-        if (EmergencyContact == null)
-        {
-            EmergencyContact = new Dictionary<string, string>();
-        }
-        EmergencyContact[fields] = info;
-    }
-
     public string PrintEmergencyContact()
     {
         Console.WriteLine("Emergency Contact:");

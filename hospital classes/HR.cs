@@ -2,7 +2,6 @@ using System.Drawing;
 using OfficeOpenXml;
 
 using hospitalData;
-using System.Xml.Linq;
 
 namespace hospital_classes;
 
@@ -165,9 +164,6 @@ public class HR : Employee, WritingReports
 
         //other prop needed
         Data["Bouns"] = 0.0;
-
-        TimeSpan? time = null;
-        Data["WorkHours"] = time;
 
         DateTime? date = null;
         Data["DailyLoginTime"] = date;
@@ -360,7 +356,7 @@ public class HR : Employee, WritingReports
         EmployeeData.addTodayesReport(ThisEmployee["HospitalID"], report);
 
         // update the report fieald in employee data which hold the latest report.
-        EmployeeData.accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "HRreport", report);
+        HandlingExcelClass.accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "HRreport", report, "emp");
 
         Console.WriteLine("Report Was sent successfully");
     }
@@ -437,150 +433,50 @@ public class HR : Employee, WritingReports
     }
     private Dictionary<string, dynamic> searchDataByID(string id)
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
-
-        using (ExcelPackage package = new ExcelPackage(excelFilePath))
-        {
-
-            ExcelWorksheet sheet = null;
-
-            bool rightID = true;
-
-            while (rightID)
-            {
-
-
-                switch (id[0..2])
-                {
-                    case "MA":
-                        sheet = package.Workbook.Worksheets["Manger"];
-                        rightID = false;
-                        break;
-                    case "NU":
-                        sheet = package.Workbook.Worksheets["Nurse"];
-                        rightID = false;
-                        break;
-                    case "PH":
-                        sheet = package.Workbook.Worksheets["Pharmacist"];
-                        rightID = false;
-                        break;
-                    case "RA":
-                        sheet = package.Workbook.Worksheets["Radiologist"];
-                        rightID = false;
-                        break;
-                    case "RE":
-                        sheet = package.Workbook.Worksheets["Receptionist"];
-                        rightID = false;
-                        break;
-                    case "DO":
-                        sheet = package.Workbook.Worksheets["Doctor"];
-                        rightID = false;
-                        break;
-                    case "HR":
-                        sheet = package.Workbook.Worksheets["HR"];
-                        rightID = false;
-                        break;
-                    case "AC":
-                        sheet = package.Workbook.Worksheets["Accountant"];
-                        rightID = false;
-                        break;
-                    default:
-                        Console.WriteLine("Invalid Id!");
-                        Console.Write("Enter a vadil one or type 'no' to stop : ");
-                        id = Console.ReadLine()!;
-                        if (id.ToLower() == "no")
-                        {
-                            return null;
-                        }
-                        continue;
-                }
-            }
-            int rowCount = sheet.Dimension.End.Row;
-            int colCount = sheet.Dimension.End.Column;
-            for (int row = 2; row <= rowCount; row++)
-            {
-                string target = sheet.Cells[row, 1].Value.ToString();
-                if (target.ToUpper() == id.ToUpper())
-                {
-                    int targetRow = row;
-
-                    return EmployeeData.getTargetDate(targetRow, colCount, id, sheet);
-                }
-            }
-            return null;
-        }
+        return EmployeeData.GetIdDate(id);
     }
 
     private Dictionary<string, dynamic> searchDataByName(string name)
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
 
-        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        List<Dictionary<string, dynamic>> similarNames = EmployeeData.GetNameDate(name);
+
+        if (similarNames.Count == 0)
         {
+            Console.WriteLine("no employee with such name!");
+            return null;
+        }
+        else if (similarNames.Count == 1)
+        {
+            return similarNames[0];
+        }
 
-            ExcelWorksheets sheets = package.Workbook.Worksheets;
-            ExcelWorksheet sheet = null;
-
-            List<Dictionary<string, dynamic>> similarNames = new List<Dictionary<string, dynamic>>();
-
-            foreach (var item in sheets)
+        Console.WriteLine("Choose the wanted employee :-");
+        int index = 0;
+        foreach (var item in similarNames)
+        {
+            Console.WriteLine($"{index + 1}{item["HospitalID"]}\t :\t {item["FullName"]}");
+            index++;
+        }
+        while (true)
+        {
+            try
             {
-                sheet = package.Workbook.Worksheets[item.Name];
-
-                int rowCount = sheet.Dimension.End.Row;
-                int colCount = sheet.Dimension.End.Column;
-                for (int row = 2; row <= rowCount; row++)
+                int choice = int.Parse(Console.ReadLine()!);
+                if (choice == 0)
                 {
-                    string target = sheet.Cells[row, 2].Value.ToString();
-                    if (target.ToUpper() == name.ToUpper())
-                    {
-                        int targetRow = row;
-                        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
-
-                        string id = sheet.Cells[targetRow, 1].Value.ToString();
-                        data = EmployeeData.getTargetDate(targetRow, colCount, id, sheet);
-
-                        similarNames.Add(data);
-                    }
+                    return null;
                 }
-            }
+                return similarNames[choice];
 
-            if (similarNames.Count == 0)
-            {
-                Console.WriteLine("no employee with such name!");
-                return null;
             }
-            else if (similarNames.Count == 1)
+            catch (IndexOutOfRangeException ex)
             {
-                return similarNames[0];
-            }
-
-            Console.WriteLine("Choose the wanted employee :-");
-            int index = 0;
-            foreach (var item in similarNames)
-            {
-                Console.WriteLine($"{index + 1}{item["HospitalID"]}\t :\t {item["FullName"]}");
-                index++;
-            }
-            while (true)
-            {
-                try
-                {
-                    int choice = int.Parse(Console.ReadLine()!);
-                    if (choice == 0)
-                    {
-                        return null;
-                    }
-                    return similarNames[choice];
-
-                }
-                catch (IndexOutOfRangeException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine("Choose a valid choice! or enter null to return");
-                }
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Choose a valid choice! or enter null to return");
             }
         }
+
     }
 
 
@@ -607,7 +503,7 @@ public class HR : Employee, WritingReports
         {
             Console.WriteLine($"{ThisEmployee["FullName"]} had a raise by {rasieValue * 100}% = {newSalary}\n salary now = {ThisEmployee["Salary"]}");
 
-            EmployeeData.accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "Salary", ThisEmployee["Salary"]);
+            HandlingExcelClass.accessEmployeeExcelFile(ThisEmployee["HospitalID"], ThisEmployee["Department"], "Salary", ThisEmployee["Salary"], "emp");
         }
         catch (Exception ex)
         {
@@ -629,7 +525,7 @@ public class HR : Employee, WritingReports
             int choice = int.Parse(Console.ReadLine()!);
             if (choice == 1)
             {
-                HRreport = (EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "HRreport"));
+                HRreport = (HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "HRreport", "emp"));
 
                 if (HRreport == string.Empty)
                 {
@@ -680,9 +576,9 @@ public class HR : Employee, WritingReports
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
-        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
-        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
-        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+        SalaryReceived = bool.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", "emp"));
+        Salary = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Salary","emp"));
+        Bouns = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Bouns", "emp"));
 
         if (SalaryReceived == true)
         {
@@ -692,7 +588,7 @@ public class HR : Employee, WritingReports
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
 
-            EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
+            HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false, "emp");
         }
         else
         {
@@ -711,7 +607,7 @@ public class HR : Employee, WritingReports
         }
         DailyLoginTime = DateTime.Now;
         Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime, "emp");
     }
 
 
@@ -731,8 +627,8 @@ public class HR : Employee, WritingReports
             return;
         }
 
-        int workedHours = DateTime.Now.Hour - DailyLoginTime.Hour;
-        TimeSpan? hoursWorkedToday = new TimeSpan(workedHours,0,0);
+        TimeSpan? hoursWorkedToday = TimeOnly.FromDateTime(DateTime.Now) - TimeOnly.FromDateTime(DailyLoginTime);
+        
         if (hoursWorkedToday < WorkHours)
         {
             Console.WriteLine($"Warning! your logging out {WorkHours - hoursWorkedToday} hours earlier");
@@ -749,7 +645,7 @@ public class HR : Employee, WritingReports
                 }
                 else if (answer == "n")
                 {
-                    break;
+                    return;
                 }
                 else
                 {
@@ -759,7 +655,7 @@ public class HR : Employee, WritingReports
         }
         DailyLogoutTime = DateTime.Now;
         Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime, "emp");
     }
     //*********************************************************************others****************************************************************
 
@@ -809,9 +705,6 @@ public class HR : Employee, WritingReports
         //other prop needed
         data["Bouns"] = 0.0;
 
-        TimeSpan? time = null;
-        data["WorkHours"] = time;
-
         DateTime? date = null;
         data["DailyLoginTime"] = date;
         data["DailyLogoutTime"] = date;
@@ -849,9 +742,6 @@ public class HR : Employee, WritingReports
 
         //other prop needed
         data["Bouns"] = 0.0;
-
-        TimeSpan? time = null;
-        data["WorkHours"] = time;
 
         DateTime? date = null;
         data["DailyLoginTime"] = date;
@@ -892,9 +782,6 @@ public class HR : Employee, WritingReports
         //other prop needed
         data["Bouns"] = 0.0;
 
-        TimeSpan? time = null;
-        data["WorkHours"] = time;
-
         DateTime? date = null;
         data["DailyLoginTime"] = date;
         data["DailyLogoutTime"] = date;
@@ -933,9 +820,6 @@ public class HR : Employee, WritingReports
 
         //other prop needed
         data["Bouns"] = 0.0;
-
-        TimeSpan? time = null;
-        data["WorkHours"] = time;
 
         DateTime? date = null;
         data["DailyLoginTime"] = date;
@@ -976,9 +860,6 @@ public class HR : Employee, WritingReports
         //other prop needed
         data["Bouns"] = 0.0;
 
-        TimeSpan? time = null;
-        data["WorkHours"] = time;
-
         DateTime? date = null;
         data["DailyLoginTime"] = date;
         data["DailyLogoutTime"] = date;
@@ -1018,9 +899,6 @@ public class HR : Employee, WritingReports
         //other prop needed
         data["Bouns"] = 0.0;
 
-        TimeSpan? time = null;
-        data["WorkHours"] = time;
-
         DateTime? date = null;
         data["DailyLoginTime"] = date;
         data["DailyLogoutTime"] = date;
@@ -1059,9 +937,6 @@ public class HR : Employee, WritingReports
         //other prop needed
         data["Bouns"] = 0.0;
 
-        TimeSpan? time = null;
-        data["WorkHours"] = time;
-
         DateTime? date = null;
         data["DailyLoginTime"] = date;
         data["DailyLogoutTime"] = date;
@@ -1099,9 +974,6 @@ public class HR : Employee, WritingReports
 
         //other prop needed
         data["Bouns"] = 0.0;
-
-        TimeSpan? time = null;
-        data["WorkHours"] = time;
 
         DateTime? date = null;
         data["DailyLoginTime"] = date;

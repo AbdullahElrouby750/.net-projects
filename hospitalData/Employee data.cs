@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
 using System.Drawing;
+using System.Xml.Linq;
 
 
 namespace hospitalData;
@@ -23,26 +24,26 @@ public static class EmployeeData
             try
             {
                 PreviousExperienceSheet = EmployeeData.Workbook.Worksheets["PreviousExperience"];
-                if (IDAlreadyAdded(PreviousExperienceSheet, data["HospitalID"])) return;
+                if (HandlingExcelClass.IDAlreadyAdded(PreviousExperienceSheet, data["HospitalID"])) return;
 
                 if (PreviousExperienceSheet == null)
                 {
                     throw new ArgumentNullException(nameof(PreviousExperienceSheet));
                 }
-                PreviousExperienceSheet = AddEmployeePreviousExperince(excelFilePath, PreviousExperienceSheet, data["HospitalID"], data["PreviousExperience"]);
+                PreviousExperienceSheet = HandlingExcelClass.AddTosecondaryInfo(PreviousExperienceSheet, data["HospitalID"], data["PreviousExperience"], "emp");
             }
             catch (IndexOutOfRangeException ex)
             {
                 PreviousExperienceSheet = EmployeeData.Workbook.Worksheets.Add("PreviousExperience");
-                PreviousExperienceSheet = CreateNewPreviousExperinceSheet(excelFilePath, PreviousExperienceSheet, data["HospitalID"], data["PreviousExperience"]);
+                PreviousExperienceSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(PreviousExperienceSheet, data["HospitalID"], data["PreviousExperience"], "emp");
             }
             catch (ArgumentNullException ex)
             {
                 PreviousExperienceSheet = EmployeeData.Workbook.Worksheets.Add("PreviousExperience");
-                PreviousExperienceSheet = CreateNewPreviousExperinceSheet(excelFilePath, PreviousExperienceSheet, data["HospitalID"], data["PreviousExperience"]);
+                PreviousExperienceSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(PreviousExperienceSheet, data["HospitalID"], data["PreviousExperience"], "emp");
             }
 
-            SaveFile(excelFilePath, EmployeeData);
+            HandlingExcelClass.SaveFile(excelFilePath, EmployeeData);
 
             ExcelWorksheet empSheet = null; // employee count sheet
             try
@@ -67,7 +68,7 @@ public static class EmployeeData
                 empSheet = AddEmployeeToEmployeeCountSheet(empSheet, department);
             }
 
-            SaveFile(excelFilePath, EmployeeData);
+            HandlingExcelClass.SaveFile(excelFilePath, EmployeeData);
 
 
             ExcelWorksheet sheet = null; // employee data sheet
@@ -79,110 +80,27 @@ public static class EmployeeData
                     throw new ArgumentNullException(nameof(sheet));
                 }
 
-                if (IDAlreadyAdded(sheet, data["HospitalID"])) return;
+                if (HandlingExcelClass.IDAlreadyAdded(sheet, data["HospitalID"])) return;
 
-                sheet = AddToExcistingDepartment(sheet, EmployeeData, data, excelFilePath);
+                sheet = HandlingExcelClass.AddToExcistingDepartment(sheet, data);
             }
             catch (IndexOutOfRangeException ex)
             {
                 sheet = EmployeeData.Workbook.Worksheets.Add(department);
-                sheet = CreateNewDepartmentsheet(sheet, data);
-                sheet = AddToExcistingDepartment(sheet, EmployeeData, data, excelFilePath);
+                sheet = HandlingExcelClass.CreateNewDepartmentsheet(sheet, data);
+                sheet = HandlingExcelClass.AddToExcistingDepartment(sheet, data);
             }
             catch (ArgumentNullException ex)
             {
                 sheet = EmployeeData.Workbook.Worksheets.Add(department);
-                sheet = CreateNewDepartmentsheet(sheet, data);
-                sheet = AddToExcistingDepartment(sheet, EmployeeData, data, excelFilePath);
+                sheet = HandlingExcelClass.CreateNewDepartmentsheet(sheet, data);
+                sheet = HandlingExcelClass.AddToExcistingDepartment(sheet, data);
             }
 
-            SaveFile(excelFilePath, EmployeeData);
+            HandlingExcelClass.SaveFile(excelFilePath, EmployeeData);
 
         }
     }
-
-
-    private static ExcelWorksheet CreateNewDepartmentsheet(ExcelWorksheet sheet, Dictionary<string, dynamic> data)// creates new sheet for a department(ex: hr, doctor ...)
-    {
-        int col = 1;
-        foreach (var key in data)
-        {
-            if (key.Key == "PreviousExperience")
-            {
-                continue;
-            }
-            sheet.Cells[1, col].Value = key.Key;
-            sheet.Cells[1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-            sheet.Cells[1, col].Style.Font.Bold = true;
-            col++;
-        }
-        return sheet;
-    }
-
-
-    private static ExcelWorksheet AddToExcistingDepartment(ExcelWorksheet sheet, ExcelPackage package, Dictionary<string, dynamic> data, string path) //Adds employees to to thier department that alreadyexist
-    {
-
-        int row = sheet.Dimension.End.Row;
-        row++;
-        int col = 1;
-
-        foreach (var value in data)
-        {
-            if (value.Key == "PreviousExperience")
-            {
-                continue;
-            }
-            else if (value.Key == "WorkHours")
-            {
-                TimeSpan strValue;
-                if (value.Value != null)
-                {
-                    strValue = value.Value;
-                sheet.Cells[row, col].Value = strValue.ToString();
-
-                }
-                else
-                {
-                    sheet.Cells[row, col].Value = string.Empty;
-
-                }
-                sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                col++;
-                continue;
-            }
-            else if (value.Key == "DailyLoginTime" || value.Key == "DailyLogoutTime")
-            {
-                DateTime strValue;
-                if (value.Value != null)
-                {
-                    strValue = value.Value;
-                    sheet.Cells[row, col].Value = strValue.ToString();
-
-                }
-                else
-                {
-                    sheet.Cells[row, col].Value = string.Empty;
-
-                }
-                sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                col++;
-                continue;
-
-            }
-
-            sheet.Cells[row, col].Value = value.Value;
-
-            sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-            col++;
-        }
-
-
-        return sheet;
-    }
-
-
 
     private static ExcelWorksheet CreateNewEmplyeeCountSheet(ExcelWorksheet sheet, string department)// create Employee count sheet with the first employee
     {
@@ -243,215 +161,6 @@ public static class EmployeeData
         return sheet;
     }
 
-
-    // save the file in the sended path
-    private static void SaveFile(string path, ExcelPackage package)
-    {
-        if (File.Exists(path))
-        {
-            package.Save();
-            return;
-        }
-        package.SaveAs(path);
-    }
-    public static void accessEmployeeExcelFile(string id, string deprtment, string field, object value) // edit a targted data
-    {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
-        using (ExcelPackage package = new ExcelPackage(excelFilePath))
-        {
-            ExcelWorksheet sheet = package.Workbook.Worksheets[deprtment];
-            int colCount = sheet.Dimension.End.Column;
-            int rowCount = sheet.Dimension.End.Row;
-
-            for (int row = 2; row <= colCount; row++)
-            {
-                if (sheet.Cells[row, 1].Value.ToString() == id)
-                {
-                    for (int col = 2; col <= colCount; col++)
-                    {
-                        if (sheet.Cells[1, col].Value.ToString() == field)
-                        {
-                            if (field == "WorkHours" || field == "DailyLoginTime" || field == "DailyLogoutTime")
-                            {
-                                string strValue = value.ToString();
-                                sheet.Cells[row, col].Value = strValue;
-                            }
-                            else
-                            {
-                                sheet.Cells[row, col].Value = value;
-                            }
-                            sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                            package.Save();
-                            return;
-                        }
-                    }
-
-                }
-            }
-            Console.WriteLine($"{id} not in the data!\nMake sure u entered it right");
-            return;
-        }
-    }
-
-
-    public static string accessEmployeeExcelFile(string id, string deprtment, string field) // get a targted data
-    {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
-        using (ExcelPackage package = new ExcelPackage(excelFilePath))
-        {
-            ExcelWorksheet sheet = package.Workbook.Worksheets[deprtment];
-            int colCount = sheet.Dimension.End.Column;
-            int rowCount = sheet.Dimension.End.Row;
-
-            for (int row = 2; row <= colCount; row++)
-            {
-                if (sheet.Cells[row, 1].Value.ToString() == id)
-                {
-                    for (int col = 2; col <= colCount; col++)
-                    {
-                        if (sheet.Cells[1, col].Value.ToString() == field)
-                        {
-                            
-                            return sheet.Cells[row, col].Value.ToString()!;
-                        }
-                    }
-
-                }
-            }
-            Console.WriteLine($"{id} not in the data!\nMake sure u entered it right");
-            return null;
-        }
-    }
-
-
-    private static ExcelWorksheet CreateNewPreviousExperinceSheet(string excelFilePath, ExcelWorksheet sheet, string id, Dictionary<string, string> PreviousExperience)// creating Previous Experince Sheet for the first time
-    {
-        sheet.Cells["A1"].Value = "ID";
-        sheet.Cells["A1"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-        sheet.Cells["A1"].Style.Font.Bold = true;
-
-        sheet.Cells["B1"].Value = id;
-        sheet.Cells["B1"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-        sheet.Cells["B1"].Style.Font.Bold = true;
-
-        int row = 2;
-        int mapIndex = 0;
-        while (row <= PreviousExperience.Count * 2 + 1)
-        {
-            sheet.Cells[row, 1].Value = "Place";
-            sheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-            sheet.Cells[row, 1].Style.Font.Bold = true;
-            sheet.Cells[row, 1].Style.Font.Color.SetColor(Color.Green);
-
-            sheet.Cells[row + 1, 1].Value = "Title";
-            sheet.Cells[row + 1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-            sheet.Cells[row + 1, 1].Style.Font.Bold = true;
-            sheet.Cells[row + 1, 1].Style.Font.Color.SetColor(Color.Blue);
-
-            sheet.Cells[row, 2].Value = PreviousExperience.ElementAt(mapIndex).Key;
-            sheet.Cells[row, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-            sheet.Cells[row + 1, 2].Value = PreviousExperience.ElementAt(mapIndex).Value;
-            sheet.Cells[row + 1, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-            row += 2;
-            mapIndex++;
-        }
-        // package.SaveAs(excelFilePath);
-        return sheet;
-    }
-
-
-    public static ExcelWorksheet AddEmployeePreviousExperince(string excelFilePath, ExcelWorksheet sheet, string id, Dictionary<string, string> PreviousExperience) // add employee's previous experince to the sheet
-    {
-        int rowCount = sheet.Dimension.End.Row;
-        int targetCol = sheet.Dimension.End.Column + 1;
-
-        int row = 2;
-        int mapIndex = 0;
-
-        sheet.Cells[1, targetCol].Value = id;
-        sheet.Cells[1, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-        sheet.Cells[1, targetCol].Style.Font.Bold = true;
-
-        while (true)
-        {
-            if (mapIndex == PreviousExperience.Count) break; // All set
-
-            if (row > rowCount) // open new cells for more Experince
-            {
-                int col = 2;
-
-                sheet.Cells[row, 1].Value = "Place";
-                sheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                sheet.Cells[row, 1].Style.Font.Bold = true;
-                sheet.Cells[row, 1].Style.Font.Color.SetColor(Color.Green);
-
-                sheet.Cells[row + 1, 1].Value = "Title";
-                sheet.Cells[row + 1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                sheet.Cells[row + 1, 1].Style.Font.Bold = true;
-                sheet.Cells[row + 1, 1].Style.Font.Color.SetColor(Color.Blue);
-
-                while (col < targetCol)// set cells as "NS" for previous employee ** p.S "NS" => Not Set.
-                {
-                    sheet.Cells[row, col].Value = "NS";
-                    sheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    sheet.Cells[row, col].Style.Font.Color.SetColor(Color.Red);
-
-                    sheet.Cells[row + 1, col].Value = "NS";
-                    sheet.Cells[row + 1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                    sheet.Cells[row + 1, col].Style.Font.Color.SetColor(Color.Red);
-
-                    col++;
-                }
-
-
-                sheet.Cells[row, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Key;
-                sheet.Cells[row, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                sheet.Cells[row + 1, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Value;
-                sheet.Cells[row + 1, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-                row += 2;
-                rowCount += 2;
-                mapIndex++;
-
-                continue;
-            }
-            sheet.Cells[row, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Key;
-            sheet.Cells[row, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-            sheet.Cells[row + 1, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Value;
-            sheet.Cells[row + 1, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
-            row += 2;
-            mapIndex++;
-        }
-
-        while (row <= rowCount) // if experince is less than the mak row count then set the remain cells for this employee as "NS"
-        {
-            sheet.Cells[row, targetCol].Value = "NS";
-            sheet.Cells[row, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-            sheet.Cells[row, targetCol].Style.Font.Color.SetColor(Color.Red);
-            row++;
-        }
-
-        return sheet;
-    }
-
-    private static bool IDAlreadyAdded(ExcelWorksheet sheet, string TargetID) // check if this id already added
-    {
-        if (sheet == null) return false;
-
-        int colCount = sheet.Dimension.End.Column;
-
-        for (int col = 2; col <= colCount; col++)
-        {
-            if (sheet.Cells[1, col].Value.ToString() == TargetID) return true;
-        }
-        return false;
-    }
 
     //*********************************************************************Firing proccesses****************************************************************
 
@@ -618,7 +327,111 @@ public static class EmployeeData
 
     //*********************************************************************search employee****************************************************************
 
-    public static Dictionary<string, dynamic> getTargetDate(int targetRow, int colCount, string id, ExcelWorksheet sheet) // get the data for the wanted employee
+
+    public static Dictionary<string, dynamic> GetIdDate(string id) // get the data for the wanted employee by ID
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+
+            ExcelWorksheet sheet = null;
+
+
+            switch (id[0..2])
+            {
+                case "MA":
+                    sheet = package.Workbook.Worksheets["Manger"];
+                    break;
+                case "NU":
+                    sheet = package.Workbook.Worksheets["Nurse"];
+                    break;
+                case "PH":
+                    sheet = package.Workbook.Worksheets["Pharmacist"];
+                    break;
+                case "RA":
+                    sheet = package.Workbook.Worksheets["Radiologist"];
+                    break;
+                case "RE":
+                    sheet = package.Workbook.Worksheets["Receptionist"];
+                    break;
+                case "DO":
+                    sheet = package.Workbook.Worksheets["Doctor"];
+                    break;
+                case "HR":
+                    sheet = package.Workbook.Worksheets["HR"];
+                    break;
+                case "AC":
+                    sheet = package.Workbook.Worksheets["Accountant"];
+                    break;
+                default:
+                    Console.WriteLine("Invalid Id!");
+                    return null;
+
+            }
+
+            if(sheet == null)
+            {
+                Console.WriteLine("ERROR!!! No employees yet in the data");
+                return null;
+            }
+
+            int rowCount = sheet.Dimension.End.Row;
+            int colCount = sheet.Dimension.End.Column;
+            for (int row = 2; row <= rowCount; row++)
+            {
+                string target = sheet.Cells[row, 1].Value.ToString();
+                if (target.ToUpper() == id.ToUpper())
+                {
+                    int targetRow = row;
+
+                    return getDate(targetRow, colCount, id, sheet, package);
+                }
+            }
+            return null;
+        }
+
+    }
+
+    public static List<Dictionary<string, dynamic>> GetNameDate(string name) // get the data for the wanted employee by Name
+    {
+
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+
+            ExcelWorksheets sheets = package.Workbook.Worksheets;
+            ExcelWorksheet sheet = null;
+
+            List<Dictionary<string, dynamic>> similarNames = new List<Dictionary<string, dynamic>>();
+
+            foreach (var item in sheets)
+            {
+                sheet = package.Workbook.Worksheets[item.Name];
+
+                int rowCount = sheet.Dimension.End.Row;
+                int colCount = sheet.Dimension.End.Column;
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    string target = sheet.Cells[row, 2].Value.ToString();
+                    if (target.ToUpper() == name.ToUpper())
+                    {
+                        int targetRow = row;
+                        Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
+
+                        string id = sheet.Cells[targetRow, 1].Value.ToString();
+                        data = getDate(targetRow, colCount, id, sheet, package);
+
+                        similarNames.Add(data);
+                    }
+                }
+            }
+            return similarNames;
+        }
+    }
+
+    private static Dictionary<string, dynamic> getDate(int targetRow, int colCount, string id, ExcelWorksheet sheet, ExcelPackage package) // get the data for the wanted employee
     {
 
         Dictionary<string, dynamic> data = new Dictionary<string, dynamic>();
@@ -663,47 +476,9 @@ public static class EmployeeData
 
             data[field] = val;
         }
-        data["PreviousExperience"] = getPreviousExprince(id);
-        return data;
-    }
+        sheet = package.Workbook.Worksheets["PreviousExperience"];
+        data["PreviousExperience"] = HandlingExcelClass.getSecondaryInfoData(id, sheet);
 
-    private static Dictionary<string, string> getPreviousExprince(string id)
-    {
-        string path = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
-
-        Dictionary<string, string> data = new Dictionary<string, string>();
-        using (ExcelPackage package = new ExcelPackage(path))
-        {
-            ExcelWorksheet sheet = package.Workbook.Worksheets["PreviousExperience"];
-
-            int colCount = sheet.Dimension.End.Column;
-            for (int col = 2; col <= colCount; col++)
-            {
-                string target = sheet.Cells[1, col].Value.ToString()!;
-                if (target.ToUpper() == id.ToUpper())
-                {
-                    if (sheet.Cells[2, col].Value.ToString() == "NS") // have no previous experience
-                    {
-                        return null;
-                    }
-
-                    int targetCol = col;
-                    int row = 2;
-                    while (row <= sheet.Dimension.End.Row)
-                    {
-                        if (sheet.Cells[row, targetCol].Value.ToString() == "NS") break; // got all the previous experience and the rest is just fillers
-
-                        string place = sheet.Cells[row, targetCol].Value.ToString()!;
-                        string title = sheet.Cells[row + 1, targetCol].Value.ToString()!;
-                        data[place] = title;
-
-                        row += 2;
-
-                    }
-                    break;
-                }
-            }
-        }
         return data;
     }
 

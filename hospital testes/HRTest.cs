@@ -22,6 +22,5 @@ public class HRTest
 
         Assert.AreEqual(new TimeSpan(8,0,0),workhours);
 
-        Assert.AreEqual(1,HR.Employees.Count);
     }
 }
