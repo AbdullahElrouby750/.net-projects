@@ -4,59 +4,33 @@ namespace hospital_classes;
 
 public class Radiologist : Employee, WritingReports
 {
-    public static int numberOfRadiologist = 0;
-    public string specialization;
+
+    public Radiologist(Dictionary<string, dynamic> data) : base(data) {}
 
 
 
-    public Radiologist(Dictionary<string, dynamic> data)
-    : base(data)
-    {
-
-        specialization = data["Specialization"];
-        numberOfRadiologist++;
-
-    }
-
-
-
-    public Radiologist()
-    {
-        specialization = "Unknown";
-        numberOfRadiologist++;
-    }
+    public Radiologist() {}
 
     public void WriteReport()
     {
-        while (true)
+        Patient patient = null;
+        patient = Receptionist.SearchpatientData();
+        if (patient != null)
         {
+            Console.WriteLine($"Enter Radiologist Report : ");
+            string report = Console.ReadLine();
 
-            Console.Write($"Enter Patient ID : ");
-            int patientID = int.Parse(Console.ReadLine());
+            patient.RadiologistReport = $"Patient Name: {patient.FullName}\n";
+            patient.RadiologistReport += $"PatientID: {patient.PatientID}\n";
+            patient.RadiologistReport += $"Radiologist Report: {report}\n";
 
-            if (patientID == 0)
-            {
-                return;
-            }
+            patient.RadiologistReport += $"Radiologist: {FullName}\n";
+            patient.RadiologistReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
 
-            if (Receptionist.SearchpatientData(patientID) is Patient patient)
-            {
-                Console.WriteLine($"Enter Radiologist Report : ");
-                string report = Console.ReadLine();
-
-                patient.RadiologistReport = $"Patient Name: {patient.FullName}\n";
-                patient.RadiologistReport += $"PatientID: {patient.PatientID}\n";
-                patient.RadiologistReport += $"Radiologist Report: {report}\n";
-
-                patient.RadiologistReport += $"Radiologist: {FullName}\n";
-                patient.RadiologistReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
-
-                return;
-            }
-            Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
+            return;
         }
+        Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
     }
-
 
     //*********************************************************************print hr report****************************************************************
 
@@ -71,7 +45,7 @@ public class Radiologist : Employee, WritingReports
             int choice = int.Parse(Console.ReadLine()!);
             if (choice == 1)
             {
-                HRreport = (EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "HRreport"));
+                HRreport = (HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "HRreport", "emp"));
 
                 if (HRreport == string.Empty)
                 {
@@ -100,9 +74,9 @@ public class Radiologist : Employee, WritingReports
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
-        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
-        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
-        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+        SalaryReceived = bool.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", "emp"));
+        Salary = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Salary", "emp"));
+        Bouns = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Bouns", "emp"));
 
         if (SalaryReceived == true)
         {
@@ -112,7 +86,7 @@ public class Radiologist : Employee, WritingReports
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
 
-            EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
+            HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false, "emp");
         }
         else
         {
@@ -131,7 +105,7 @@ public class Radiologist : Employee, WritingReports
         }
         DailyLoginTime = DateTime.Now;
         Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime, "emp");
     }
 
 
@@ -179,7 +153,8 @@ public class Radiologist : Employee, WritingReports
         }
         DailyLogoutTime = DateTime.Now;
         Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime, "emp");
     }
+
 
 }

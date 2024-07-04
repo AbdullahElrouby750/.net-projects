@@ -50,11 +50,10 @@ public class Accountant : Employee, WritingReports
     }
 
 
-    //*********************************************************************Interface methods****************************************************************
+
 
     //*********************************************************************print hr report****************************************************************
-   
-    public void WriteReport() {}
+
     public void PrintHRreport()
     {
         Console.WriteLine("\n1. Latest report");
@@ -66,7 +65,7 @@ public class Accountant : Employee, WritingReports
             int choice = int.Parse(Console.ReadLine()!);
             if (choice == 1)
             {
-                HRreport = (EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "HRreport"));
+                HRreport = (HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "HRreport", "emp"));
 
                 if (HRreport == string.Empty)
                 {
@@ -95,9 +94,9 @@ public class Accountant : Employee, WritingReports
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
-        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
-        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
-        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+        SalaryReceived = bool.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", "emp"));
+        Salary = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Salary", "emp"));
+        Bouns = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Bouns", "emp"));
 
         if (SalaryReceived == true)
         {
@@ -107,7 +106,7 @@ public class Accountant : Employee, WritingReports
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
 
-            EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
+            HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false, "emp");
         }
         else
         {
@@ -126,7 +125,7 @@ public class Accountant : Employee, WritingReports
         }
         DailyLoginTime = DateTime.Now;
         Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime, "emp");
     }
 
 
@@ -174,6 +173,8 @@ public class Accountant : Employee, WritingReports
         }
         DailyLogoutTime = DateTime.Now;
         Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime, "emp");
     }
+
+
 }

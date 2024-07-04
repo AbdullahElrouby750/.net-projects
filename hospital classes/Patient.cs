@@ -8,10 +8,9 @@ public class Patient : Person
     public Dictionary<string, string> MedicalHistory { get; set; }
     public string Disabilities { get; set; }
     public Dictionary<string, string> EmergencyContact { get; set; }
-    public int PatientID { get; set; }
+    public string PatientID { get; set; }
     public bool Operation { get; set; }
     public bool MedicalXray { get; set; }
-
     public static int NumberOfPatients { get; set; }
     private double Bill { get; set; }
     public string DoctorReport { get; set; }
@@ -20,6 +19,10 @@ public class Patient : Person
     public string RadiologistReport { get; set; }
 
     public bool AllVisitsDone;
+
+    public string Recet;
+
+    public Dictionary<int, bool> Visits;
 
 
     public Patient()
@@ -38,8 +41,10 @@ public class Patient : Person
         NurseReport = "";
         RadiologistReport = "";
         NumberOfPatients++;
-        PatientID = NumberOfPatients;
+        PatientID = "";
         AllVisitsDone = true;
+        Recet = string.Empty;
+        Visits = new Dictionary<int, bool>();
 
     }
 
@@ -56,39 +61,42 @@ public class Patient : Person
         MedicalXray = patientInfo["MedicalXray"];
         PatientID = patientInfo["HospitalID"];
         AllVisitsDone = patientInfo["AllVisitsDone"];
-
+        Recet = patientInfo["Recet"];
+        Visits = patientInfo["Visits"];
     }
-    public string PrintMedicalHistory()
+    public void PrintMedicalHistory()
     {
         Console.WriteLine("Medical History:");
         if (MedicalHistory != null)
         {
             foreach (var entry in MedicalHistory)
             {
-                Console.WriteLine($"{entry.Key}: {entry.Value}");
+                Console.WriteLine($"{entry.Key}\t\t:\t\t{entry.Value}");
             }
         }
-        return MedicalHistory!.ToString()!;
+        else Console.WriteLine("None");
     }
-    public string PrintEmergencyContact()
+    public void PrintEmergencyContact()
     {
         Console.WriteLine("Emergency Contact:");
         if (EmergencyContact != null)
         {
             foreach (var entry in EmergencyContact)
             {
-                Console.WriteLine($"{entry.Key}: {entry.Value}");
+                Console.WriteLine($"{entry.Key}\t\t:\t\t{entry.Value}");
             }
         }
-        return EmergencyContact!.ToString()!;
     }
 
     public void PrintReports()
     {
-        Console.WriteLine($"Doctor report: {DoctorReport}");
-        Console.WriteLine($"Pharmacist report: {PharmacistReport}");
-        Console.WriteLine($"Nurse report: {NurseReport}");
-        Console.WriteLine($"Radiologist report: {RadiologistReport}");
+        Console.WriteLine("Medical hestory :-");
+        PrintMedicalHistory();
+        Console.WriteLine($"\nDoctor report: {DoctorReport}");
+        Console.WriteLine($"\nPharmacist report: {PharmacistReport}");
+        Console.WriteLine($"\nNurse report: {NurseReport}");
+        Console.WriteLine($"\nRadiologist report: {RadiologistReport}");
+        Console.WriteLine($"\nBill: {Recet}");
     }
 
     public bool NeedOperation()
@@ -104,5 +112,10 @@ public class Patient : Person
     public void PrintBill()
     {
         Console.WriteLine($"Bill: {Bill}");
+    }
+
+    public void setBill(double billValue)
+    {
+        Bill = billValue; 
     }
 }

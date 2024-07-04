@@ -3,157 +3,135 @@ using hospitalData;
 namespace hospital_classes;
 public class Nurse : Employee, WritingReports
 {
-    private Dictionary<int, Dictionary<int, bool>> Visits;
-    public static int NumberOfNurses;
-    private int numberOfVisits;
+    private Dictionary<int, bool> Visits;
+    
 
     public Nurse()
     {
 
-        Visits = new Dictionary<int, Dictionary<int, bool>>();
-        NumberOfNurses++;
+        Visits = new Dictionary<int, bool>();
 
     }
 
     public Nurse(Dictionary<string, dynamic> data) : base(data)
     {
 
-        Visits = new Dictionary<int, Dictionary<int, bool>>();
-        NumberOfNurses++;
+        Visits = new Dictionary<int, bool>();
 
     }
 
 
-    private void NumberOfVisits(int ID)
+    private void NumberOfVisits(string ID)
     {
+        int numberOfVisits;
+
         Console.WriteLine("Enter number of visits for patient ID " + ID + ":");
         numberOfVisits = int.Parse(Console.ReadLine()!);
 
-        for (int i = 0; i < numberOfVisits; i++)
+        Dictionary<string, string> sVisits = new Dictionary<string, string>();
+
+        foreach (var item in Visits)
         {
-            Visits[ID][i + 1] = false;
+            sVisits[item.Key.ToString()] = item.Value.ToString();
         }
+
+        patientData.setNurseVisitsSheet(sVisits);
     }
 
 
 
-    public void AddVisit()
+    public void AddVisit() // re make from the scratch
     {
-        string name = string.Empty;
-        int patientID;
-        while (true)
+        Patient patient = null;
+        patient = Receptionist.SearchpatientData();
+        if (patient != null)
         {
-            Console.Write("Enter patient ID : ");
-            patientID = int.Parse(Console.ReadLine()!);
+            Visits = patient.Visits;
+            int visitTargrted = 1;
 
-            if (patientID == 0)
+            if (Visits.Count == 0)
             {
-                return;
+                NumberOfVisits(patient.PatientID);
             }
 
-            if (Receptionist.SearchpatientData(patientID) is Patient p)
+            Console.WriteLine("Visits\t\tstatue");
+            foreach (var visit in Visits)
             {
-                name = p.FullName!;
-                break;
+                Console.WriteLine($"{visit.Key}\t\t{visit.Value}");
+                if (visit.Value == true)
+                {
+                    visitTargrted = visit.Key + 1;
+                }
             }
-            Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
-        }
+            Console.WriteLine($"mark visit number{visitTargrted} as done? yes / no ");
 
-        int visitTargrted = 1;
-
-        if (!Visits.ContainsKey(patientID))
-        {
-            NumberOfVisits(patientID);
-        }
-        Dictionary<int, bool> visitnumber = Visits[patientID];
-
-        Console.WriteLine("Visits\t\tstatue");
-        foreach (var visit in visitnumber)
-        {
-            Console.WriteLine($"{visit.Key}\t\t{visit.Value}");
-            if (visit.Value == true)
+            string answer = Console.ReadLine()!;
+            if (answer == "yes")
             {
-                visitTargrted = visit.Key + 1;
-            }
-        }
-        Console.WriteLine($"mark visit number{visitTargrted} as done? yes / no ");
 
-        string answer = Console.ReadLine()!;
-        if (answer == "yes")
-        {
-            Visits[patientID][visitTargrted] = true; // try catch
-            Console.WriteLine($"Visit for {name} with ID {patientID} done successfully.");
+                patientData.accessNurseVisitSheet(patient.PatientID, visitTargrted);
+
+                Console.WriteLine($"Visit for {patient.FullName} with ID {patient.PatientID} done successfully.");
+            }
+            patient.AllVisitsDone =  NeedVisits();
         }
-        NeedVisits(patientID);
 
     }
 
-
-
-    private void NeedVisits(int id) // re code this with an id to do the check for
+    private bool NeedVisits() // re code this with an id to do the check for
     {
-        foreach (var patientVisits in Visits[id])
+        foreach (var patientVisits in Visits)
         {
             if (patientVisits.Value == false)
             {
-                Receptionist.patientData[id].AllVisitsDone = false;
-                break;
-            }
-        }
-    }
-
-    public bool NeedVisits()
-    {
-        int patientID;
-        while (true)
-        {
-            Console.Write("Enter patient ID : ");
-            patientID = int.Parse(Console.ReadLine()!);
-
-            if (patientID == 0)
-            {
                 return false;
             }
+        }
+        return true;
+    }
 
-            if (Receptionist.SearchpatientData(patientID) is Patient p)
+    public void needVisits()
+    {
+        Patient patient = null;
+        patient = Receptionist.SearchpatientData();
+        if (patient != null)
+        {
+            if (patient.AllVisitsDone)
             {
-                return p.AllVisitsDone;
+                Console.WriteLine("All visits done for this patient");
+                return;
             }
-            Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
+
+            Console.WriteLine("Patient still have some visits");
+            foreach (var visit in patient.Visits)
+            {
+                Console.WriteLine($"visit number {visit.Key}\t\t:\t\t{visit.Value}");
+            }
         }
     }
 
     public void WriteReport()
     {
-        while (true)
+        Patient patient = null;
+        patient = Receptionist.SearchpatientData();
+        if (patient != null)
         {
+            Console.WriteLine($"Enter Nurse Report : ");
+            string report = Console.ReadLine();
 
-            Console.Write($"Enter Patient ID : ");
-            int patientID = int.Parse(Console.ReadLine());
+            patient.NurseReport = $"Patient Name: {patient.FullName}\n";
+            patient.NurseReport += $"PatientID: {patient.PatientID}\n";
+            patient.NurseReport += $"Nurse Report: {report}\n";
 
-            if (patientID == 0)
-            {
-                return;
-            }
+            patient.NurseReport += $"Nurse: {FullName}\n";
+            patient.NurseReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
 
-            if (Receptionist.SearchpatientData(patientID) is Patient patient)
-            {
-                Console.WriteLine($"Enter Nurse Report : ");
-                string report = Console.ReadLine();
-
-                patient.NurseReport = $"Patient Name: {patient.FullName}\n";
-                patient.NurseReport += $"PatientID: {patient.PatientID}\n";
-                patient.NurseReport += $"Nurse Report: {report}\n";
-
-                patient.NurseReport += $"Nurse: {FullName}\n";
-                patient.NurseReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
-
-                return;
-            }
-            Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
+            return;
         }
-
+        Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
     }
+
+
 
     //*********************************************************************print hr report****************************************************************
 
@@ -168,7 +146,7 @@ public class Nurse : Employee, WritingReports
             int choice = int.Parse(Console.ReadLine()!);
             if (choice == 1)
             {
-                HRreport = (EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "HRreport"));
+                HRreport = (HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "HRreport", "emp"));
 
                 if (HRreport == string.Empty)
                 {
@@ -197,9 +175,9 @@ public class Nurse : Employee, WritingReports
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
-        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
-        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
-        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+        SalaryReceived = bool.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", "emp"));
+        Salary = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Salary", "emp"));
+        Bouns = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Bouns", "emp"));
 
         if (SalaryReceived == true)
         {
@@ -209,7 +187,7 @@ public class Nurse : Employee, WritingReports
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
 
-            EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
+            HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false, "emp");
         }
         else
         {
@@ -228,7 +206,7 @@ public class Nurse : Employee, WritingReports
         }
         DailyLoginTime = DateTime.Now;
         Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime, "emp");
     }
 
 
@@ -276,7 +254,9 @@ public class Nurse : Employee, WritingReports
         }
         DailyLogoutTime = DateTime.Now;
         Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime, "emp");
     }
+
+
 
 }

@@ -1,7 +1,7 @@
 ﻿
-
 using OfficeOpenXml;
 using System.Drawing;
+using static OfficeOpenXml.ExcelErrorValue;
 
 
 // instead of rewriting some methods twice, jsut gather them in one class
@@ -19,7 +19,7 @@ namespace hospitalData
             int col = 1;
             foreach (var key in data)
             {
-                if (key.Key == "PreviousExperience" || key.Key == "MedicalHistory" || key.Key == "EmergencyContact")
+                if (key.Key == "PreviousExperience" || key.Key == "MedicalHistory" || key.Key == "EmergencyContact" || key.Key == "Visits")
                 {
                     continue;
                 }
@@ -41,7 +41,7 @@ namespace hospitalData
 
             foreach (var value in data)
             {
-                if (value.Key == "PreviousExperience" || value.Key == "MedicalHistory" || value.Key == "EmergencyContact")
+                if (value.Key == "PreviousExperience" || value.Key == "MedicalHistory" || value.Key == "EmergencyContact" || value.Key == "Visits")
                 {
                     continue;
                 }
@@ -96,26 +96,32 @@ namespace hospitalData
 
 
 
-        internal static ExcelWorksheet CreateNewSecondaryInfoSheet(ExcelWorksheet sheet, string id, Dictionary<string, string> PreviousExperience, string workType)// creating Previous Experince Sheet for the first time // can deal with patiend data now (medic histo & emergen contact)
+        internal static ExcelWorksheet CreateNewSecondaryInfoSheet(ExcelWorksheet sheet, string id, Dictionary<string, string> data, string workType)// creating Previous Experince Sheet for the first time // can deal with patiend data now (medic histo & emergen contact)
         {
             string title = string.Empty;
             string content = string.Empty;
 
-            if (workType == "emp") //employee previous excperince
+
+            switch (workType)
             {
-                title = "Place";
-                content = "Title";
+                case "emp": //employee previous excperince
+                    title = "Place";
+                    content = "Title";
+                    break;
+                case "histo": //patient medical history
+                    title = "Disease";
+                    content = "Info";
+                    break;
+                case "emr": //patient emrgency contact
+                    title = "Name";
+                    content = "Info";
+                    break;
+                case "visits": // nurse visits
+                    title = "Visit";
+                    content = "Done";
+                    break;
             }
-            else if (workType == "histo") //patient medical history
-            {
-                title = "Disease";
-                content = "Info";
-            }
-            else if (workType == "emr") //patient emrgency contact
-            {
-                title = "Name";
-                content = "Info";
-            }
+
 
             sheet.Cells["A1"].Value = "ID";
             sheet.Cells["A1"].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
@@ -127,7 +133,7 @@ namespace hospitalData
 
             int row = 2;
             int mapIndex = 0;
-            while (row <= PreviousExperience.Count * 2 + 1)
+            while (row <= data.Count * 2 + 1)
             {
                 sheet.Cells[row, 1].Value = title;
                 sheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
@@ -139,10 +145,10 @@ namespace hospitalData
                 sheet.Cells[row + 1, 1].Style.Font.Bold = true;
                 sheet.Cells[row + 1, 1].Style.Font.Color.SetColor(Color.Blue);
 
-                sheet.Cells[row, 2].Value = PreviousExperience.ElementAt(mapIndex).Key;
+                sheet.Cells[row, 2].Value = data.ElementAt(mapIndex).Key;
                 sheet.Cells[row, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-                sheet.Cells[row + 1, 2].Value = PreviousExperience.ElementAt(mapIndex).Value;
+                sheet.Cells[row + 1, 2].Value = data.ElementAt(mapIndex).Value;
                 sheet.Cells[row + 1, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
                 row += 2;
@@ -152,25 +158,29 @@ namespace hospitalData
         }
 
 
-        internal static ExcelWorksheet AddTosecondaryInfo(ExcelWorksheet sheet, string id, Dictionary<string, string> PreviousExperience, string workType) // add employee's previous experince to the sheet // can deal with patiend data now (medic histo & emergen contact)
+        internal static ExcelWorksheet AddTosecondaryInfo(ExcelWorksheet sheet, string id, Dictionary<string, string> data, string workType) // add employee's previous experince to the sheet // can deal with patiend data now (medic histo & emergen contact)
         {
             string title = string.Empty;
             string content = string.Empty;
 
-            if (workType == "emp") //employee previous excperince
+            switch(workType)
             {
-                title = "Place";
-                content = "Title";
-            }
-            else if (workType == "histo") //patient medical history
-            {
-                title = "Disease";
-                content = "Info";
-            }
-            else if (workType == "emr") //patient emrgency contact
-            {
-                title = "Name";
-                content = "Info";
+                case "emp": //employee previous excperince
+                    title = "Place";
+                    content = "Title";
+                    break;
+                case "histo": //patient medical history
+                    title = "Disease";
+                    content = "Info";
+                    break;
+                case "emr": //patient emrgency contact
+                    title = "Name";
+                    content = "Info";
+                    break;
+                case "visits": // nurse visits
+                    title = "Visit";
+                    content = "Done";
+                    break;
             }
 
 
@@ -187,7 +197,7 @@ namespace hospitalData
 
             while (true)
             {
-                if (mapIndex == PreviousExperience.Count) break; // All set
+                if (mapIndex == data.Count) break; // All set
 
                 if (row > rowCount) // open new cells for more Experince
                 {
@@ -217,10 +227,10 @@ namespace hospitalData
                     }
 
 
-                    sheet.Cells[row, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Key;
+                    sheet.Cells[row, targetCol].Value = data.ElementAt(mapIndex).Key;
                     sheet.Cells[row, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-                    sheet.Cells[row + 1, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Value;
+                    sheet.Cells[row + 1, targetCol].Value = data.ElementAt(mapIndex).Value;
                     sheet.Cells[row + 1, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
                     row += 2;
@@ -229,17 +239,17 @@ namespace hospitalData
 
                     continue;
                 }
-                sheet.Cells[row, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Key;
+                sheet.Cells[row, targetCol].Value = data.ElementAt(mapIndex).Key;
                 sheet.Cells[row, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
-                sheet.Cells[row + 1, targetCol].Value = PreviousExperience.ElementAt(mapIndex).Value;
+                sheet.Cells[row + 1, targetCol].Value = data.ElementAt(mapIndex).Value;
                 sheet.Cells[row + 1, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
                 row += 2;
                 mapIndex++;
             }
 
-            while (row <= rowCount) // if experince is less than the mak row count then set the remain cells for this employee as "NS"
+            while (row <= rowCount) // if experince is less than the make row count then set the remain cells for this employee as "NS"
             {
                 sheet.Cells[row, targetCol].Value = "NS";
                 sheet.Cells[row, targetCol].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
@@ -254,7 +264,7 @@ namespace hospitalData
 
         //*********************************************************************search data****************************************************************
 
-        internal static Dictionary<string, string> getSecondaryInfoData(string id, ExcelWorksheet sheet)
+        public static Dictionary<string, string> getSecondaryInfoData(string id, ExcelWorksheet sheet)
         {
 
             Dictionary<string, string> data = new Dictionary<string, string>();
@@ -288,8 +298,6 @@ namespace hospitalData
 
             return data;
         }
-
-
 
         //********************************************************************* Accessing ****************************************************************
 

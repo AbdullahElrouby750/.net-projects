@@ -7,6 +7,7 @@ public class Receptionist : Employee, WritingReports
 
     public Receptionist(Dictionary<string, dynamic> data) : base(data) {}
 
+    //********************************************************************* store new patient data ****************************************************************
 
     private Dictionary<string, dynamic> GetNewpatientData()
     {
@@ -64,6 +65,10 @@ public class Receptionist : Employee, WritingReports
         Data["AllVisitsDone"] = false;
 
         Data["Bill"] = 0.0;
+
+        Data["Recet"] = string.Empty;
+
+        Data["Visits"] = new Dictionary<int, bool>();
 
         Data["MedicalHistory"] = getNewPatientMedicalHestory();
 
@@ -123,41 +128,204 @@ public class Receptionist : Employee, WritingReports
     {
         var data = GetNewpatientData();
         Console.WriteLine("Patient was added successfully");
-        Console.WriteLine($"Patient ID: {patient.PatientID}");
+        Console.WriteLine($"Patient ID: {data["HospitalID"]}");
 
     }
+    //********************************************************************* search patient ****************************************************************
 
-    public static Patient SearchpatientData(int patientID)
+    internal static Patient SearchpatientData()
     {
-        if (patientData.ContainsKey(patientID))
+        while (true)
         {
-            return patientData[patientID];
+            string id = "";
+            var receprionist = new Receptionist();
+            Console.Write("Search by patient's full name or ID:");
+            string search = Console.ReadLine()!.ToUpper();
+            if (!search.Any(char.IsDigit))
+            {
+
+                var data = patientData.GetNameDate(search);
+                if (data != null)
+                {
+                    return receprionist.choosePatient(data);
+                }
+
+                Console.WriteLine("Patient not found! Make sure you entered the name right or that this Patient does exist.");
+
+                Console.Write("enter 0 to Exit 1 to continue : ");
+                string exit = Console.ReadLine()!;
+                if (exit == "0")
+                {
+                    break;
+                }
+
+
+            }
+            else if (search.Any(char.IsDigit))
+            {
+
+                var data = patientData.GetIdDate(search);
+                if (data != null)
+                {
+                    var patient = new Patient(data);
+                    return patient;
+                }
+
+                Console.WriteLine("Patient not found! Make sure you entered the id right or that this Patient does exist.");
+
+                Console.Write("enter 0 to Exit 1 to continue : ");
+                string exit = Console.ReadLine()!;
+                if (exit == "0")
+                {
+                    break;
+                }
+
+            }
+            else
+            {
+                Console.WriteLine("Patient not found! Make sure you entered the id or full name right. Or, that this Patient does exist.");
+
+                Console.Write("enter 0 to Exit 1 to continue : ");
+                string exit = Console.ReadLine()!;
+                if (exit == "0")
+                {
+                    break;
+                }
+            }
         }
-        else
+        return null;
+    }
+
+    private Patient choosePatient(List<Dictionary<string, dynamic>> similarNames)
+    {
+        Patient patient = null;
+        if (similarNames.Count == 0)
         {
-            Console.WriteLine($"Patient with ID {patientID} not found in the data.");
+            Console.WriteLine("No patient with such name!");
             return null;
         }
+        else if (similarNames.Count == 1)
+        {
+            patient = new Patient(similarNames[0]);
+            return patient;
+        }
+
+        Console.WriteLine("Choose the wanted employee :-");
+        int index = 0;
+        foreach (var item in similarNames)
+        {
+            Console.WriteLine($"{index + 1}{item["HospitalID"]}\t :\t {item["FullName"]}");
+            index++;
+        }
+        while (true)
+        {
+            try
+            {
+                int choice = int.Parse(Console.ReadLine()!);
+                if (choice == 0)
+                {
+                    return null;
+                }
+                patient = new Patient(similarNames[choice]);
+                return patient;
+
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Choose a valid choice! or enter null to return");
+            }
+        }
+
     }
 
     public static void PrintPatientReports()
     {
-        int patientID;
+        string patientID;
         while (true)
         {
-            Console.Write("Enter Patient ID : ");
-            patientID = int.Parse(Console.ReadLine());
-            if (patientData.ContainsKey(patientID))
+            if(Console.ReadKey(true).Key == ConsoleKey.Escape)
             {
-                patientData[patientID].PrintReports();
+                return;
+            }
+            Console.Write("Enter Patient ID : ");
+            patientID = Console.ReadLine();
+            var data = patientData.GetIdDate(patientID);
+            if (data != null)
+            {
+                var patient = new Patient(data);
+                patient.PrintReports();
                 break;
             }
             else
             {
-                Console.WriteLine($"Patient with ID {patientID} not found in the data.\nEnter a valid Patient ID");
+                Console.WriteLine($"Patient with ID {patientID} not found in the data.\nEnter a valid Patient ID.");
             }
         }
     }
+    //********************************************************************* Bill ****************************************************************
+
+    public void setBill()
+    {
+        Patient patient = null;
+        patient = SearchpatientData();
+
+        if (patient == null) return;
+
+        Console.WriteLine("Here's the patient reports\n");
+        patient.PrintReports();
+
+        setBillDetils(patient);
+
+    }
+
+    private void setBillDetils(Patient patient)
+    {
+        double dBill = 0;
+        string value = string.Empty;
+        string[] billDetils = { "Operation", "Medical X-ray", "Medecin", "Service", "Others" };
+        foreach(var section in billDetils)
+        {
+            value = "";
+            while (true)
+            {
+                try
+                {
+                    Console.Write($"{section} : ");
+                    value = Console.ReadLine()!;
+                    if (double.TryParse(value, out double bill))
+                    {
+                        dBill += bill;
+                        patient.Recet += $"{section}\t\t:\t\t{value}";
+                        break;
+                    }
+                    else
+                    {
+                        throw new FormatException($"Input {value} is not a valid number. Plz, enter a valid one");
+                    }
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine($"{ex.Message}");
+                }
+            }
+        }
+
+        patient.setBill(dBill);
+        HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "Bill", dBill, "patient");
+        HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "Recet", patient.Recet, "patient");
+    }
+
+    public void printPatientBill()
+    {
+        Patient patient = null;
+        patient = SearchpatientData();
+
+        if (patient == null) return;
+
+        patient.PrintBill();
+    }
+
     public void WriteReport() { }
 
     //*********************************************************************print hr report****************************************************************
@@ -173,7 +341,7 @@ public class Receptionist : Employee, WritingReports
             int choice = int.Parse(Console.ReadLine()!);
             if (choice == 1)
             {
-                HRreport = (EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "HRreport"));
+                HRreport = (HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "HRreport", "emp"));
 
                 if (HRreport == string.Empty)
                 {
@@ -202,9 +370,9 @@ public class Receptionist : Employee, WritingReports
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
-        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
-        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
-        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+        SalaryReceived = bool.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", "emp"));
+        Salary = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Salary", "emp"));
+        Bouns = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Bouns", "emp"));
 
         if (SalaryReceived == true)
         {
@@ -214,7 +382,7 @@ public class Receptionist : Employee, WritingReports
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
 
-            EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
+            HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false, "emp");
         }
         else
         {
@@ -233,7 +401,7 @@ public class Receptionist : Employee, WritingReports
         }
         DailyLoginTime = DateTime.Now;
         Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime, "emp");
     }
 
 
@@ -281,7 +449,7 @@ public class Receptionist : Employee, WritingReports
         }
         DailyLogoutTime = DateTime.Now;
         Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime, "emp");
     }
 
 

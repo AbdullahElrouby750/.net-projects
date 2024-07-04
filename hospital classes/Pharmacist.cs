@@ -74,40 +74,33 @@ public class Pharmacist : Employee, WritingReports
         }
         return medicinDose;
     }
-    
+
     public void WriteReport() {
-         while (true)
+        Patient patient = null;
+        patient = Receptionist.SearchpatientData();
+        if (patient != null)
         {
 
-            Console.Write($"Enter Patient ID : ");
-            int patientID = int.Parse(Console.ReadLine());
+            Console.WriteLine($"Enter Pharmacist Report : ");
+            string report = Console.ReadLine();
 
-            if (patientID == 0)
-            {
-                return;
-            }
+            patient.PharmacistReport = $"Patient Name: {patient.FullName}\n";
+            patient.PharmacistReport += $"PatientID: {patient.PatientID}\n";
 
-            if (Receptionist.SearchpatientData(patientID) is Patient patient)
-            {
+            string medicineReport = WriteMedicinDose();
 
-                Console.WriteLine($"Enter Pharmacist Report : ");
-                string report = Console.ReadLine();
+            patient.PharmacistReport += $"Pharmacist Report: {medicineReport}\n";
 
-                patient.PharmacistReport = $"Patient Name: {patient.FullName}\n";
-                patient.PharmacistReport += $"PatientID: {patient.PatientID}\n";
+            patient.PharmacistReport += $"Pharmacist: {FullName}\n";
+            patient.PharmacistReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
 
-                string medicineReport = WriteMedicinDose();
-
-                patient.PharmacistReport += $"Pharmacist Report: {medicineReport}\n";
-
-                patient.PharmacistReport += $"Pharmacist: {FullName}\n";
-                patient.PharmacistReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
-
-                return;
-            }
-            Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
+            return;
         }
-     }
+        Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
+
+    }
+
+
     //*********************************************************************print hr report****************************************************************
 
     public void PrintHRreport()
@@ -121,7 +114,7 @@ public class Pharmacist : Employee, WritingReports
             int choice = int.Parse(Console.ReadLine()!);
             if (choice == 1)
             {
-                HRreport = (EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "HRreport"));
+                HRreport = (HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "HRreport", "emp"));
 
                 if (HRreport == string.Empty)
                 {
@@ -150,9 +143,9 @@ public class Pharmacist : Employee, WritingReports
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
-        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
-        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
-        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+        SalaryReceived = bool.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", "emp"));
+        Salary = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Salary", "emp"));
+        Bouns = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Bouns", "emp"));
 
         if (SalaryReceived == true)
         {
@@ -162,7 +155,7 @@ public class Pharmacist : Employee, WritingReports
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
 
-            EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
+            HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false, "emp");
         }
         else
         {
@@ -181,7 +174,7 @@ public class Pharmacist : Employee, WritingReports
         }
         DailyLoginTime = DateTime.Now;
         Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime, "emp");
     }
 
 
@@ -229,7 +222,8 @@ public class Pharmacist : Employee, WritingReports
         }
         DailyLogoutTime = DateTime.Now;
         Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime, "emp");
     }
+
 
 }

@@ -3,16 +3,20 @@
   "WorkspaceRootPath": "D:\\codez\\uni projects\\hospital system my work\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|d:\\codez\\uni projects\\hospital system my work\\hospital classes\\receptionist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|solutionrelative:hospital classes\\receptionist.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|d:\\codez\\uni projects\\hospital system my work\\hospital classes\\doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|solutionrelative:hospital classes\\doctor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|d:\\codez\\uni projects\\hospital system my work\\hospital classes\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|solutionrelative:hospital classes\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E2E060AD-7BE8-40C7-A5FD-78AB72ACD851}|hospitalData\\hospital data.csproj|d:\\codez\\uni projects\\hospital system my work\\hospitaldata\\patient data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E2E060AD-7BE8-40C7-A5FD-78AB72ACD851}|hospitalData\\hospital data.csproj|solutionrelative:hospitaldata\\patient data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|d:\\codez\\uni projects\\hospital system my work\\hospital classes\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C2300B91-0A5B-4488-B48B-BB85F6681416}|hospital classes\\hospital classes.csproj|solutionrelative:hospital classes\\patient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E2E060AD-7BE8-40C7-A5FD-78AB72ACD851}|hospitalData\\hospital data.csproj|d:\\codez\\uni projects\\hospital system my work\\hospitaldata\\handlingexcelclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2E060AD-7BE8-40C7-A5FD-78AB72ACD851}|hospitalData\\hospital data.csproj|solutionrelative:hospitaldata\\handlingexcelclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,32 +26,19 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Patient.cs",
-              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Patient.cs",
-              "RelativeDocumentMoniker": "hospital classes\\Patient.cs",
-              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Patient.cs",
-              "RelativeToolTip": "hospital classes\\Patient.cs",
-              "ViewState": "AQIAAC8AAAAAAAAAAAAAwDkAAAAyAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-03T01:26:25.537Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Receptionist.cs",
-              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Receptionist.cs",
-              "RelativeDocumentMoniker": "hospital classes\\Receptionist.cs",
-              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Receptionist.cs",
-              "RelativeToolTip": "hospital classes\\Receptionist.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAIMAAAAYAAAA",
+              "Title": "Doctor.cs",
+              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Doctor.cs",
+              "RelativeDocumentMoniker": "hospital classes\\Doctor.cs",
+              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Doctor.cs",
+              "RelativeToolTip": "hospital classes\\Doctor.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-07-03T01:23:49.222Z",
+              "WhenOpened": "2024-07-04T18:57:55.599Z",
               "EditorCaption": ""
             },
             {
@@ -61,14 +52,40 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "Patient.cs",
+              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Patient.cs",
+              "RelativeDocumentMoniker": "hospital classes\\Patient.cs",
+              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospital classes\\Patient.cs",
+              "RelativeToolTip": "hospital classes\\Patient.cs",
+              "ViewState": "AQIAABsAAAAAAAAAAAAuwC4AAAAtAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-03T01:26:25.537Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Patient data.cs",
               "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospitalData\\Patient data.cs",
               "RelativeDocumentMoniker": "hospitalData\\Patient data.cs",
               "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospitalData\\Patient data.cs",
               "RelativeToolTip": "hospitalData\\Patient data.cs",
-              "ViewState": "AQIAAJsAAAAAAAAAAAAgwNIAAAAAAAAA",
+              "ViewState": "AQIAABMAAAAAAAAAAAAtwGEAAAA+AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-06-29T04:01:53.346Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "HandlingExcelClass.cs",
+              "DocumentMoniker": "D:\\codez\\uni projects\\hospital system my work\\hospitalData\\HandlingExcelClass.cs",
+              "RelativeDocumentMoniker": "hospitalData\\HandlingExcelClass.cs",
+              "ToolTip": "D:\\codez\\uni projects\\hospital system my work\\hospitalData\\HandlingExcelClass.cs",
+              "RelativeToolTip": "hospitalData\\HandlingExcelClass.cs",
+              "ViewState": "AQIAALcAAAAAAAAAAAD4vxgAAAARAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-07-04T14:59:58.823Z",
               "EditorCaption": ""
             }
           ]

@@ -153,13 +153,6 @@ public class HR : Employee, WritingReports
         Data["AccountNumber"] = Console.ReadLine()!;
         Console.WriteLine();
 
-        //Console.Write("For doctors & Radiologist -> specialization : ");
-        Data["Specialization"] = string.Empty;
-
-
-
-        Console.WriteLine();
-
         Data["Department"] = department;
 
         //other prop needed

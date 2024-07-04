@@ -3,59 +3,38 @@ using hospitalData;
 
 public class Doctor : Employee, WritingReports
 {
-    public static int numberOfDoctors = 0;
-    public string specialization;
+    public Doctor(Dictionary<string, dynamic> data) : base(data) { }
 
-
-    public Doctor(Dictionary<string, dynamic> data)
-        : base(data)
-    {
-        specialization = data["Specialization"];
-        numberOfDoctors++;
-    }
-
-    public Doctor()
-    {
-        this.specialization = "Unknown";
-        numberOfDoctors++;
-    }
+    public Doctor() { }
     public void WriteReport()
     {
-        while (true)
+
+        Patient patient = null;
+        patient = Receptionist.SearchpatientData();
+        if (patient != null)
         {
-
-            Console.Write($"Enter Patient ID : ");
-            int patientID = int.Parse(Console.ReadLine());
-
-            if (patientID == 0)
+            Console.WriteLine($"Does the patient need operation? : yes : no");
+            string OperationInput = Console.ReadLine().ToLower();
+            if (OperationInput == "yes")
             {
-                return;
+                patient.Operation = true;
             }
 
-            if (Receptionist.SearchpatientData(patientID) is Patient patient)
-            {
-                Console.WriteLine($"Does the patient need operation? : yes : no");
-                string OperationInput = Console.ReadLine().ToLower();
-                if (OperationInput == "yes")
-                {
-                    patient.Operation = true;
-                }
+            Console.WriteLine($"Enter Doctor Report : ");
+            string report = Console.ReadLine();
 
-                Console.WriteLine($"Enter Doctor Report : ");
-                string report = Console.ReadLine();
+            patient.DoctorReport = $"Patient Name: {patient.FullName}\n";
+            patient.DoctorReport += $"PatientID: {patient.PatientID}\n";
+            patient.DoctorReport += $"Doctor Report: {report}\n";
 
-                patient.DoctorReport = $"Patient Name: {patient.FullName}\n";
-                patient.DoctorReport += $"PatientID: {patient.PatientID}\n";
-                patient.DoctorReport += $"Doctor Report: {report}\n";
+            patient.DoctorReport += $"Doctor: {FullName}\n";
+            patient.DoctorReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
 
-                patient.DoctorReport += $"Doctor: {FullName}\n";
-                patient.DoctorReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
-
-                return;
-            }
-            Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");
+            return;
         }
     }
+
+
 
     //*********************************************************************print hr report****************************************************************
 
@@ -70,7 +49,7 @@ public class Doctor : Employee, WritingReports
             int choice = int.Parse(Console.ReadLine()!);
             if (choice == 1)
             {
-                HRreport = (EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "HRreport"));
+                HRreport = (HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "HRreport", "emp"));
 
                 if (HRreport == string.Empty)
                 {
@@ -99,9 +78,9 @@ public class Doctor : Employee, WritingReports
     //*********************************************************************print salary****************************************************************
     public void Printsalary()
     {
-        SalaryReceived = bool.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived"));
-        Salary = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Salary"));
-        Bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "Bouns"));
+        SalaryReceived = bool.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", "emp"));
+        Salary = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Salary", "emp"));
+        Bouns = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "Bouns", "emp"));
 
         if (SalaryReceived == true)
         {
@@ -111,7 +90,7 @@ public class Doctor : Employee, WritingReports
             Console.WriteLine($"Your bouns: {Bouns}");
             SalaryReceived = false;
 
-            EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false);
+            HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", false, "emp");
         }
         else
         {
@@ -130,7 +109,7 @@ public class Doctor : Employee, WritingReports
         }
         DailyLoginTime = DateTime.Now;
         Console.WriteLine($"You logged in at {DailyLoginTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLoginTime", DailyLoginTime, "emp");
     }
 
 
@@ -178,7 +157,8 @@ public class Doctor : Employee, WritingReports
         }
         DailyLogoutTime = DateTime.Now;
         Console.WriteLine($"You logged out at {DailyLogoutTime} successfully");
-        EmployeeData.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime);
+        HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "DailyLogoutTime", DailyLoginTime, "emp");
     }
+
 
 }

@@ -1,10 +1,11 @@
 ﻿using OfficeOpenXml;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace hospitalData;
 
 public static class patientData
 {
-    private static string[] sheetsNames = { "Medical history", "Emergency contact", "Patient data" };
+    private static string[] sheetsNames = { "Medical history", "Emergency contact", "Patient data", "Nurse visits" };
 
 
     //*********************************************************************Store data****************************************************************
@@ -16,89 +17,165 @@ public static class patientData
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
 
-            ExcelWorksheet medicalHistorySheet = null;
+           setMedicalHestorySheet(package, excelFilePath, data);
+           setEmergencyContactSheet(package, excelFilePath, data);
+           setPatientDataSheet(package, excelFilePath, data);
+
+        }
+    }
+
+    private static void setMedicalHestorySheet (ExcelPackage package, string excelFilePath, Dictionary<string, dynamic> data)
+    {
+        ExcelWorksheet medicalHistorySheet = null;
+        try // medical history sheet
+        {
+            medicalHistorySheet = package.Workbook.Worksheets[0];
+            if (medicalHistorySheet == null)
+            {
+                {
+                    throw new ArgumentNullException(nameof(medicalHistorySheet));
+                }
+            }
+
+            medicalHistorySheet = HandlingExcelClass.AddTosecondaryInfo(medicalHistorySheet, data["patientID"], data["MedicalHistory"], "histo");
+
+        }
+        catch (IndexOutOfRangeException ex)
+        {
+            medicalHistorySheet = package.Workbook.Worksheets.Add(sheetsNames[0]);
+            medicalHistorySheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(medicalHistorySheet, data["patientID"], data["MedicalHistory"], "histo");
+        }
+        catch (ArgumentNullException ex)
+        {
+            medicalHistorySheet = package.Workbook.Worksheets.Add(sheetsNames[0]);
+            medicalHistorySheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(medicalHistorySheet, data["patientID"], data["MedicalHistory"], "histo");
+        }
+
+        HandlingExcelClass.SaveFile(excelFilePath, package);
+    }
+    private static void setEmergencyContactSheet (ExcelPackage package, string excelFilePath, Dictionary<string, dynamic> data)
+    {
+        ExcelWorksheet emergencyContactSheet = null;
+        try // emergencu contact sheet
+        {
+            emergencyContactSheet = package.Workbook.Worksheets[1];
+            if (emergencyContactSheet == null)
+            {
+                {
+                    throw new ArgumentNullException(nameof(emergencyContactSheet));
+                }
+            }
+
+            emergencyContactSheet = HandlingExcelClass.AddTosecondaryInfo(emergencyContactSheet, data["patientID"], data["EmergencyContact"], "emr");
+
+        }
+        catch (IndexOutOfRangeException ex)
+        {
+            emergencyContactSheet = package.Workbook.Worksheets.Add(sheetsNames[1]);
+            emergencyContactSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(emergencyContactSheet, data["patientID"], data["EmergencyContact"], "emr");
+        }
+        catch (ArgumentNullException ex)
+        {
+            emergencyContactSheet = package.Workbook.Worksheets.Add(sheetsNames[1]);
+            emergencyContactSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(emergencyContactSheet, data["patientID"], data["EmergencyContact"], "emr");
+        }
+
+        HandlingExcelClass.SaveFile(excelFilePath, package);
+    }
+    private static void setPatientDataSheet (ExcelPackage package, string excelFilePath, Dictionary<string, dynamic> data)
+    {
+        ExcelWorksheet patientDataSheet = null;
+        try // patient data sheet
+        {
+            patientDataSheet = package.Workbook.Worksheets[2];
+            if (patientDataSheet == null)
+            {
+                {
+                    throw new ArgumentNullException(nameof(patientDataSheet));
+                }
+            }
+
+            patientDataSheet = HandlingExcelClass.AddToExcistingDepartment(patientDataSheet, data);
+        }
+        catch (IndexOutOfRangeException ex)
+        {
+            patientDataSheet = package.Workbook.Worksheets.Add(sheetsNames[2]);
+            patientDataSheet = HandlingExcelClass.CreateNewDepartmentsheet(patientDataSheet, data);
+            patientDataSheet = HandlingExcelClass.AddToExcistingDepartment(patientDataSheet, data);
+        }
+        catch (ArgumentNullException ex)
+        {
+            patientDataSheet = package.Workbook.Worksheets.Add(sheetsNames[2]);
+            patientDataSheet = HandlingExcelClass.CreateNewDepartmentsheet(patientDataSheet, data);
+            patientDataSheet = HandlingExcelClass.AddToExcistingDepartment(patientDataSheet, data);
+        }
+
+        HandlingExcelClass.SaveFile(excelFilePath, package);
+    }
+    public static void setNurseVisitsSheet(Dictionary<string, string> data)
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet nurseVisitSheet = null;
             try // medical history sheet
             {
-                medicalHistorySheet = package.Workbook.Worksheets[0];
-                if (medicalHistorySheet == null)
+                nurseVisitSheet = package.Workbook.Worksheets[3];
+                if (nurseVisitSheet == null)
                 {
                     {
-                        throw new ArgumentNullException(nameof(medicalHistorySheet));
+                        throw new ArgumentNullException(nameof(nurseVisitSheet));
                     }
                 }
 
-                medicalHistorySheet = HandlingExcelClass.AddTosecondaryInfo(medicalHistorySheet, data["patientID"], data["MedicalHistory"], "histo");
+                nurseVisitSheet = HandlingExcelClass.AddTosecondaryInfo(nurseVisitSheet, data["patientID"], data, "visits");
 
             }
             catch (IndexOutOfRangeException ex)
             {
-                medicalHistorySheet = package.Workbook.Worksheets.Add(sheetsNames[0]);
-                medicalHistorySheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(medicalHistorySheet, data["patientID"], data["MedicalHistory"], "histo");
+                nurseVisitSheet = package.Workbook.Worksheets.Add(sheetsNames[3]);
+                nurseVisitSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(nurseVisitSheet, data["patientID"], data, "visits");
             }
             catch (ArgumentNullException ex)
             {
-                medicalHistorySheet = package.Workbook.Worksheets.Add(sheetsNames[0]);
-                medicalHistorySheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(medicalHistorySheet, data["patientID"], data["MedicalHistory"], "histo");
-            }
-
-            HandlingExcelClass.SaveFile(excelFilePath, package);
-
-            ExcelWorksheet emergencyContactSheet = null;
-            try // emergencu contact sheet
-            {
-                emergencyContactSheet = package.Workbook.Worksheets[1];
-                if (emergencyContactSheet == null)
-                {
-                    {
-                        throw new ArgumentNullException(nameof(emergencyContactSheet));
-                    }
-                }
-
-                emergencyContactSheet = HandlingExcelClass.AddTosecondaryInfo(emergencyContactSheet, data["patientID"], data["EmergencyContact"], "emr");
-
-            }
-            catch (IndexOutOfRangeException ex)
-            {
-                emergencyContactSheet = package.Workbook.Worksheets.Add(sheetsNames[1]);
-                emergencyContactSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(emergencyContactSheet, data["patientID"], data["EmergencyContact"], "emr");
-            }
-            catch (ArgumentNullException ex)
-            {
-                emergencyContactSheet = package.Workbook.Worksheets.Add(sheetsNames[1]);
-                emergencyContactSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(emergencyContactSheet, data["patientID"], data["EmergencyContact"], "emr");
-            }
-
-            HandlingExcelClass.SaveFile(excelFilePath, package);
-
-            ExcelWorksheet patientDataSheet = null;
-            try // patient data sheet
-            {
-                patientDataSheet = package.Workbook.Worksheets[2];
-                if (patientDataSheet == null)
-                {
-                    {
-                        throw new ArgumentNullException(nameof(patientDataSheet));
-                    }
-                }
-
-                patientDataSheet = HandlingExcelClass.AddToExcistingDepartment(patientDataSheet, data);
-            }
-            catch (IndexOutOfRangeException ex)
-            {
-                patientDataSheet = package.Workbook.Worksheets.Add(sheetsNames[2]);
-                patientDataSheet = HandlingExcelClass.CreateNewDepartmentsheet(patientDataSheet, data);
-                patientDataSheet = HandlingExcelClass.AddToExcistingDepartment(patientDataSheet, data);
-            }
-            catch (ArgumentNullException ex)
-            {
-                patientDataSheet = package.Workbook.Worksheets.Add(sheetsNames[2]);
-                patientDataSheet = HandlingExcelClass.CreateNewDepartmentsheet(patientDataSheet, data);
-                patientDataSheet = HandlingExcelClass.AddToExcistingDepartment(patientDataSheet, data);
+                nurseVisitSheet = package.Workbook.Worksheets.Add(sheetsNames[3]);
+                nurseVisitSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(nurseVisitSheet, data["patientID"], data, "visits");
             }
 
             HandlingExcelClass.SaveFile(excelFilePath, package);
         }
     }
+    public static void accessNurseVisitSheet(string id, int visitNumber)
+    {
+        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
+        {
+            ExcelWorksheet sheet = package.Workbook.Worksheets[sheetsNames[3]];
+
+            int colCount = sheet.Dimension.End.Column;
+            int rowCount = sheet.Dimension.End.Row;
+            int targetRow = visitNumber * 2;
+
+            for (int col = 2; col <= colCount; col++)
+            {
+                string targetId = sheet.Cells[1, col].Value.ToString()!;
+                if (targetId == id)
+                {
+                    sheet.Cells[targetRow, col].Value = "Visit";
+                    sheet.Cells[targetRow, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                    sheet.Cells[targetRow + 1, col].Value = "True";
+                    sheet.Cells[targetRow + 1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    
+                    HandlingExcelClass.SaveFile(excelFilePath, package);
+                    return;
+                }
+            }
+        }
+    }
+
 
     //*********************************************************************search employee****************************************************************
 
@@ -198,6 +275,9 @@ public static class patientData
 
         sheet = package.Workbook.Worksheets[sheetsNames[1]];
         data["EmergencyContact"] = HandlingExcelClass.getSecondaryInfoData(id, sheet);
+
+        sheet = package.Workbook.Worksheets[sheetsNames[3]];
+        data["Visits"] = HandlingExcelClass.getSecondaryInfoData(id, sheet);
 
         return data;
 
