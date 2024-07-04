@@ -1,5 +1,3 @@
-using System.Drawing;
-using OfficeOpenXml;
 
 using hospitalData;
 
@@ -692,7 +690,7 @@ public class HR : Employee, WritingReports
         data["PreviousExperience"] = PE;
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
-        data["Specialization"] = string.Empty;
+        
         data["Department"] = "HR";
 
         //other prop needed
@@ -730,7 +728,7 @@ public class HR : Employee, WritingReports
         data["PreviousExperience"] = PE;
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
-        data["Specialization"] = string.Empty;
+        
         data["Department"] = "Manger";
 
         //other prop needed
@@ -769,7 +767,7 @@ public class HR : Employee, WritingReports
         data["PreviousExperience"] = PE;
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
-        data["Specialization"] = string.Empty;
+        
         data["Department"] = "Receptionist";
 
         //other prop needed
@@ -808,7 +806,7 @@ public class HR : Employee, WritingReports
         data["PreviousExperience"] = PE;
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
-        data["Specialization"] = string.Empty;
+        
         data["Department"] = "Accountant";
 
         //other prop needed
@@ -847,7 +845,7 @@ public class HR : Employee, WritingReports
         data["PreviousExperience"] = PE;
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
-        data["Specialization"] = string.Empty;
+        
         data["Department"] = "Doctor";
 
         //other prop needed
@@ -886,7 +884,7 @@ public class HR : Employee, WritingReports
         data["PreviousExperience"] = PE;
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
-        data["Specialization"] = string.Empty;
+        
         data["Department"] = "Pharmacist";
 
         //other prop needed
@@ -924,7 +922,7 @@ public class HR : Employee, WritingReports
         data["PreviousExperience"] = PE;
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
-        data["Specialization"] = string.Empty;
+        
         data["Department"] = "Nurse";
 
         //other prop needed
@@ -962,7 +960,7 @@ public class HR : Employee, WritingReports
         data["PreviousExperience"] = PE;
         data["BankAccount"] = "CIB";
         data["AccountNumber"] = "1234-2345-3456-4567";
-        data["Specialization"] = string.Empty;
+        
         data["Department"] = "Radiologist";
 
         //other prop needed
@@ -983,13 +981,13 @@ public class HR : Employee, WritingReports
     public static void fakeDataBase()
     {
 
-        HR.CreatManger();
-        HR.creatHR();
-        HR.CreatAccountant();
-        HR.CreatReceptionist();
-        HR.CreatDoctor();
-        HR.CreatNurse();
-        HR.CreatRadiologist();
-        HR.CreatPharmacist();
+        CreatManger();
+        creatHR();
+        CreatAccountant();
+        CreatReceptionist();
+        CreatDoctor();
+        CreatNurse();
+        CreatRadiologist();
+        CreatPharmacist();
     }
 }

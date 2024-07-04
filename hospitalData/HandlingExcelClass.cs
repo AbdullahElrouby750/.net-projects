@@ -9,7 +9,7 @@ namespace hospitalData
 {
     public static class HandlingExcelClass
     {
-
+        public static string baseDir = AppDomain.CurrentDomain.BaseDirectory;
         //*********************************************************************Store data****************************************************************
 
 
@@ -311,12 +311,14 @@ namespace hospitalData
 
             if (workType == "emp")
             {
-                excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+                excelFilePath = Path.Combine(baseDir, @"..\..\..\..\excel files\EmployeeData.xlsx");
+                excelFilePath = Path.GetFullPath(excelFilePath);
             }
 
             else if (workType == "patient")
             {
-                excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+                excelFilePath = Path.Combine(baseDir, @"..\..\..\..\excel files\PatientData.xlsx");
+                excelFilePath = Path.GetFullPath(excelFilePath);
             }
 
             using (ExcelPackage package = new ExcelPackage(excelFilePath))
@@ -363,12 +365,14 @@ namespace hospitalData
 
             if (workType == "emp")
             {
-                excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+                excelFilePath = Path.Combine(baseDir, @"..\..\..\..\excel files\EmployeeData.xlsx");
+                excelFilePath = Path.GetFullPath(excelFilePath);
             }
 
             else if (workType == "patient")
             {
-                excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+                excelFilePath = Path.Combine(baseDir, @"..\..\..\..\excel files\PatientData.xlsx");
+                excelFilePath = Path.GetFullPath(excelFilePath);
             }
 
             using (ExcelPackage package = new ExcelPackage(excelFilePath))

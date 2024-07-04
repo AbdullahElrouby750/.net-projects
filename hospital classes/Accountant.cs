@@ -33,17 +33,17 @@ public class Accountant : Employee, WritingReports
 
                 foreach(var id in thisJopID)
                 {
-                    double bouns = double.Parse(EmployeeData.accessEmployeeExcelFile(id, item, "Bouns"));
-                    double salary = double.Parse(EmployeeData.accessEmployeeExcelFile(id, item, "Salary"));
+                    double bouns = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(id, item, "Bouns", "emp"));
+                    double salary = double.Parse(HandlingExcelClass.accessEmployeeExcelFile(id, item, "Salary", "emp"));
 
-                    string bankName = EmployeeData.accessEmployeeExcelFile(id, item, "BankAccount");
-                    string accountName = EmployeeData.accessEmployeeExcelFile(id, item, "AccountNumber");
+                    string bankName = HandlingExcelClass.accessEmployeeExcelFile(id, item, "BankAccount", "emp");
+                    string accountName = HandlingExcelClass.accessEmployeeExcelFile(id, item, "AccountNumber", "emp");
 
                     salary += bouns;
 
                     //TODO : use bank name and acc no. to send the money to the emp account
 
-                    EmployeeData.accessEmployeeExcelFile(id, item, "SalaryReceived", true);
+                    HandlingExcelClass.accessEmployeeExcelFile(id, item, "SalaryReceived", true, "emp");
                 }
             }
         }
@@ -92,6 +92,8 @@ public class Accountant : Employee, WritingReports
     }
 
     //*********************************************************************print salary****************************************************************
+    public void WriteReport() { }
+    
     public void Printsalary()
     {
         SalaryReceived = bool.Parse(HandlingExcelClass.accessEmployeeExcelFile(HospitalID, Department, "SalaryReceived", "emp"));

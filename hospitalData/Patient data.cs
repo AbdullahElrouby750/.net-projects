@@ -12,7 +12,8 @@ public static class patientData
 
     public static void storeData(Dictionary<string, dynamic> data)
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\PatientData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -114,7 +115,8 @@ public static class patientData
     }
     public static void setNurseVisitsSheet(Dictionary<string, string> data)
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\PatientData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -148,7 +150,8 @@ public static class patientData
     }
     public static void accessNurseVisitSheet(string id, int visitNumber)
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\PatientData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -181,7 +184,8 @@ public static class patientData
 
     public static Dictionary<string, dynamic> GetIdDate(string id) // get the data for the wanted patient by ID
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\PatientData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -215,7 +219,8 @@ public static class patientData
 
     public static List<Dictionary<string, dynamic>> GetNameDate(string name) // get the data for the wanted patient by Name
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\PatientData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -297,9 +302,10 @@ public static class patientData
 
     public static string generateID()
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\PatientData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\PatientData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
-        using(ExcelPackage package = new ExcelPackage(excelFilePath))
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
             ExcelWorksheet sheet = package.Workbook.Worksheets[2];
             if (sheet == null || sheet.Dimension.End.Column <= 1) return "1";

@@ -38,7 +38,9 @@ namespace hospitalData
 
         public static void accessMangerReportsAndReviewsFile(string contenType, string contentTitle, string content, string contentDate) // add report/review to the sheet
         {
-            string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Manger reports and reviews.xlsx";
+            string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\Manger reports and reviews.xlsx");
+            excelFilePath = Path.GetFullPath(excelFilePath);
+
             using (ExcelPackage package = new ExcelPackage(excelFilePath))
             {
                 ExcelWorksheet sheet = null;
@@ -101,7 +103,8 @@ namespace hospitalData
 
         public static void accessMangerReportsAndReviewsFile(string contenType, string targetedStatue) // Access reports/reviews with wanted statues
         {
-            string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Manger reports and reviews.xlsx";
+            string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\Manger reports and reviews.xlsx");
+            excelFilePath = Path.GetFullPath(excelFilePath);
             using (ExcelPackage package = new ExcelPackage(excelFilePath))
             {
                 ExcelWorksheet sheet = null;

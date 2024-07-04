@@ -15,7 +15,8 @@ public static class EmployeeData
     public static void StoreData(Dictionary<string, dynamic> data, string department) // main method in store data proccess
     {
 
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\EmployeeData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
         {
@@ -166,7 +167,8 @@ public static class EmployeeData
 
     public static bool deleteData(string id, string department) // delete from database
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\EmployeeData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -201,7 +203,8 @@ public static class EmployeeData
 
     public static void creatNewReportXLSXsheet() // create new excel file for the reports if not already exist
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\Reports Sheet.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -216,7 +219,8 @@ public static class EmployeeData
 
     public static void addTodayesReport(string id, string report) // add newest report to target id
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\Reports Sheet.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -291,7 +295,9 @@ public static class EmployeeData
 
     public static string getDataFromReportExcelFile(string id, DateOnly? date) // get the targeted report for an employee
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\Reports Sheet.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\Reports Sheet.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
+
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
             ExcelWorksheet sheet = package.Workbook.Worksheets["Reports_Sheet"];
@@ -330,7 +336,8 @@ public static class EmployeeData
 
     public static Dictionary<string, dynamic> GetIdDate(string id) // get the data for the wanted employee by ID
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\EmployeeData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -396,7 +403,8 @@ public static class EmployeeData
     public static List<Dictionary<string, dynamic>> GetNameDate(string name) // get the data for the wanted employee by Name
     {
 
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\EmployeeData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
@@ -484,8 +492,10 @@ public static class EmployeeData
 
     public static Dictionary<string, string> getIDS()// return a dictionary containing the ids and the name of the employees
     {
-        string path = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
-        if (!File.Exists(path))
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\EmployeeData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
+
+        if (!File.Exists(excelFilePath))
         {
             return null;
         }
@@ -493,7 +503,7 @@ public static class EmployeeData
 
         Dictionary<string, string> IDandName = new Dictionary<string, string>();
 
-        using (ExcelPackage package = new ExcelPackage(path))
+        using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
             ExcelWorksheet sheets = null;
 
@@ -520,7 +530,8 @@ public static class EmployeeData
     //*********************************************************************Counting employee****************************************************************
     public static void numberOfEmployyes()
     {
-        string excelFilePath = "D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx";
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\EmployeeData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
 
         using (ExcelPackage EmployeeData = new ExcelPackage(excelFilePath))
         {
