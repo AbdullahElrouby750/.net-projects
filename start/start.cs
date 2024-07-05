@@ -1,4 +1,5 @@
 ﻿using hospital_classes;
+using hospitalData;
 using OfficeOpenXml;
 internal partial class Start
 {
@@ -20,7 +21,11 @@ internal partial class Start
     }
     private static bool isFirstLogin()
     {
-        if (File.Exists("D:\\codez\\uni projects\\hospital system my work\\exel files\\EmployeeData.xlsx"))
+
+        string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\EmployeeData.xlsx");
+        excelFilePath = Path.GetFullPath(excelFilePath);
+
+        if (File.Exists(excelFilePath))
         {
             return false;
         }
@@ -55,27 +60,28 @@ internal partial class Start
         string id = Console.ReadLine().Trim().ToUpper();
             switch (id[0..2])
             {
-                case "MA":
+                case "MA": // maas1234
                     MangerWorkSpace(id);
                     break;
-                case "HR":
+                case "HR": // hrae1706
                     stop = HRWorkSpace(id);
                     break;
-                case "AC":
+                case "AC": // acmb1234
                     stop = AccountantWorkSpace(id);
                     break;
-                case "RE":
+                case "RE": // rehm1234
                     stop = ReceptionistWorkSpace(id);
                     break;
-                case "DO":
+                case "DO": // domr1234
                     stop = DoctorsAndRadiologistWorkSpace(id);
                     break;
-                case "PH":
+                case "PH": // phfm1234
+                    stop = PharmacistWorkSpace(id);
                     break;
-                case "NU":
+                case "NU": // nurm1234
                     stop = NurseWorkspace(id);
                     break;
-                case "RA":
+                case "RA": // rask1234
                     stop = DoctorsAndRadiologistWorkSpace(id);
                     break;
                 default:

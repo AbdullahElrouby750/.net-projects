@@ -154,6 +154,25 @@ namespace hospitalData
                 row += 2;
                 mapIndex++;
             }
+
+            if(data.Count == 0) // rethink of better solution!!!!
+            {
+                sheet.Cells[row, 1].Value = title;
+                sheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                sheet.Cells[row, 1].Style.Font.Bold = true;
+                sheet.Cells[row, 1].Style.Font.Color.SetColor(Color.Green);
+
+                sheet.Cells[row + 1, 1].Value = content;
+                sheet.Cells[row + 1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                sheet.Cells[row + 1, 1].Style.Font.Bold = true;
+                sheet.Cells[row + 1, 1].Style.Font.Color.SetColor(Color.Blue);
+
+                sheet.Cells[row, 2].Value = "NS";
+                sheet.Cells[row, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                sheet.Cells[row + 1, 2].Value = "NS";
+                sheet.Cells[row + 1, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+            }
             return sheet;
         }
 
@@ -197,7 +216,7 @@ namespace hospitalData
 
             while (true)
             {
-                if (mapIndex == data.Count) break; // All set
+                if (mapIndex == data.Count && row >= rowCount) break; // All set
 
                 if (row > rowCount) // open new cells for more Experince
                 {
@@ -266,7 +285,7 @@ namespace hospitalData
 
         public static Dictionary<string, string> getSecondaryInfoData(string id, ExcelWorksheet sheet)
         {
-
+            if (sheet == null) return new Dictionary<string, string>();
             Dictionary<string, string> data = new Dictionary<string, string>();
             int colCount = sheet.Dimension.End.Column;
             for (int col = 2; col <= colCount; col++)
@@ -283,7 +302,7 @@ namespace hospitalData
                     int row = 2;
                     while (row <= sheet.Dimension.End.Row)
                     {
-                        if (sheet.Cells[row, targetCol].Value.ToString() == "NS") break; // got all the Secondary info and the rest is just fillers
+                        if (sheet.Cells[row, targetCol].Value.ToString() == "NS" || sheet.Cells[row + 1, targetCol].Value.ToString() == "NS") break; // got all the Secondary info and the rest is just fillers
 
                         string place = sheet.Cells[row, targetCol].Value.ToString()!;
                         string title = sheet.Cells[row + 1, targetCol].Value.ToString()!;

@@ -25,8 +25,12 @@ public class Nurse : Employee, WritingReports
     {
         int numberOfVisits;
 
-        Console.WriteLine("Enter number of visits for patient ID " + ID + ":");
+        Console.Write("Enter number of visits for patient ID " + ID + " : ");
         numberOfVisits = int.Parse(Console.ReadLine()!);
+        for (int i = 1; i <= numberOfVisits; i++)
+        {
+            Visits[i] = false;
+        }
 
         Dictionary<string, string> sVisits = new Dictionary<string, string>();
 
@@ -35,7 +39,7 @@ public class Nurse : Employee, WritingReports
             sVisits[item.Key.ToString()] = item.Value.ToString();
         }
 
-        patientData.setNurseVisitsSheet(sVisits);
+        patientData.setNurseVisitsSheet(sVisits,ID);
     }
 
 
@@ -63,13 +67,14 @@ public class Nurse : Employee, WritingReports
                     visitTargrted = visit.Key + 1;
                 }
             }
-            Console.WriteLine($"mark visit number{visitTargrted} as done? yes / no ");
+            Console.WriteLine($"mark visit number {visitTargrted} as done? yes / no ");
 
             string answer = Console.ReadLine()!;
             if (answer == "yes")
             {
 
                 patientData.accessNurseVisitSheet(patient.PatientID, visitTargrted);
+                Visits[visitTargrted] = true; 
 
                 Console.WriteLine($"Visit for {patient.FullName} with ID {patient.PatientID} done successfully.");
             }

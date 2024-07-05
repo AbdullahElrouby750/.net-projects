@@ -4,19 +4,18 @@ namespace hospital_classes;
 
 public class Pharmacist : Employee, WritingReports
 {
-
-    public static int NumberOfPharmacists;
-    private Dictionary<string, int> NeedMedicin = new Dictionary<string, int>();
+    private Dictionary<string, string> NeedMedicin;
 
 
-    public Pharmacist()
+    public Pharmacist() 
     {
-        NumberOfPharmacists++;
+        NeedMedicin = new Dictionary<string, string>();
     }
 
-    public Pharmacist(Dictionary<string, dynamic> data) : base(data)
+    public Pharmacist(Dictionary<string, dynamic> data)
+        : base(data)
     {
-        NumberOfPharmacists++;
+        NeedMedicin = new Dictionary<string, string>();
     }
 
     public void needMedicin()
@@ -40,7 +39,7 @@ public class Pharmacist : Employee, WritingReports
             {
                 try
                 {
-                    int quantity = int.Parse(Console.ReadLine());
+                    string quantity = Console.ReadLine()!;
                     NeedMedicin[medicinName] = quantity;
                     break;
                 }
@@ -50,6 +49,7 @@ public class Pharmacist : Employee, WritingReports
                 }
             }
         }
+        HospitalData.storeDate(NeedMedicin);
     }
     private string WriteMedicinDose()
     {

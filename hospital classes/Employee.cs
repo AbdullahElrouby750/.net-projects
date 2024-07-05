@@ -3,24 +3,24 @@ namespace hospital_classes;
 public class Employee : Person
 {
 
-    public double Salary { get; set; }
-    public double Bouns { get; set; }
-   //public List<Dictionary<DateOnly, int>> DailyWorkHours { get; set; }
-   public TimeSpan? WorkHours { get; set; }
-   public DateTime DailyLoginTime { get; set; }
-   public DateTime DailyLogoutTime { get; set; }
+    internal double Salary { get; set; }
+    internal double Bouns { get; set; }
+   //internal List<Dictionary<DateOnly, int>> DailyWorkHours { get; set; }
+   internal TimeSpan? WorkHours { get; set; }
+   internal DateTime DailyLoginTime { get; set; }
+   internal DateTime DailyLogoutTime { get; set; }
 
-    public readonly DateOnly? StartingDate;
-    public string HRreport { get; set; }
-    public int Experience { get; set; }
-    public Dictionary<string, string>? PreviousExperience { get; set; }
-    public string HospitalID { get; set; }
-    public bool SalaryReceived { get; set; }
+    internal readonly DateOnly? StartingDate;
+    internal string HRreport { get; set; }
+    internal int Experience { get; set; }
+    internal Dictionary<string, string>? PreviousExperience { get; set; }
+    internal string HospitalID { get; set; }
+    internal bool SalaryReceived { get; set; }
     protected string BankAccount { get; set; }
     protected string AccountNumber { get; set; }
     static protected int NumberOfEmployees { get; set; }
-    public int Warnings { get; set; } // public so it can be accessable from hr.writeReports
-    public string Department { get; set; }
+    internal int Warnings { get; set; } // internal so it can be accessable from hr.writeReports
+    internal string Department { get; set; }
     static protected int NumberOfEmployee { get; set; }
 
     //default constructor

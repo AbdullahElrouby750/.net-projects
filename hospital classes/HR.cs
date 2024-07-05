@@ -277,7 +277,7 @@ public class HR : Employee, WritingReports
         DateTime logoutTime = ThisEmployee["DailyLogoutTime"];
         dynamic workhours = ThisEmployee["WorkHours"];
 
-        if (loginTime == null || loginTime.Date != DateTime.Now.Date)
+        if (loginTime == DateTime.MinValue || loginTime.Date != DateTime.Now.Date)
         {
             int timeNow = DateTime.Now.Hour;
             if (timeNow > 10)
@@ -287,7 +287,7 @@ public class HR : Employee, WritingReports
             }
         }
 
-        if (logoutTime == null || loginTime.Date != DateTime.Now.Date)
+        if (logoutTime == DateTime.MinValue || loginTime.Date != DateTime.Now.Date)
         {
             Console.WriteLine($"{name} has not log-out yet");
             return;

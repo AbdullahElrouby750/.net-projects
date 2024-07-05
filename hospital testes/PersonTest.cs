@@ -7,8 +7,7 @@ public class PersonTest
     [TestMethod]
     public void TestMethod1()
     {
-        var person = new Person(firstname: "John",
-                                 lastname: "doh",
+        var person = new Person(fullname: "john doh",
                                   age: 21,
                                    phonenumber: "",
                                    dateofbirth: DateOnly.FromDateTime(DateTime.Today),

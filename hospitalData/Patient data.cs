@@ -18,19 +18,19 @@ public static class patientData
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
 
-           setMedicalHestorySheet(package, excelFilePath, data);
+           setMedicalHistorySheet(package, excelFilePath, data);
            setEmergencyContactSheet(package, excelFilePath, data);
            setPatientDataSheet(package, excelFilePath, data);
 
         }
     }
 
-    private static void setMedicalHestorySheet (ExcelPackage package, string excelFilePath, Dictionary<string, dynamic> data)
+    private static void setMedicalHistorySheet (ExcelPackage package, string excelFilePath, Dictionary<string, dynamic> data)
     {
         ExcelWorksheet medicalHistorySheet = null;
         try // medical history sheet
         {
-            medicalHistorySheet = package.Workbook.Worksheets[0];
+            medicalHistorySheet = package.Workbook.Worksheets[sheetsNames[0]];
             if (medicalHistorySheet == null)
             {
                 {
@@ -38,18 +38,18 @@ public static class patientData
                 }
             }
 
-            medicalHistorySheet = HandlingExcelClass.AddTosecondaryInfo(medicalHistorySheet, data["patientID"], data["MedicalHistory"], "histo");
+            medicalHistorySheet = HandlingExcelClass.AddTosecondaryInfo(medicalHistorySheet, data["HospitalID"], data["MedicalHistory"], "histo");
 
         }
         catch (IndexOutOfRangeException ex)
         {
             medicalHistorySheet = package.Workbook.Worksheets.Add(sheetsNames[0]);
-            medicalHistorySheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(medicalHistorySheet, data["patientID"], data["MedicalHistory"], "histo");
+            medicalHistorySheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(medicalHistorySheet, data["HospitalID"], data["MedicalHistory"], "histo");
         }
         catch (ArgumentNullException ex)
         {
             medicalHistorySheet = package.Workbook.Worksheets.Add(sheetsNames[0]);
-            medicalHistorySheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(medicalHistorySheet, data["patientID"], data["MedicalHistory"], "histo");
+            medicalHistorySheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(medicalHistorySheet, data["HospitalID"], data["MedicalHistory"], "histo");
         }
 
         HandlingExcelClass.SaveFile(excelFilePath, package);
@@ -59,7 +59,7 @@ public static class patientData
         ExcelWorksheet emergencyContactSheet = null;
         try // emergencu contact sheet
         {
-            emergencyContactSheet = package.Workbook.Worksheets[1];
+            emergencyContactSheet = package.Workbook.Worksheets[sheetsNames[1]];
             if (emergencyContactSheet == null)
             {
                 {
@@ -67,18 +67,18 @@ public static class patientData
                 }
             }
 
-            emergencyContactSheet = HandlingExcelClass.AddTosecondaryInfo(emergencyContactSheet, data["patientID"], data["EmergencyContact"], "emr");
+            emergencyContactSheet = HandlingExcelClass.AddTosecondaryInfo(emergencyContactSheet, data["HospitalID"], data["EmergencyContact"], "emr");
 
         }
         catch (IndexOutOfRangeException ex)
         {
             emergencyContactSheet = package.Workbook.Worksheets.Add(sheetsNames[1]);
-            emergencyContactSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(emergencyContactSheet, data["patientID"], data["EmergencyContact"], "emr");
+            emergencyContactSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(emergencyContactSheet, data["HospitalID"], data["EmergencyContact"], "emr");
         }
         catch (ArgumentNullException ex)
         {
             emergencyContactSheet = package.Workbook.Worksheets.Add(sheetsNames[1]);
-            emergencyContactSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(emergencyContactSheet, data["patientID"], data["EmergencyContact"], "emr");
+            emergencyContactSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(emergencyContactSheet, data["HospitalID"], data["EmergencyContact"], "emr");
         }
 
         HandlingExcelClass.SaveFile(excelFilePath, package);
@@ -88,7 +88,7 @@ public static class patientData
         ExcelWorksheet patientDataSheet = null;
         try // patient data sheet
         {
-            patientDataSheet = package.Workbook.Worksheets[2];
+            patientDataSheet = package.Workbook.Worksheets[sheetsNames[2]];
             if (patientDataSheet == null)
             {
                 {
@@ -113,7 +113,7 @@ public static class patientData
 
         HandlingExcelClass.SaveFile(excelFilePath, package);
     }
-    public static void setNurseVisitsSheet(Dictionary<string, string> data)
+    public static void setNurseVisitsSheet(Dictionary<string, string> data, string id)
     {
         string excelFilePath = Path.Combine(HandlingExcelClass.baseDir, @"..\..\..\..\excel files\PatientData.xlsx");
         excelFilePath = Path.GetFullPath(excelFilePath);
@@ -123,7 +123,7 @@ public static class patientData
             ExcelWorksheet nurseVisitSheet = null;
             try // medical history sheet
             {
-                nurseVisitSheet = package.Workbook.Worksheets[3];
+                nurseVisitSheet = package.Workbook.Worksheets[sheetsNames[3]];
                 if (nurseVisitSheet == null)
                 {
                     {
@@ -131,18 +131,18 @@ public static class patientData
                     }
                 }
 
-                nurseVisitSheet = HandlingExcelClass.AddTosecondaryInfo(nurseVisitSheet, data["patientID"], data, "visits");
+                nurseVisitSheet = HandlingExcelClass.AddTosecondaryInfo(nurseVisitSheet, id, data, "visits");
 
             }
             catch (IndexOutOfRangeException ex)
             {
                 nurseVisitSheet = package.Workbook.Worksheets.Add(sheetsNames[3]);
-                nurseVisitSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(nurseVisitSheet, data["patientID"], data, "visits");
+                nurseVisitSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(nurseVisitSheet, id, data, "visits");
             }
             catch (ArgumentNullException ex)
             {
                 nurseVisitSheet = package.Workbook.Worksheets.Add(sheetsNames[3]);
-                nurseVisitSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(nurseVisitSheet, data["patientID"], data, "visits");
+                nurseVisitSheet = HandlingExcelClass.CreateNewSecondaryInfoSheet(nurseVisitSheet, id, data, "visits");
             }
 
             HandlingExcelClass.SaveFile(excelFilePath, package);
@@ -166,9 +166,6 @@ public static class patientData
                 string targetId = sheet.Cells[1, col].Value.ToString()!;
                 if (targetId == id)
                 {
-                    sheet.Cells[targetRow, col].Value = "Visit";
-                    sheet.Cells[targetRow, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-
                     sheet.Cells[targetRow + 1, col].Value = "True";
                     sheet.Cells[targetRow + 1, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                     
@@ -282,7 +279,22 @@ public static class patientData
         data["EmergencyContact"] = HandlingExcelClass.getSecondaryInfoData(id, sheet);
 
         sheet = package.Workbook.Worksheets[sheetsNames[3]];
-        data["Visits"] = HandlingExcelClass.getSecondaryInfoData(id, sheet);
+        var visits = HandlingExcelClass.getSecondaryInfoData(id, sheet);
+
+        Dictionary<int, bool> visitsDic = new Dictionary<int, bool>();
+        foreach (var item in visits)
+        {
+            if(item.Value == "True")
+            {
+                visitsDic[int.Parse(item.Key)] = true;
+            }
+            else if(item.Value == "False")
+            {
+                visitsDic[int.Parse(item.Key)] = false;
+            }
+        }
+
+        data["Visits"] = visitsDic;
 
         return data;
 
@@ -307,7 +319,7 @@ public static class patientData
 
         using (ExcelPackage package = new ExcelPackage(excelFilePath))
         {
-            ExcelWorksheet sheet = package.Workbook.Worksheets[2];
+            ExcelWorksheet sheet = package.Workbook.Worksheets[sheetsNames[2]];
             if (sheet == null || sheet.Dimension.End.Column <= 1) return "1";
 
             else return getLastID(sheet).ToString();

@@ -11,7 +11,6 @@ public class Patient : Person
     public string PatientID { get; set; }
     public bool Operation { get; set; }
     public bool MedicalXray { get; set; }
-    public static int NumberOfPatients { get; set; }
     private double Bill { get; set; }
     public string DoctorReport { get; set; }
     public string PharmacistReport { get; set; }
@@ -40,7 +39,6 @@ public class Patient : Person
         PharmacistReport = "";
         NurseReport = "";
         RadiologistReport = "";
-        NumberOfPatients++;
         PatientID = "";
         AllVisitsDone = true;
         Recet = string.Empty;
@@ -49,7 +47,7 @@ public class Patient : Person
     }
 
     public Patient(Dictionary<string, dynamic> patientInfo)
-        : base(patientInfo["FullName"], patientInfo["PhoneNumber"], patientInfo["Age"], patientInfo["DateOfBirth"], patientInfo["Gender"], patientInfo["Statue"], patientInfo["Address"], patientInfo["BloodType"])
+        : base(patientInfo["FullName"], patientInfo["PhoneNumber"], (int)patientInfo["Age"], patientInfo["DateOfBirth"], patientInfo["Gender"], patientInfo["Statue"], patientInfo["Address"], patientInfo["BloodType"])
     {
         //add the needed members
         Weight = patientInfo["Weight"];
@@ -111,7 +109,11 @@ public class Patient : Person
 
     public void PrintBill()
     {
-        Console.WriteLine($"Bill: {Bill}");
+        Console.WriteLine($"Bill: {Recet}");
+    }
+    public double getBill()
+    {
+       return Bill;
     }
 
     public void setBill(double billValue)

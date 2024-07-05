@@ -103,8 +103,9 @@ public class Receptionist : Employee, WritingReports
             string disease;
             string info;
 
-            Console.WriteLine("Enter disease name : ");
+            Console.WriteLine("Enter disease name (if none, press enter to skip): ");
             disease = Console.ReadLine();
+            if (disease == "") break;
 
             Console.WriteLine("Enter disease info : ");
             info = Console.ReadLine();
@@ -127,6 +128,7 @@ public class Receptionist : Employee, WritingReports
     public void hipatient()
     {
         var data = GetNewpatientData();
+        patientData.storeData(data);
         Console.WriteLine("Patient was added successfully");
         Console.WriteLine($"Patient ID: {data["HospitalID"]}");
 
@@ -313,7 +315,7 @@ public class Receptionist : Employee, WritingReports
 
         patient.setBill(dBill);
         HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "Bill", dBill, "patient");
-        HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "Recet", patient.Recet, "patient");
+        if (dBill != 0)HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "Recet", patient.Recet, "patient");
     }
 
     public void printPatientBill()
@@ -323,7 +325,7 @@ public class Receptionist : Employee, WritingReports
 
         if (patient == null) return;
 
-        patient.PrintBill();
+        if(patient.getBill() != 0) patient.PrintBill();
     }
 
     public void WriteReport() { }

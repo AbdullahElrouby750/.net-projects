@@ -3,15 +3,15 @@
     public class Person{
        //private string? Firstname { get; set; }
        //private string? Lastname { get; set; }
-       public string ? FullName { get; set; }
+       internal string ? FullName { get; set; }
 
-       public string? PhoneNumber { get; set; }
-       public int Age { get; set; }
-       public DateOnly DateOfBirth { get; set; }
-       public string? Gender { get; set; }
-       public string? Statue { get; set; }
-       public string? Address { get; set; }
-       public string? BloodType { get; set; }
+       internal string? PhoneNumber { get; set; }
+       internal int Age { get; set; }
+       internal DateOnly DateOfBirth { get; set; }
+       internal string? Gender { get; set; }
+       internal string? Statue { get; set; }
+       internal string? Address { get; set; }
+       internal string? BloodType { get; set; }
     
        //defult constractor 
        public Person()

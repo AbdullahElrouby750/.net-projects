@@ -50,6 +50,128 @@ public class Accountant : Employee, WritingReports
     }
 
 
+    //********************************************************************* Review orders ****************************************************************
+
+    public void reviewOrders() // just needed medicin now
+    {
+        int index = 0;
+        Dictionary<string, string> data = new Dictionary<string, string>();
+
+        data = HospitalData.getNeededMedicinDict();
+        if (data == null) return;
+
+        foreach (var item in data)
+        {
+            Console.WriteLine($"{index + 1}. {item.Key}\t\t:\t\t{item.Value}");
+            index++;
+        }
+
+        Console.WriteLine("\nPress '1' to accept all");
+        Console.WriteLine("Press '2' to deny all");
+        Console.WriteLine("Press '3' to accept part of it");
+        Console.Write("Choose :");
+
+        string choice = Console.ReadLine()!;
+        while (true)
+        {
+            if (choice == "1")
+            {
+                HospitalData.deleteAcceptedData(data);
+                return;
+            }
+            else if (choice == "2")
+            {
+                deleteOnlyTHeChoosenOne(data);
+                return;
+            }
+            else if (choice == "3")
+            {
+                deleteOnlyTHeChoosenOne(data);
+                return;
+            }
+            else
+            {
+                Console.WriteLine($"{choice} is invalid. plz, choose a vaild one");
+            }
+        }
+
+    }
+
+    private void deleteOnlyTHeChoosenOne(Dictionary<string, string> data)
+    {
+        Dictionary<string, string> subData = new Dictionary<string, string>();
+
+        Console.WriteLine("1. Accept a whole block (ex: 1 ,2, 3, 4 & 5) 'any block in the lsit' ");
+        Console.WriteLine("2. Accept apart medicins (ex: 1, 3, 5, 8 ...");
+        while (true)
+        {
+
+            Console.Write("Choose :");
+
+            string choice = Console.ReadLine()!;
+            if (choice == "1")
+            {
+                int index1, index2;
+                while (true)
+                {
+                    Console.Write("From : ");
+                    index1 = int.Parse(Console.ReadLine()!);
+                    Console.Write("\nTo : ");
+                    index2 = int.Parse(Console.ReadLine()!);
+                    if (index1 <= 0 || index2 <= 0 || index2 > data.Count) // make sure from the choice
+                    {
+                        Console.WriteLine($"Plz enter a valid numbers from 1 to {data.Count}");
+                        continue;
+                    }
+                    else break;
+                }
+
+                for (index1 = index1 - 1; index1 <= index2; index1++)
+                {
+                    data.Add(data.ElementAt(index1).Key, data.ElementAt(index1).Value);
+                }
+                break;
+            }
+            else if (choice == "2")
+            {
+                List<int> list = new List<int>();
+
+                while (true)
+                {
+                    Console.WriteLine("Plz, enter the choices in this format (ex: 1-2-4-7-13)");
+                    string choiceList = Console.ReadLine()!;
+
+                    foreach (var item in choiceList)
+                    {
+                        if (char.IsDigit(item)) list.Add(Convert.ToInt32(item));
+                    }
+
+                    list.Sort();
+                    if (list.Max() > data.Count || list.Any(x => x <= 0)) // make sure from the choice
+                    {
+
+                        Console.WriteLine($"Plz enter a valid numbers from 1 to {data.Count}");
+                        continue;
+                    }
+                    else break;
+
+                }
+
+                foreach (var index in list)
+                {
+                    subData.Add(data.ElementAt(index - 1).Key, data.ElementAt(index - 1).Value);
+                }
+                break;
+            }
+            else
+            {
+                Console.WriteLine($"Plz enter a valid choice");
+                continue;
+            }
+        }
+        HospitalData.deleteAcceptedData(subData);
+    }
+
 
 
     //*********************************************************************print hr report****************************************************************
