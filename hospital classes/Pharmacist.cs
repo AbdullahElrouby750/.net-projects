@@ -89,10 +89,13 @@ public class Pharmacist : Employee, WritingReports
 
             string medicineReport = WriteMedicinDose();
 
-            patient.PharmacistReport += $"Pharmacist Report: {medicineReport}\n";
+            patient.PharmacistReport += $"Pharmacist Report: {report}\n";
+            patient.PharmacistReport += $"Medicin : {medicineReport}\n";
 
             patient.PharmacistReport += $"Pharmacist: {FullName}\n";
             patient.PharmacistReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
+
+            HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "PharmacistReport", patient.PharmacistReport, "patient");
 
             return;
         }

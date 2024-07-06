@@ -68,6 +68,14 @@ public class Receptionist : Employee, WritingReports
 
         Data["Recet"] = string.Empty;
 
+        Data["DoctorReport"] = string.Empty;
+
+        Data["RadiologistReport"] = string.Empty;
+
+        Data["NurseReport"] = string.Empty;
+
+        Data["PharmacistReport"] = string.Empty;
+
         Data["Visits"] = new Dictionary<int, bool>();
 
         Data["MedicalHistory"] = getNewPatientMedicalHestory();
@@ -246,10 +254,7 @@ public class Receptionist : Employee, WritingReports
         string patientID;
         while (true)
         {
-            if(Console.ReadKey(true).Key == ConsoleKey.Escape)
-            {
-                return;
-            }
+
             Console.Write("Enter Patient ID : ");
             patientID = Console.ReadLine();
             var data = patientData.GetIdDate(patientID);
@@ -262,6 +267,10 @@ public class Receptionist : Employee, WritingReports
             else
             {
                 Console.WriteLine($"Patient with ID {patientID} not found in the data.\nEnter a valid Patient ID.");
+            }
+            if (Console.ReadKey(true).Key == ConsoleKey.Escape)
+            {
+                return;
             }
         }
     }
@@ -298,7 +307,7 @@ public class Receptionist : Employee, WritingReports
                     if (double.TryParse(value, out double bill))
                     {
                         dBill += bill;
-                        patient.Recet += $"{section}\t\t:\t\t{value}";
+                        patient.Recet += $"{section}\t\t:\t{value:c}\n";
                         break;
                     }
                     else
@@ -313,6 +322,7 @@ public class Receptionist : Employee, WritingReports
             }
         }
 
+        patient.Recet += $"Total\t:\t{dBill:c}";
         patient.setBill(dBill);
         HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "Bill", dBill, "patient");
         if (dBill != 0)HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "Recet", patient.Recet, "patient");
@@ -325,7 +335,8 @@ public class Receptionist : Employee, WritingReports
 
         if (patient == null) return;
 
-        if(patient.getBill() != 0) patient.PrintBill();
+        if (patient.getBill() != 0) patient.PrintBill();
+        else Console.WriteLine("Bill not set yet!");
     }
 
     public void WriteReport() { }

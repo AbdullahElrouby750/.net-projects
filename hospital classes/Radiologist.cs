@@ -27,6 +27,8 @@ public class Radiologist : Employee, WritingReports
             patient.RadiologistReport += $"Radiologist: {FullName}\n";
             patient.RadiologistReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
 
+            HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "RadiologistReport", patient.RadiologistReport, "patient");
+
             return;
         }
         Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");

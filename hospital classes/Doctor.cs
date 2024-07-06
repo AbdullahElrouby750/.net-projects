@@ -30,6 +30,7 @@ public class Doctor : Employee, WritingReports
             patient.DoctorReport += $"Doctor: {FullName}\n";
             patient.DoctorReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
 
+            HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "DoctorReport", patient.DoctorReport, "patient");
             return;
         }
     }

@@ -201,7 +201,7 @@ public static class patientData
             int colCount = sheet.Dimension.End.Column;
             for (int row = 2; row <= rowCount; row++)
             {
-                string target = sheet.Cells[row, 1].Value.ToString();
+                string target = sheet.Cells[row, 1].Value.ToString()!;
                 if (target.ToUpper() == id.ToUpper())
                 {
                     int targetRow = row;

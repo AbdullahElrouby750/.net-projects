@@ -3,7 +3,7 @@
     public class Person{
        //private string? Firstname { get; set; }
        //private string? Lastname { get; set; }
-       internal string ? FullName { get; set; }
+       public string ? FullName { get; set; }
 
        internal string? PhoneNumber { get; set; }
        internal int Age { get; set; }

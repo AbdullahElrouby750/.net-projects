@@ -21,13 +21,14 @@ public static class HospitalData // right now only medicin sheet applied !!
             ExcelWorksheet neededMedicinSheet = null;
             try
             {
-                neededMedicinSheet = package.Workbook.Worksheets[0];
+                neededMedicinSheet = package.Workbook.Worksheets[sheetsNames[0]];
                 if (neededMedicinSheet == null)
                 {
                     {
                         throw new ArgumentNullException(nameof(neededMedicinSheet));
                     }
                 }
+                neededMedicinSheet = addToNeededMedicinSheet(neededMedicinSheet, data);
 
 
             }
@@ -61,9 +62,17 @@ public static class HospitalData // right now only medicin sheet applied !!
 
     private static ExcelWorksheet addToNeededMedicinSheet(ExcelWorksheet sheet, Dictionary<string, string> data)
     {
-        if (sheet.Dimension.End.Row == 0) sheet = creatNeddedMedicinSheet(sheet, data);
+        int row = 0;
+        try 
+        {
+            row = sheet.Dimension.End.Row;
+        }
+        catch (NullReferenceException ex)
+        {
+            sheet = creatNeddedMedicinSheet(sheet, data);
+            row++;
+        }
 
-        int row = sheet.Dimension.End.Row;
         row++;
 
         foreach (var item in data)
@@ -73,6 +82,7 @@ public static class HospitalData // right now only medicin sheet applied !!
 
             sheet.Cells[row, 2].Value = item.Value;
             sheet.Cells[row, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+            row++;
         }
 
         return sheet;
@@ -188,14 +198,17 @@ public static class HospitalData // right now only medicin sheet applied !!
         int row = 2;
 
 
-        while (row <= rowCount || data.Count == 0) // delete the accepted one only
+        while (data.Count != 0) // delete the accepted one only
         {
+            if (row > rowCount) break;
             string target = sheet.Cells[row, 1].Value.ToString()!;
 
             if(data.ContainsKey(target))
             {
                 sheet.DeleteRow(row);
                 data.Remove(target);
+                rowCount--;
+                continue;
             }
 
             row++;

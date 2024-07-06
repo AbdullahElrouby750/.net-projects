@@ -62,7 +62,8 @@ public class Accountant : Employee, WritingReports
 
         foreach (var item in data)
         {
-            Console.WriteLine($"{index + 1}. {item.Key}\t\t:\t\t{item.Value}");
+            if(item.Key.Length > 12) Console.WriteLine($"{index + 1}. {item.Key}\t:\t\t{item.Value}");
+            else Console.WriteLine($"{index + 1}. {item.Key}\t\t:\t\t{item.Value}");
             index++;
         }
 
@@ -81,7 +82,6 @@ public class Accountant : Employee, WritingReports
             }
             else if (choice == "2")
             {
-                deleteOnlyTHeChoosenOne(data);
                 return;
             }
             else if (choice == "3")
@@ -126,9 +126,9 @@ public class Accountant : Employee, WritingReports
                     else break;
                 }
 
-                for (index1 = index1 - 1; index1 <= index2; index1++)
+                for (index1 = index1 - 1; index1 < index2; index1++)
                 {
-                    data.Add(data.ElementAt(index1).Key, data.ElementAt(index1).Value);
+                    subData.Add(data.ElementAt(index1).Key, data.ElementAt(index1).Value);
                 }
                 break;
             }
@@ -143,7 +143,12 @@ public class Accountant : Employee, WritingReports
 
                     foreach (var item in choiceList)
                     {
-                        if (char.IsDigit(item)) list.Add(Convert.ToInt32(item));
+                        if (char.IsDigit(item))
+                        {
+                            string sThisNum = item.ToString();
+                            int thisNum = int.Parse(sThisNum);
+                            list.Add(thisNum);
+                        }
                     }
 
                     list.Sort();
@@ -151,6 +156,7 @@ public class Accountant : Employee, WritingReports
                     {
 
                         Console.WriteLine($"Plz enter a valid numbers from 1 to {data.Count}");
+                        list.Clear();
                         continue;
                     }
                     else break;

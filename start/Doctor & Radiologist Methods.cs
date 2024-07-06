@@ -1,4 +1,4 @@
-using System.Globalization;
+
 using hospital_classes;
 
 internal partial class Start
@@ -22,6 +22,10 @@ internal partial class Start
                 Console.Write($"\n\n{id} is invalid. plz, enter a valid one: ");
                 return false;
             }
+
+            Console.WriteLine($"Welcome back! {DocOrRad.FullName}");
+            Console.WriteLine("Working on it ;)");
+
         }
         else
         {

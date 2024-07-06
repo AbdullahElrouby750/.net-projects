@@ -8,6 +8,9 @@ internal partial class Start
         {
             Manger manger = new Manger(data);
             HR hr = new HR();
+            Console.WriteLine($"Welcome back! {manger.FullName}");
+            Console.WriteLine("Working on it ;)");
+
             while (true)
             {
                 Console.WriteLine("\nChoose a jop from the list below :-\n");

@@ -9,6 +9,9 @@ internal partial class Start
         {
             var pharmacist = new Pharmacist(data);
 
+            Console.WriteLine($"Welcome back! {pharmacist.FullName}");
+            Console.WriteLine("Working on it ;)");
+
 
             while (true)
             {
@@ -58,6 +61,7 @@ internal partial class Start
                         break;
                     case "8":
                         pharmacist.needMedicin();
+                        pressEnterToContinue();
                         break;
                     case "9":
                         return true;

@@ -8,6 +8,9 @@ internal partial class Start
         if (data != null)
         {
             var nurse = new Nurse(data);
+            Console.WriteLine($"Welcome back! {nurse.FullName}");
+            Console.WriteLine("Working on it ;)");
+
             while (true)
             {
                 Console.WriteLine("\nChoose a jop from the list below :-\n");

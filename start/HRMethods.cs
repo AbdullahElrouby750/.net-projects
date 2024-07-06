@@ -7,8 +7,8 @@ internal partial class Start
         if (data != null)
         {
             HR hr = new HR(data);
+            Console.WriteLine($"Welcome back! {hr.FullName}");
             Console.WriteLine("Working on it ;)");
-            Thread.Sleep(1000); // wait for a moment before printing the messages
             while (true)
             {
 

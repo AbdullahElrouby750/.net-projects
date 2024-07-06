@@ -131,6 +131,8 @@ public class Nurse : Employee, WritingReports
             patient.NurseReport += $"Nurse: {FullName}\n";
             patient.NurseReport += $"Date: {DateTime.Now.ToShortDateString()} {DateTime.Now.ToShortTimeString()}\n";
 
+            HandlingExcelClass.accessEmployeeExcelFile(patient.PatientID, "Patient data", "NurseReport", patient.NurseReport, "patient");
+
             return;
         }
         Console.WriteLine("Please enter a valid patient ID or enter 0 to Exit");

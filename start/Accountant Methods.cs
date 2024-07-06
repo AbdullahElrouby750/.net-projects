@@ -8,6 +8,9 @@ internal partial class Start
         if(data!= null)
         {
             Accountant accountant = new Accountant(data);
+            Console.WriteLine($"Welcome back! {accountant.FullName}");
+            Console.WriteLine("Working on it ;)");
+
             while (true)
             {
                 Console.WriteLine("\nChoose a jop from the list below :-\n");

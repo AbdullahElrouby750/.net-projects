@@ -55,16 +55,23 @@ public class Patient : Person
         CurrentProblem = patientInfo["CurrentProblem"];
         Disabilities = patientInfo["Disabilities"];
         Operation = patientInfo["Operation"];
-        Bill = patientInfo["Bill"];
+        if (patientInfo["Bill"] == null) Bill = 0;
+        else Bill = patientInfo["Bill"];
         MedicalXray = patientInfo["MedicalXray"];
         PatientID = patientInfo["HospitalID"];
         AllVisitsDone = patientInfo["AllVisitsDone"];
         Recet = patientInfo["Recet"];
         Visits = patientInfo["Visits"];
+        DoctorReport = patientInfo["DoctorReport"];
+        PharmacistReport = patientInfo["PharmacistReport"];
+        RadiologistReport = patientInfo["RadiologistReport"];
+        NurseReport = patientInfo["NurseReport"];
+        MedicalHistory = patientInfo["MedicalHistory"];
+        EmergencyContact = patientInfo["EmergencyContact"];
     }
     public void PrintMedicalHistory()
     {
-        Console.WriteLine("Medical History:");
+        Console.WriteLine("Medical History:-");
         if (MedicalHistory != null)
         {
             foreach (var entry in MedicalHistory)
@@ -90,11 +97,10 @@ public class Patient : Person
     {
         Console.WriteLine("Medical hestory :-");
         PrintMedicalHistory();
-        Console.WriteLine($"\nDoctor report: {DoctorReport}");
-        Console.WriteLine($"\nPharmacist report: {PharmacistReport}");
-        Console.WriteLine($"\nNurse report: {NurseReport}");
-        Console.WriteLine($"\nRadiologist report: {RadiologistReport}");
-        Console.WriteLine($"\nBill: {Recet}");
+        Console.WriteLine($"\n\nDoctor report:-\n{DoctorReport}");
+        Console.WriteLine($"\n\nPharmacist report:-\n{PharmacistReport}");
+        Console.WriteLine($"\n\nNurse report:-\n{NurseReport}");
+        Console.WriteLine($"\n\nRadiologist report:-\n{RadiologistReport}");
     }
 
     public bool NeedOperation()
